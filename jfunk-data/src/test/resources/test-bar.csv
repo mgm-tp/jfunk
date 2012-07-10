@@ -1,0 +1,12 @@
+# Test comment
+quoted-string;quoted-int;quote-in-field;unquoted
+# Test comment
+"dummy-1";"1";"test""string-1";unquoted-1
+# Test comment
+# Test comment
+
+
+# Test comment
+# Test comment
+"dummy-0";"0";"test""string-0";unquoted-0
+# Test comment

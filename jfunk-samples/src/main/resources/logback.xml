@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator"/>
+
+	<appender name="resultLog" class="ch.qos.logback.core.FileAppender">
+		<append>false</append>
+		<file>log/result.log</file>
+		<encoder>
+			<pattern>%date{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{35} - %msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%date{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{35} - %msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="file" class="ch.qos.logback.core.FileAppender">
+		<file>log/jfunk.log</file>
+		<encoder>
+			<pattern>%date{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{35} - %msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<logger name="org.apache" level="ERROR" />
+	<logger name="com.gargoylesoftware" level="INFO" />
+
+	<logger name="result" additivity="false" level="INFO">
+		<appender-ref ref="resultLog" />
+	</logger>
+
+	<root level="DEBUG">
+		<appender-ref ref="file" />
+		<appender-ref ref="console" />
+	</root>
+</configuration>

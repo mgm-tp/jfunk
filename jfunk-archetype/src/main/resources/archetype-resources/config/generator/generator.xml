@@ -1,0 +1,65 @@
+#set( $symbol_pound = '#' )
+#set( $symbol_dollar = '$' )
+#set( $symbol_escape = '\' )
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration SYSTEM "generator.dtd">
+<configuration>
+	<format>
+		<date>
+			<pattern>dd.MM.yyyy</pattern>
+			<locale>
+				<language>de</language>
+				<country>de</country>
+			</locale>
+		</date>
+		<number>
+			<pattern>0.00</pattern>
+			<locale>
+				<language>en</language>
+				<country>US</country>
+			</locale>
+		</number>
+	</format>
+	<charsets>
+		<charset id="iso-8859-1">
+			<encoding>iso-8859-1</encoding>
+			<good_expression>[^${symbol_escape}x00-${symbol_escape}x1F${symbol_escape}x7F${symbol_escape}x80-${symbol_escape}x9F]</good_expression>
+			<bad_expression>[[^${symbol_escape}x00-${symbol_escape}x1F${symbol_escape}x7F${symbol_escape}x80-${symbol_escape}x9F${symbol_escape}s][ ]]</bad_expression>
+		</charset>
+	</charsets>
+	<controls>
+		<control id="default.control" class="EnumerationControl">
+			<case type="min"/>
+			<case type="avg"/>
+			<case type="max"/>
+		</control>
+		<control id="linear.control" class="LinearControl" shuffle="true"/>
+	</controls>
+	<fields>
+		<field id="text" class="InverseExpression">
+			<control_ref id="default.control"/>
+			<expression>[A-Z][a-züöä]*</expression>
+		</field>
+		<field id="integerNumber" class="InverseExpression">
+			<control_ref id="default.control"/>
+			<expression>[0-9]*</expression>
+		</field>
+		<field id="doubleNumber" class="InverseExpression">
+			<control_ref id="default.control"/>
+			<expression>[0-9]*[.][0-9]*</expression>
+		</field>
+		<field id="select">
+			<control_ref id="linear.control"/>
+			<value>red</value>
+			<value>green</value>
+			<value>blue</value>
+		</field>
+	</fields>
+	<constraints charset_id="iso-8859-1">
+		<constraint id="google.all" class="Complex">
+			<constraint id="google.searchTerm">
+				<field_ref id="select"/>
+			</constraint>
+		</constraint>
+	</constraints>
+</configuration>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<!-- $Id$ -->
+<assembly>
+	<id>dist</id>
+	<formats>
+		<format>zip</format>
+	</formats>
+	<includeBaseDirectory>false</includeBaseDirectory>
+	<fileSets>
+		<fileSet>
+			<directory>${basedir}</directory>
+			<outputDirectory>/</outputDirectory>
+			<fileMode>755</fileMode>
+			<lineEnding>unix</lineEnding>
+			<includes>
+				<include>*.bat</include>
+				<include>*.sh</include>
+			</includes>
+		</fileSet>
+		<fileSet>
+			<fileMode>644</fileMode>
+			<directory>${basedir}/config</directory>
+		</fileSet>
+		<fileSet>
+			<fileMode>644</fileMode>
+			<directory>${basedir}/scripts</directory>
+		</fileSet>
+		<fileSet>
+			<fileMode>644</fileMode>
+			<directory>${project.build.directory}/src</directory>
+			<outputDirectory>src</outputDirectory>
+		</fileSet>
+	</fileSets>
+	<dependencySets>
+		<dependencySet>
+			<outputDirectory>lib</outputDirectory>
+			<scope>runtime</scope>
+			<!-- The following makes sure that we don't get timestamped snapshots in the assembly -->
+			<outputFileNameMapping>${artifact.artifactId}-${artifact.baseVersion}${dashClassifier?}.${artifact.extension}
+			</outputFileNameMapping>
+			<useProjectArtifact>false</useProjectArtifact>
+		</dependencySet>
+	</dependencySets>
+</assembly>

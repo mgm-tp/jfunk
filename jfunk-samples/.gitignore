@@ -1,0 +1,8 @@
+/.settings
+/target
+/.project
+/.classpath
+/setenv.bat
+/setenv.sh
+/log
+/testruns

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<setup xmlns="http://databene.org/benerator/0.5.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://databene.org/benerator/0.5.9 http://databene.org/benerator-0.5.9.xsd">
+
+	<create-entities name="ustva" count="1" consumer="com.mgmtp.jfunk.data.benerator.BeneratorDataSource$DataSetConsumer">
+
+		<!-- Data for finanzaemter (Land, Amt, Nummer) from csv-file -->
+		<variable name="finanzaemter" type="entity" source="src/test/resources/benerator/finanzaemter.csv" cyclic="true"/>
+
+		<!-- Data for mutually exclusive radio button fields -->
+		<variable name="manu_auto" type="entity" source="src/test/resources/benerator/manu_auto.csv" cyclic="true"/>
+
+		<!-- Data for various persons and tax-ids by benerator standard Generators -->
+		<variable name="person" generator="org.databene.domain.person.PersonGenerator" dataset="DE" locale="de"/>
+
+		<variable name="firma" generator="org.databene.domain.person.PersonGenerator" dataset="DE" locale="de"/>
+
+		<variable name="mitwirk" generator="org.databene.domain.person.PersonGenerator" dataset="DE" locale="de"/>
+
+		<variable name="taxid" generator="org.databene.domain.person.TaxIdGenerator_DE" dataset="DE" locale="de"/>
+
+		<!-- Definitions of attributes to be later on used by the consumer (order irrelevant)-->
+
+		<attribute name="radioSteuernummer" source="manu_auto.Manuell"/>
+		<attribute name="steuernummerProfil" source="taxid"/>
+		<attribute name="bundesland" source="finanzaemter.Land"/>
+		<attribute name="finanzamt" source="finanzaemter.Amt"/>
+		<attribute name="finanzamtsNummer" source="finanzaemter.Nummer"/>
+		<attribute name="steuernummerBezirk" pattern="[0-9]{3,4}"/>
+		<attribute name="steuernummerUnterscheidungsnummer" pattern="[0-9]{4,5}"/>
+		<attribute name="anzeigesteuernummer" source="taxid"/>
+		<attribute name="notiz" pattern=".{0,200}"/>
+		<attribute name="jahr" pattern="[2-2]{1,1}[0-0]{1,1}[1-9]{1,1}[0-9]{1,1}"/>
+		<attribute name="voranmeldungszeitraum" pattern="[1-5]{1}"/>
+		<attribute name="kz10" source="manu_auto.Manuell"/>
+		<attribute name="kz22" source="manu_auto.Manuell"/>
+		<attribute name="nameOderUnternehmen" source="firma.familyName"/>
+		<attribute name="radioMitwirkungKeine" source="manu_auto.Manuell"/>
+		<attribute name="radioMitwirkungKanzlei" source="manu_auto.Manuell"/>
+		<attribute name="radioMitwirkungBearbeiter" source="manu_auto.Manuell"/>
+		<attribute name="kanzleiName" source="mitwirk.familyName"/>
+		<attribute name="kanzleiTelefon" values="+49812249482"/>
+		<attribute name="bearbeiterName" source="mitwirk.familyName"/>
+		<attribute name="bearbeiterVorname" source="mitwirk.givenName"/>
+		<attribute name="bearbeiterTitel" values="Dr,Prof,Mag,Prof. Dr."/>
+		<attribute name="bearbeiterTelefon" values="+49812249482"/>
+		<attribute name="kz41" pattern="[0-9]{11,11}"/>
+		<attribute name="kz44" pattern="[0-9]{11,11}"/>
+		<attribute name="kz49" pattern="[0-9]{11,11}"/>
+		<attribute name="kz43" pattern="[0-9]{11,11}"/>
+		<attribute name="kz48" pattern="[0-9]{11,11}"/>
+		<attribute name="kz86" pattern="[0-9]{11,11}"/>
+		<attribute name="calc86" type="decimal" min="0.01" max="9999.99" precision="0.01" pattern="[0-9]{1,10},[0-9]{2,2}"/>
+		<attribute name="kz81" pattern="[0-9]{11,11}"/>
+		<attribute name="calc81" type="decimal" min="0.01" max="9999.99" precision="0.01" pattern="[0-9]{1,10},[0-9]{2,2}"/>
+		<attribute name="kz35" pattern="[0-9]{11,11}"/>
+		<attribute name="kz36" type="decimal" min="0.01" max="9999.99" precision="0.01" pattern="[0-9]{1,10},[0-9]{2,2}"/>
+		<attribute name="kz77" pattern="[0-9]{11,11}"/>
+		<attribute name="kz76" pattern="[0-9]{11,11}"/>
+		<attribute name="kz80" type="decimal" min="0.01" max="9999.99" precision="0.01" pattern="[0-9]{1,10},[0-9]{2,2}"/>
+		<attribute name="kz91" type="decimal" min="0.01" max="9999.99" precision="0.01" pattern="[0-9]{1,10},[0-9]{2,2}"/>
+		<attribute name="kz89" pattern="[0-9]{11,11}"/>
+		<attribute name="calc89" type="decimal" min="0.01" max="9999.99" precision="0.01" pattern="[0-9]{1,10},[0-9]{2,2}"/>
+		<attribute name="kz93" pattern="[0-9]{11,11}"/>
+		<attribute name="calc93" type="decimal" min="0.01" max="9999.99" precision="0.01" pattern="[0-9]{1,10},[0-9]{2,2}"/>
+		<attribute name="kz95" pattern="[0-9]{11,11}"/>
+		<attribute name="kz98" pattern="[0-9]{11,11}"/>
+		<attribute name="kz94" pattern="[0-9]{11,11}"/>
+		<attribute name="kz96" type="decimal" min="0.01" max="9999.99" precision="0.01" pattern="[0-9]{1,10},[0-9]{2,2}"/>
+		<attribute name="kz42" pattern="[0-9]{11,11}"/>
+		<attribute name="kz60" pattern="[0-9]{11,11}"/>
+		<attribute name="kz45" pattern="[0-9]{11,11}"/>
+		<attribute name="kz52" pattern="[0-9]{11,11}"/>
+		<attribute name="kz53" type="decimal" min="0.01" max="9999.99" precision="0.01" pattern="[0-9]{1,10},[0-9]{2,2}"/>
+		<attribute name="kz73" pattern="[0-9]{11,11}"/>
+		<attribute name="kz74" type="decimal" min="0.01" max="9999.99" precision="0.01" pattern="[0-9]{1,10},[0-9]{2,2}"/>
+		<attribute name="kz84" pattern="[0-9]{11,11}"/>
+		<attribute name="kz85" type="decimal" min="0.01" max="9999.99" precision="0.01" pattern="[0-9]{1,10},[0-9]{2,2}"/>
+		<attribute name="kz65" type="decimal" min="0.01" max="9999.99" precision="0.01" pattern="[0-9]{1,10},[0-9]{2,2}"/>
+		<attribute name="kz66" type="decimal" min="0.01" max="9999.99" precision="0.01" pattern="[0-9]{1,10},[0-9]{2,2}"/>
+		<attribute name="kz61" type="decimal" min="0.01" max="9999.99" precision="0.01" pattern="[0-9]{1,10},[0-9]{2,2}"/>
+		<attribute name="kz62" type="decimal" min="0.01" max="9999.99" precision="0.01" pattern="[0-9]{1,10},[0-9]{2,2}"/>
+		<attribute name="kz67" type="decimal" min="0.01" max="9999.99" precision="0.01" pattern="[0-9]{1,10},[0-9]{2,2}"/>
+		<attribute name="kz63" type="decimal" min="0.01" max="9999.99" precision="0.01" pattern="[0-9]{1,10},[0-9]{2,2}"/>
+		<attribute name="kz64" type="decimal" min="0.01" max="9999.99" precision="0.01" pattern="[0-9]{1,10},[0-9]{2,2}"/>
+		<attribute name="kz59" type="decimal" min="0.01" max="9999.99" precision="0.01" pattern="[0-9]{1,10},[0-9]{2,2}"/>
+		<attribute name="calcSumLieferung" type="decimal" min="0.01" max="9999.99" precision="0.01" pattern="[0-9]{1,10},[0-9]{2,2}"/>
+		<attribute name="calcSumErwerbe" type="decimal" min="0.01" max="9999.99" precision="0.01" pattern="[0-9]{1,10},[0-9]{2,2}"/>
+		<attribute name="calcSumTeil7" type="decimal" min="0.01" max="9999.99" precision="0.01" pattern="[0-9]{1,10},[0-9]{2,2}"/>
+		<attribute name="calcSumTeil8" pattern="[0-9]{11,11}"/>
+		<attribute name="calcSumUmsatzsteuer" type="decimal" min="0.01" max="9999.99" precision="0.01" pattern="[0-9]{1,10},[0-9]{2,2}"/>
+		<attribute name="calcSumVorsteuer" type="decimal" min="0.01" max="9999.99" precision="0.01" pattern="[0-9]{1,10},[0-9]{2,2}"/>
+		<attribute name="calcUmsatzsteuerVorauszahlung" type="decimal" min="0.01" max="9999.99" precision="0.01" pattern="[0-9]{1,10},[0-9]{2,2}"/>
+		<attribute name="calcVerbleibenderBetrag" type="decimal" min="0.1" max="9999.99" precision="0.01" pattern="[0-9]{1,10},[0-9]{2,2}"/>
+		<attribute name="kz69" type="decimal" min="0.01" max="9999.99" precision="0.01" pattern="[0-9]{1,10},[0-9]{2,2}"/>
+		<attribute name="kz39" type="decimal" min="0.01" max="9999.99" precision="0.01" pattern="[0-9]{1,10},[0-9]{2,2}"/>
+		<attribute name="kz83" type="decimal" min="0.01" max="9999.99" precision="0.01" pattern="[0-9]{1,10},[0-9]{2,2}"/>
+		<attribute name="kz83Manuell" type="decimal" min="0.01" max="9999.99" precision="0.01" pattern="[0-9]{1,10},[0-9]{2,2}"/>
+		<attribute name="radioBerechnungManuell" source="manu_auto.Manuell"/>
+		<attribute name="radioBerechnungAutomatisch" source="manu_auto.Automatisch"/>
+		<attribute name="kz29" source="manu_auto.Manuell"/>
+		<attribute name="kz26" source="manu_auto.Manuell"/>
+	</create-entities>
+
+	<create-entities name="test" count="1" consumer="com.mgmtp.jfunk.data.benerator.BeneratorDataSource$DataSetConsumer">
+		<attribute name="foo" pattern=".{0,200}"/>
+		<attribute name="jahr" pattern="[2-2]{1,1}[0-0]{1,1}[1-9]{1,1}[0-9]{1,1}"/>
+	</create-entities>
+</setup>
+
+
+
+
+
