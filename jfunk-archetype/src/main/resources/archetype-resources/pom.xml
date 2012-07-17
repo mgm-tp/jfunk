@@ -77,7 +77,7 @@
 		<dependency>
 			<groupId>com.mgmtp.jfunk</groupId>
 			<artifactId>jfunk-core</artifactId>
-			<version>\${jfunk.version}</ersion>
+			<version>\${jfunk.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
