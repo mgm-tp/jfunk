@@ -28,9 +28,9 @@ public final class JFunkX509TrustManager implements X509TrustManager {
 
 	@Override
 	public void checkClientTrusted(final X509Certificate[] certificates, final String authType) throws CertificateException {
-		if (log.isDebugEnabled() && certificates != null) {
+		if (log.isTraceEnabled() && certificates != null) {
 			for (int i = 0; i < certificates.length; ++i) {
-				log.debug("Client certificate {}:", i + 1);
+				log.trace("Client certificate {}:", i + 1);
 				logCertificate(certificates[i]);
 			}
 		}
@@ -39,9 +39,9 @@ public final class JFunkX509TrustManager implements X509TrustManager {
 
 	@Override
 	public void checkServerTrusted(final X509Certificate[] certificates, final String authType) throws CertificateException {
-		if (log.isDebugEnabled() && certificates != null) {
+		if (log.isTraceEnabled() && certificates != null) {
 			for (int i = 0; i < certificates.length; ++i) {
-				log.debug("Server certificate {}:", i + 1);
+				log.trace("Server certificate {}:", i + 1);
 				logCertificate(certificates[i]);
 			}
 		}
@@ -49,11 +49,11 @@ public final class JFunkX509TrustManager implements X509TrustManager {
 	}
 
 	private void logCertificate(final X509Certificate cert) {
-		log.debug("  Subject DN: {}", cert.getSubjectDN());
-		log.debug("  Signature algorithm name: {}", cert.getSigAlgName());
-		log.debug("  Valid from: {}", cert.getNotBefore());
-		log.debug("  Valid until: {}", cert.getNotAfter());
-		log.debug("  Issuer DN: {}", cert.getIssuerDN());
+		log.trace("  Subject DN: {}", cert.getSubjectDN());
+		log.trace("  Signature algorithm name: {}", cert.getSigAlgName());
+		log.trace("  Valid from: {}", cert.getNotBefore());
+		log.trace("  Valid until: {}", cert.getNotAfter());
+		log.trace("  Issuer DN: {}", cert.getIssuerDN());
 	}
 
 	/**
