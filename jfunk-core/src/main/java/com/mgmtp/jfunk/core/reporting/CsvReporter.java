@@ -42,7 +42,6 @@ public class CsvReporter extends AbstractFileReporter {
 	private final List<String> headers;
 
 	private List<Column> columns;
-	private String lastline;
 
 	private final String dataSetKey;
 
@@ -181,15 +180,10 @@ public class CsvReporter extends AbstractFileReporter {
 			appendEscapedAndQuoted(sb, i++, data.isSuccess() ? JFunkConstants.OK : JFunkConstants.ERROR);
 
 			if (sb.isEmpty()) {
-				log.debug("Ignoring empty row in report");
+				log.info("Ignoring empty row in report");
 			} else {
 				String line = sb.toString();
-				if (line.equals(lastline)) {
-					log.debug("Ignoring duplicate row=" + lastline + " in report");
-				} else {
-					reportLines.add(line);
-					lastline = line;
-				}
+				reportLines.add(line);
 			}
 		}
 	}
