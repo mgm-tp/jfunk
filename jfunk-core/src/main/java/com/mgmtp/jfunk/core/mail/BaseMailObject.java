@@ -154,7 +154,6 @@ public class BaseMailObject {
 	 * @return {@code true} if one of the emails matched, {@code false otherwise}
 	 */
 	boolean process(final Message[] messages, final int maxNumberOfCheckedEmails) throws MessagingException {
-		boolean successFlag = false;
 		int length = messages.length;
 
 		Message[] msgs = maxNumberOfCheckedEmails > 0 && length > maxNumberOfCheckedEmails
@@ -201,34 +200,27 @@ public class BaseMailObject {
 				log.debug("... found body");
 			}
 
-			boolean processed = false;
 			try {
 				if (processMsg(msg, subjectString, bodyString)) {
-					processed = true;
 					processSubject(mS);
 					processBody(mB);
 
-					successFlag = true;
+					// Process found mail
+					if (deleteAfterProcess) {
+						try {
+							msg.setFlag(Flags.Flag.DELETED, true);
+						} catch (MessagingException e) {
+							throw new MailException("Could not set DELETE flag in email", e);
+						}
+					}
+					return true;
 				}
 			} finally {
-				if (processed) {
-					archiveMailMessage(msg, subjectString, bodyString);
-				}
-			}
-
-			// Process found mail
-			if (deleteAfterProcess) {
-				try {
-					msg.setFlag(Flags.Flag.DELETED, true);
-				} catch (MessagingException e) {
-					throw new MailException("Could not set DELETE flag in email", e);
-				}
-			}
-			if (successFlag) {
-				break;
+				archiveMailMessage(msg, subjectString, bodyString);
 			}
 		}
-		return successFlag;
+
+		return false;
 	}
 
 	/**
