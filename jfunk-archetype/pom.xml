@@ -42,6 +42,9 @@
 				<artifactId>maven-resources-plugin</artifactId>
 				<configuration>
 					<escapeString>\</escapeString>
+					<nonFilteredFileExtensions>
+						<nonFilteredFileExtension>jks</nonFilteredFileExtension>
+					</nonFilteredFileExtensions>
 				</configuration>
 			</plugin>
 		</plugins>
