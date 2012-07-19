@@ -81,23 +81,24 @@ public class Check4Element extends WebDriverStep {
 			if (mustExist) {
 				throw new StepException("Could not find any matching element");
 			}
-		}
-		// webElements is not empty
-		if (!mustExist) {
-			throw new StepException("Matching element could be found although mustExist=false");
-		}
-		/*
-		 * If the search using the By object does find more than one matching element we are looping
-		 * through all elements if we find at least one which matches the criteria below. If not, an
-		 * exception is thrown.
-		 */
-		for (WebElement element : webElements) {
-			if (element.isDisplayed()) {
-				if (element.isEnabled()) {
-					if (!mustExist) {
-						throw new StepException("Matching element could be found although mustExist=false");
+		} else {
+			// webElements is not empty
+			if (!mustExist) {
+				throw new StepException("Matching element could be found although mustExist=false");
+			}
+			/*
+			 * If the search using the By object does find more than one matching element we are
+			 * looping through all elements if we find at least one which matches the criteria
+			 * below. If not, an exception is thrown.
+			 */
+			for (WebElement element : webElements) {
+				if (element.isDisplayed()) {
+					if (element.isEnabled()) {
+						if (!mustExist) {
+							throw new StepException("Matching element could be found although mustExist=false");
+						}
+						return;
 					}
-					return;
 				}
 			}
 		}
