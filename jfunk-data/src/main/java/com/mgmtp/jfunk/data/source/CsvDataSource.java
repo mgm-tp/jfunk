@@ -69,7 +69,7 @@ public class CsvDataSource extends BaseDataSource {
 				}
 			}
 			if (csvFiles.isEmpty()) {
-				log.warn("CSVDataSource can only be used when CSV files are correctly configured");
+				log.warn("CsvDataSource can only be used when CSV files are correctly configured");
 			}
 		}
 		return csvFiles;
