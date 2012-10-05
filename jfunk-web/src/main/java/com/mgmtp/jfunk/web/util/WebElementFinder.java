@@ -100,7 +100,7 @@ public final class WebElementFinder {
 	 * @return the {@link WebElementFinder} instance
 	 * @see WebElement#isEnabled()
 	 */
-	public WebElementFinder enabled(final boolean flag) {
+	public WebElementFinder enabled(final Boolean flag) {
 		this.enabled = flag;
 		return this;
 	}
@@ -115,7 +115,7 @@ public final class WebElementFinder {
 	 * @return the {@link WebElementFinder} instance
 	 * @see WebElement#isDisplayed()
 	 */
-	public WebElementFinder displayed(final boolean flag) {
+	public WebElementFinder displayed(final Boolean flag) {
 		this.displayed = flag;
 		return this;
 	}
@@ -131,7 +131,7 @@ public final class WebElementFinder {
 	 * @return the {@link WebElementFinder} instance
 	 * @see WebElement#isSelected()
 	 */
-	public WebElementFinder selected(final boolean flag) {
+	public WebElementFinder selected(final Boolean flag) {
 		this.selected = flag;
 		return this;
 	}
