@@ -5,11 +5,13 @@ import static com.google.common.base.Preconditions.checkArgument;
 import java.util.List;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.NotFoundException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.google.common.base.Function;
+import com.google.common.base.Predicate;
 
 /**
  * Provides a fluent interface for finding elements, optionally with timeout and constraints
@@ -42,6 +44,7 @@ public final class WebElementFinder {
 	private Boolean enabled;
 	private Boolean displayed;
 	private Boolean selected;
+	private Predicate<WebElement> condition;
 
 	private WebElementFinder(final WebDriver webDriver) {
 		this.webDriver = webDriver;
@@ -137,6 +140,19 @@ public final class WebElementFinder {
 	}
 
 	/**
+	 * Specifies a condition elements must meet.
+	 * 
+	 * @param theCondition
+	 *            the condition
+	 * 
+	 * @return the {@link WebElementFinder} instance
+	 */
+	public WebElementFinder condition(final Predicate<WebElement> theCondition) {
+		this.condition = theCondition;
+		return this;
+	}
+
+	/**
 	 * Finds the first element.
 	 * 
 	 * @param by
@@ -151,11 +167,23 @@ public final class WebElementFinder {
 			element = wait.until(new Function<WebDriver, WebElement>() {
 				@Override
 				public WebElement apply(final WebDriver input) {
-					return input.findElement(by);
+					WebElement el = input.findElement(by);
+					if (condition != null) {
+						if (!condition.apply(el)) {
+							throw new WebElementException(el, String.format("Condition not met for element %s: %s", el, condition));
+						}
+					}
+					return el;
 				}
 			});
 		} else {
 			element = webDriver.findElement(by);
+			if (condition != null) {
+				if (!condition.apply(element)) {
+					throw new WebElementException(element, String.format("Condition not met for element %s: %s", element, condition));
+				}
+			}
+
 		}
 
 		checkElement(element);
@@ -177,11 +205,26 @@ public final class WebElementFinder {
 			elements = wait.until(new Function<WebDriver, List<WebElement>>() {
 				@Override
 				public List<WebElement> apply(final WebDriver input) {
-					return input.findElements(by);
+					List<WebElement> elList = input.findElements(by);
+					if (condition != null) {
+						for (WebElement el : elList) {
+							if (!condition.apply(el)) {
+								throw new WebElementException(el, String.format("Condition not met for element %s: %s", el, condition));
+							}
+						}
+					}
+					return elList;
 				}
 			});
 		} else {
 			elements = webDriver.findElements(by);
+			if (condition != null) {
+				for (WebElement el : elements) {
+					if (!condition.apply(el)) {
+						throw new WebElementException(el, String.format("Condition not met for element %s: %s", el, condition));
+					}
+				}
+			}
 		}
 
 		for (WebElement element : elements) {
@@ -221,8 +264,14 @@ public final class WebElementFinder {
 	}
 
 	private WebDriverWait createWebDriverWait() {
-		return sleep != null
+		WebDriverWait webDriverWait = sleep != null
 				? new WebDriverWait(webDriver, timeout, sleep)
 				: new WebDriverWait(webDriver, timeout);
+		if (condition != null) {
+			webDriverWait.ignoring(NotFoundException.class, WebElementException.class);
+		} else {
+			webDriverWait.ignoring(NotFoundException.class);
+		}
+		return webDriverWait;
 	}
 }
