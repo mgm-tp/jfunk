@@ -2,16 +2,19 @@ package com.mgmtp.jfunk.web.util;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
+import java.lang.reflect.Method;
 import java.util.List;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.NotFoundException;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
+import com.google.common.collect.ImmutableList;
 
 /**
  * Provides a fluent interface for finding elements, optionally with timeout and constraints
@@ -168,6 +171,7 @@ public final class WebElementFinder {
 				@Override
 				public WebElement apply(final WebDriver input) {
 					WebElement el = input.findElement(by);
+					checkElement(el);
 					if (condition != null) {
 						if (!condition.apply(el)) {
 							throw new WebElementException(el, String.format("Condition not met for element %s: %s", el, condition));
@@ -178,15 +182,14 @@ public final class WebElementFinder {
 			});
 		} else {
 			element = webDriver.findElement(by);
+			checkElement(element);
 			if (condition != null) {
 				if (!condition.apply(element)) {
 					throw new WebElementException(element, String.format("Condition not met for element %s: %s", element, condition));
 				}
 			}
-
 		}
 
-		checkElement(element);
 		return element;
 	}
 
@@ -206,8 +209,9 @@ public final class WebElementFinder {
 				@Override
 				public List<WebElement> apply(final WebDriver input) {
 					List<WebElement> elList = input.findElements(by);
-					if (condition != null) {
-						for (WebElement el : elList) {
+					for (WebElement el : elList) {
+						checkElement(el);
+						if (condition != null) {
 							if (!condition.apply(el)) {
 								throw new WebElementException(el, String.format("Condition not met for element %s: %s", el, condition));
 							}
@@ -218,17 +222,14 @@ public final class WebElementFinder {
 			});
 		} else {
 			elements = webDriver.findElements(by);
-			if (condition != null) {
-				for (WebElement el : elements) {
-					if (!condition.apply(el)) {
-						throw new WebElementException(el, String.format("Condition not met for element %s: %s", el, condition));
+			for (WebElement element : elements) {
+				checkElement(element);
+				if (condition != null) {
+					if (!condition.apply(element)) {
+						throw new WebElementException(element, String.format("Condition not met for element %s: %s", element, condition));
 					}
 				}
 			}
-		}
-
-		for (WebElement element : elements) {
-			checkElement(element);
 		}
 		return elements;
 	}
@@ -259,7 +260,15 @@ public final class WebElementFinder {
 
 	private static void checkElementState(final WebElement element, final boolean expression, final String msgTemplate) {
 		if (!expression) {
-			throw new WebElementException(element, String.format(msgTemplate, element));
+			WebElement underlyingElement;
+			try {
+				Method m = element.getClass().getMethod("getWrappedElement");
+				m.setAccessible(true);
+				underlyingElement = (WebElement) m.invoke(element);
+			} catch (Exception ex) {
+				underlyingElement = element;
+			}
+			throw new WebElementException(underlyingElement, String.format(msgTemplate, underlyingElement));
 		}
 	}
 
@@ -267,11 +276,7 @@ public final class WebElementFinder {
 		WebDriverWait webDriverWait = sleep != null
 				? new WebDriverWait(webDriver, timeout, sleep)
 				: new WebDriverWait(webDriver, timeout);
-		if (condition != null) {
-			webDriverWait.ignoring(NotFoundException.class, WebElementException.class);
-		} else {
-			webDriverWait.ignoring(NotFoundException.class);
-		}
+		webDriverWait.ignoreAll(ImmutableList.of(NotFoundException.class, WebElementException.class, StaleElementReferenceException.class));
 		return webDriverWait;
 	}
 }
