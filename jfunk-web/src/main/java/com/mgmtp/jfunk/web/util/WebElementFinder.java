@@ -1,171 +1,230 @@
 package com.mgmtp.jfunk.web.util;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkState;
 
 import java.lang.reflect.Method;
 import java.util.List;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NotFoundException;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
 
 /**
+ * <p>
  * Provides a fluent interface for finding elements, optionally with timeout and constraints
  * (enabled, displayed, selected).
+ * </p>
+ * <p>
+ * <strong>Warning: {@link WebElementFinder} instances are always immutable</strong>.; Configuration
+ * methods have no effect on the instance they are invoked on! You must store and use the new
+ * {@link WebElementFinder} instance returned by these methods. This makes {@link WebElementFinder}s
+ * thread-safe and safe to store as {@code static final} constants.
+ * </p>
+ * <p>
+ * This class follows the same mechanisms as {@link WebElementHandler}.
+ * </p>
+ * 
+ * <string>Usage Example:</strong>
  * 
  * <pre>
- * 
- * import static com.mgmtp.jfunk.web.util.WebElementFinder.with
- * ...
- * 
- * WebDriver webDriver = ...
- * By by = ...
- * 
- * WebElement element = with(webDriver).find(by);
- * element = with(webDriver).timeout(10L).find(by);
- * element = with(webDriver).selected(true).find(by);
- * List<WebElement> elements = with(webDriver).enabled(true).displayed(true).findAll(by);
- * 
+ * WebElement element = WebElementFinder.create().by(By.id(&quot;someId&quot;)).displayed(true).webDriver(webDriver).find();
  * </pre>
  * 
+ * @see WebElementHandler
  * @author rnaegele
  * @version $Id$
  */
 public final class WebElementFinder {
 
+	private final Logger log = LoggerFactory.getLogger(getClass());
+
 	private final WebDriver webDriver;
+	private final By by;
+	private final long timeoutSeconds;
+	private final long sleepMillis;
+	private final Boolean enabled;
+	private final Boolean displayed;
+	private final Boolean selected;
+	private final Predicate<WebElement> condition;
 
-	private Long timeout;
-	private Long sleep;
-	private Boolean enabled;
-	private Boolean displayed;
-	private Boolean selected;
-	private Predicate<WebElement> condition;
-
-	private WebElementFinder(final WebDriver webDriver) {
+	private WebElementFinder(final WebDriver webDriver, final By by, final long timeoutSeconds, final long sleepMillis, final Boolean enabled,
+			final Boolean displayed, final Boolean selected, final Predicate<WebElement> condition) {
 		this.webDriver = webDriver;
+		this.by = by;
+		this.timeoutSeconds = timeoutSeconds;
+		this.sleepMillis = sleepMillis;
+		this.enabled = enabled;
+		this.displayed = displayed;
+		this.selected = selected;
+		this.condition = condition;
+	}
+
+	private WebElementFinder(final Fields fields) {
+		this(fields.webDriver, fields.by, fields.timeoutSeconds, fields.sleepMillis, fields.enabled, fields.displayed, fields.selected,
+				fields.condition);
 	}
 
 	/**
-	 * Creates an {@link WebElementFinder} with the specified {@link WebDriver}.
+	 * Creates a {@link WebElementFinder}.
 	 * 
-	 * @param webDriver
-	 *            the WebDriver
-	 * @return the {@link WebElementFinder} instance
+	 * @return the new {@link WebElementFinder} instance
 	 */
-	public static WebElementFinder with(final WebDriver webDriver) {
-		return new WebElementFinder(webDriver);
+	public static WebElementFinder create() {
+		return new WebElementFinder(null, null, 0L, 0L, null, null, null, null);
 	}
 
 	/**
-	 * Creates an {@link WebElementFinder} with the specified {@link WebDriver} and a timeout to be
-	 * used.
+	 * Creates an new {@link WebElementFinder} based on this {@link WebElementFinder} using the
+	 * specified timeout.
 	 * 
-	 * @param timeoutSeconds
+	 * @param theTimeoutSeconds
 	 *            the timeout in seconds for the internal {@link WebDriverWait}
-	 * @return the {@link WebElementFinder} instance
+	 * @return the new {@link WebElementFinder} instance
 	 */
-	public WebElementFinder timeout(final long timeoutSeconds) {
-		checkArgument(timeoutSeconds > 0, "'timeoutSeconds' must be greater than zero");
-		this.timeout = timeoutSeconds;
-		return this;
+	public WebElementFinder timeout(final long theTimeoutSeconds) {
+		checkArgument(theTimeoutSeconds > 0, "'theTimeoutSeconds' must be greater than zero");
+		Fields fields = new Fields(this);
+		fields.timeoutSeconds = theTimeoutSeconds;
+		return new WebElementFinder(fields);
 	}
 
 	/**
-	 * Creates an {@link WebElementFinder} with the specified {@link WebDriver} and a timeout to be
-	 * used.
+	 * Creates an new {@link WebElementFinder} based on this {@link WebElementFinder} using the
+	 * specified timeout.
 	 * 
-	 * @param timeoutSeconds
+	 * @param theTimeoutSeconds
 	 *            the timeout in seconds for the internal {@link WebDriverWait}
-	 * @param sleepMillis
+	 * @param theSleepMillis
 	 *            the sleep time in milliseconds for the internal {@link WebDriverWait}
 	 * @return the {@link WebElementFinder} instance
 	 */
-	public WebElementFinder timeout(final long timeoutSeconds, final long sleepMillis) {
-		checkArgument(timeoutSeconds > 0, "'timeoutSeconds' must be greater than zero");
-		checkArgument(sleepMillis > 0, "'sleepMillis' must be greater than zero");
-		this.timeout = timeoutSeconds;
-		this.sleep = sleepMillis;
-		return this;
+	public WebElementFinder timeout(final long theTimeoutSeconds, final long theSleepMillis) {
+		checkArgument(theTimeoutSeconds > 0, "'theTimeoutSeconds' must be greater than zero");
+		checkArgument(theSleepMillis > 0, "'theSleepMillis' must be greater than zero");
+		Fields fields = new Fields(this);
+		fields.timeoutSeconds = theTimeoutSeconds;
+		fields.sleepMillis = theSleepMillis;
+		return new WebElementFinder(fields);
 	}
 
 	/**
-	 * Specifies that a {@link WebElement} either must or must not be enabled. By default, returned
-	 * element may or may not be enabled.
+	 * Creates an new {@link WebElementFinder} based on this {@link WebElementFinder} restricting
+	 * the enabled status of elements.
 	 * 
-	 * @param flag
+	 * @param theEnabled
 	 *            {@code true} if elements must be enabled, {@code false} if elements must not be
 	 *            enabled
-	 * @return the {@link WebElementFinder} instance
+	 * @return the new {@link WebElementFinder} instance
 	 * @see WebElement#isEnabled()
 	 */
-	public WebElementFinder enabled(final Boolean flag) {
-		this.enabled = flag;
-		return this;
+	public WebElementFinder enabled(final Boolean theEnabled) {
+		Fields fields = new Fields(this);
+		fields.enabled = theEnabled;
+		return new WebElementFinder(fields);
 	}
 
 	/**
-	 * Specifies that a {@link WebElement} either must or must not be displayed. By default,
-	 * returned element may or may not be displayed.
+	 * Creates an new {@link WebElementFinder} based on this {@link WebElementFinder} restricting
+	 * the displayed status of elements.
 	 * 
-	 * @param flag
+	 * @param theDisplayed
 	 *            {@code true} if elements must be displayed, {@code false} if elements must not be
 	 *            displayed
-	 * @return the {@link WebElementFinder} instance
+	 * @return the new {@link WebElementFinder} instance
 	 * @see WebElement#isDisplayed()
 	 */
-	public WebElementFinder displayed(final Boolean flag) {
-		this.displayed = flag;
-		return this;
+	public WebElementFinder displayed(final Boolean theDisplayed) {
+		Fields fields = new Fields(this);
+		fields.displayed = theDisplayed;
+		return new WebElementFinder(fields);
 	}
 
 	/**
-	 * Specifies that a {@link WebElement} either must or must not be selected. By default, returned
-	 * element may or may not be selected. This method should only be called if elements are indeed
-	 * selectable, such as checkboxes, options in a select and radio buttons.
+	 * Creates an new {@link WebElementFinder} based on this {@link WebElementFinder} restricting
+	 * the selected status of elements. This method should only be called if elements are indeed
+	 * selectable, such as checkboxes, options in a select, and radio buttons.
 	 * 
-	 * @param flag
+	 * @param theSelected
 	 *            {@code true} if elements must be selected, {@code false} if elements must not be
 	 *            selected
-	 * @return the {@link WebElementFinder} instance
+	 * @return the new {@link WebElementFinder} instance
 	 * @see WebElement#isSelected()
 	 */
-	public WebElementFinder selected(final Boolean flag) {
-		this.selected = flag;
-		return this;
+	public WebElementFinder selected(final Boolean theSelected) {
+		Fields fields = new Fields(this);
+		fields.selected = theSelected;
+		return new WebElementFinder(fields);
 	}
 
 	/**
-	 * Specifies a condition elements must meet.
+	 * Creates an new {@link WebElementFinder} based on this {@link WebElementFinder} specifying a
+	 * condition elements must meet.
 	 * 
 	 * @param theCondition
 	 *            the condition
 	 * 
-	 * @return the {@link WebElementFinder} instance
+	 * @return the new {@link WebElementFinder} instance
 	 */
 	public WebElementFinder condition(final Predicate<WebElement> theCondition) {
-		this.condition = theCondition;
-		return this;
+		Fields fields = new Fields(this);
+		fields.condition = theCondition;
+		return new WebElementFinder(fields);
+	}
+
+	/**
+	 * Creates a new {@link WebElementFinder} based on this {@link WebElementFinder} using the
+	 * specified element locator.
+	 * 
+	 * @param theBy
+	 *            locates the element to operate on
+	 * @return the new {@link WebElementHandler} instance
+	 */
+	public WebElementFinder by(final By theBy) {
+		Fields fields = new Fields(this);
+		fields.by = theBy;
+		return new WebElementFinder(fields);
+	}
+
+	/**
+	 * Creates a new {@link WebElementFinder} based on this {@link WebElementFinder} using the
+	 * specified {@link WebDriver}.
+	 * 
+	 * @param theWebDriver
+	 *            the {@link WebDriver} to use
+	 * @return the new {@link WebElementHandler} instance
+	 */
+	public WebElementFinder webDriver(final WebDriver theWebDriver) {
+		Fields fields = new Fields(this);
+		fields.webDriver = theWebDriver;
+		return new WebElementFinder(fields);
 	}
 
 	/**
 	 * Finds the first element.
 	 * 
-	 * @param by
-	 *            the element locator
 	 * @return the element
 	 */
-	public WebElement find(final By by) {
+	public WebElement find() {
+		checkState(webDriver != null, "No WebDriver specified.");
+		checkState(by != null, "No By instance for locating elements specified.");
+
+		log.info(toString());
+
 		WebElement element;
 
-		if (timeout != null) {
+		if (timeoutSeconds > 0L) {
 			WebDriverWait wait = createWebDriverWait();
 			element = wait.until(new Function<WebDriver, WebElement>() {
 				@Override
@@ -194,16 +253,19 @@ public final class WebElementFinder {
 	}
 
 	/**
-	 * Finds the elements.
+	 * Finds all elements.
 	 * 
-	 * @param by
-	 *            the element locator
 	 * @return the list of elements
 	 */
-	public List<WebElement> findAll(final By by) {
+	public List<WebElement> findAll() {
+		checkState(webDriver != null, "No WebDriver specified.");
+		checkState(by != null, "No By instance for locating elements specified.");
+
+		log.info(toString());
+
 		List<WebElement> elements;
 
-		if (timeout != null) {
+		if (timeoutSeconds > 0L) {
 			WebDriverWait wait = createWebDriverWait();
 			elements = wait.until(new Function<WebDriver, List<WebElement>>() {
 				@Override
@@ -231,6 +293,7 @@ public final class WebElementFinder {
 				}
 			}
 		}
+
 		return elements;
 	}
 
@@ -273,10 +336,110 @@ public final class WebElementFinder {
 	}
 
 	private WebDriverWait createWebDriverWait() {
-		WebDriverWait webDriverWait = sleep != null
-				? new WebDriverWait(webDriver, timeout, sleep)
-				: new WebDriverWait(webDriver, timeout);
+		WebDriverWait webDriverWait = sleepMillis > 0L
+				? new WebDriverWait(webDriver, timeoutSeconds, sleepMillis)
+				: new WebDriverWait(webDriver, timeoutSeconds);
 		webDriverWait.ignoreAll(ImmutableList.of(NotFoundException.class, WebElementException.class, StaleElementReferenceException.class));
 		return webDriverWait;
+	}
+
+	/**
+	 * @return the webDriver
+	 */
+	public WebDriver getWebDriver() {
+		return webDriver;
+	}
+
+	/**
+	 * @return the by
+	 */
+	public By getBy() {
+		return by;
+	}
+
+	/**
+	 * @return the timeoutSeconds
+	 */
+	public long getTimeoutSeconds() {
+		return timeoutSeconds;
+	}
+
+	/**
+	 * @return the sleepMillis
+	 */
+	public long getSleepMillis() {
+		return sleepMillis;
+	}
+
+	/**
+	 * @return the enabled
+	 */
+	public Boolean getEnabled() {
+		return enabled;
+	}
+
+	/**
+	 * @return the displayed
+	 */
+	public Boolean getDisplayed() {
+		return displayed;
+	}
+
+	/**
+	 * @return the selected
+	 */
+	public Boolean getSelected() {
+		return selected;
+	}
+
+	/**
+	 * @return the condition
+	 */
+	public Predicate<WebElement> getCondition() {
+		return condition;
+	}
+
+	@Override
+	public String toString() {
+		ToStringBuilder tsb = new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE);
+		tsb.append("by", by);
+		if (timeoutSeconds > 0L) {
+			tsb.append("timeoutSeconds", timeoutSeconds);
+			if (sleepMillis > 0L) {
+				tsb.append("sleepMillis", sleepMillis);
+			}
+		}
+		if (enabled != null) {
+			tsb.append("enabled", enabled);
+		}
+		if (displayed != null) {
+			tsb.append("displayed", displayed);
+		}
+		if (selected != null) {
+			tsb.append("selected", selected);
+		}
+		return tsb.toString();
+	}
+
+	private static class Fields {
+		private WebDriver webDriver;
+		private By by;
+		private long timeoutSeconds;
+		private long sleepMillis;
+		private Boolean enabled;
+		private Boolean displayed;
+		private Boolean selected;
+		private Predicate<WebElement> condition;
+
+		private Fields(final WebElementFinder finder) {
+			this.webDriver = finder.webDriver;
+			this.by = finder.by;
+			this.timeoutSeconds = finder.timeoutSeconds;
+			this.sleepMillis = finder.sleepMillis;
+			this.enabled = finder.enabled;
+			this.displayed = finder.displayed;
+			this.selected = finder.selected;
+			this.condition = finder.condition;
+		}
 	}
 }
