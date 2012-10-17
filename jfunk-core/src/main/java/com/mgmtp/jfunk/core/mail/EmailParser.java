@@ -123,13 +123,13 @@ public class EmailParser {
 		sessionProps.put(MAIL_DEBUG, config.get(MAIL_DEBUG, "false"));
 
 		sessionUtil = new SessionUtil(sessionProps, mailAccount.getAuthenticator());
-		if (log.isDebugEnabled()) {
+		if (log.isTraceEnabled()) {
 			StringWriter sw = new StringWriter();
 			PrintWriter pw = new PrintWriter(sw);
 			sessionProps.list(pw);
 
-			log.debug("Mail properties");
-			log.debug(sw.toString());
+			log.trace("Mail properties");
+			log.trace(sw.toString());
 		}
 	}
 
