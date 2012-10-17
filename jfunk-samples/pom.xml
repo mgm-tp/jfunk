@@ -112,7 +112,7 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<sacope>test</sacope>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 	<profiles>
