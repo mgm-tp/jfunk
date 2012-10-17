@@ -50,6 +50,7 @@ public final class WebConstants {
 	public static final String WEBDRIVER_CHROME = "chrome";
 	public static final String WEBDRIVER_INTERNET_EXPLORER = "ie";
 	public static final String WEBDRIVER_IMPLICIT_WAIT_SECONDS = "webdriver.implicit.wait.seconds";
+	public static final String WEBDRIVER_DONT_QUIT = "webdriver.dont.quit";
 
 	/*
 	 * HTMLUnit constants

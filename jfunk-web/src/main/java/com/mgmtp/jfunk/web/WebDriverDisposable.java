@@ -6,6 +6,7 @@ import javax.inject.Singleton;
 
 import org.openqa.selenium.WebDriver;
 
+import com.mgmtp.jfunk.common.util.Configuration;
 import com.mgmtp.jfunk.common.util.Disposable;
 
 /**
@@ -18,10 +19,12 @@ import com.mgmtp.jfunk.common.util.Disposable;
 public class WebDriverDisposable implements Disposable {
 
 	private final Provider<WebDriver> webDriverProvider;
+	private final Provider<Configuration> configurationProvider;
 
 	@Inject
-	public WebDriverDisposable(final Provider<WebDriver> webDriverProvider) {
+	public WebDriverDisposable(final Provider<WebDriver> webDriverProvider, final Provider<Configuration> configurationProvider) {
 		this.webDriverProvider = webDriverProvider;
+		this.configurationProvider = configurationProvider;
 	}
 
 	/**
@@ -29,6 +32,9 @@ public class WebDriverDisposable implements Disposable {
 	 */
 	@Override
 	public void dispose() {
+		if (configurationProvider.get().getBoolean(WebConstants.WEBDRIVER_DONT_QUIT)) {
+			return;
+		}
 		webDriverProvider.get().quit();
 	}
 
