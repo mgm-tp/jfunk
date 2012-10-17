@@ -4,6 +4,7 @@ import static com.google.common.collect.Lists.newArrayListWithCapacity;
 import static com.google.common.collect.Maps.newHashMapWithExpectedSize;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 
 import java.io.File;
 import java.io.IOException;
@@ -51,17 +52,13 @@ public class ExcelDataSourceTest {
 
 	private void testExcelFile(final String path, final DataOrientation dataOrientation) throws InvalidFormatException, IOException {
 		ExcelFile excelFile = new ExcelFile(new File(path), dataOrientation, new DataFormatter());
-		excelFile.open();
+		excelFile.load();
 		Map<String, List<Map<String, String>>> actualData = excelFile.getData();
 		assertThat("data does not match expected data", actualData, equalTo(expectedData));
 	}
 
 	private void testGetNextDataSet(final String path, final DataOrientation dataOrientation) {
-		Configuration config = new Configuration(Charsets.UTF_8);
-		config.put("dataSource.excel.0.path", path);
-		config.put("dataSource.excel.0.dataOrientation", dataOrientation.name());
-
-		ExcelDataSource ds = new ExcelDataSource(config, new DataFormatter());
+		ExcelDataSource ds = createDataSource(path, dataOrientation);
 
 		Map<String, List<Map<String, String>>> actualData = newHashMapWithExpectedSize(3);
 
@@ -77,6 +74,14 @@ public class ExcelDataSourceTest {
 		}
 
 		assertThat("data does not match expected data", actualData, equalTo(expectedData));
+	}
+
+	private ExcelDataSource createDataSource(final String path, final DataOrientation dataOrientation) {
+		Configuration config = new Configuration(Charsets.UTF_8);
+		config.put("dataSource.excel.0.path", path);
+		config.put("dataSource.excel.0.dataOrientation", dataOrientation.name());
+
+		return new ExcelDataSource(config, new DataFormatter());
 	}
 
 	@Test
@@ -97,5 +102,19 @@ public class ExcelDataSourceTest {
 	@Test
 	public void testGetNextDataSetColumnBased() {
 		testGetNextDataSet("src/test/resources/columnbased.xlsx", DataOrientation.columnbased);
+	}
+
+	@Test
+	public void testHasMoreData() {
+		ExcelDataSource dataSource = createDataSource("src/test/resources/rowbased.xlsx", DataOrientation.rowbased);
+		String dataSetKey = "sheet_0";
+
+		for (int i = 0; i < 3; ++i) {
+			if (dataSource.hasMoreData(dataSetKey)) {
+				dataSource.getNextDataSet(dataSetKey);
+			}
+		}
+
+		assertThat("no more data should be available", dataSource.hasMoreData(dataSetKey), is(false));
 	}
 }

@@ -30,8 +30,11 @@ import com.mgmtp.jfunk.data.DataSet;
 import com.mgmtp.jfunk.data.DefaultDataSet;
 import com.mgmtp.jfunk.data.excel.ExcelDataSource.ExcelFile.DataOrientation;
 import com.mgmtp.jfunk.data.source.BaseDataSource;
+import com.mgmtp.jfunk.data.source.DataSource;
 
 /**
+ * {@link DataSource} implementation for reading test data from Excel files.
+ * 
  * @author rnaegele
  * @version $Id: $
  */
@@ -41,10 +44,17 @@ public class ExcelDataSource extends BaseDataSource {
 	// multiple Excel files may be specified
 	private List<ExcelFile> excelFiles;
 
-	// 
+	// data set indices for each data set key
 	private final Map<String, MutableInt> dataSetIndices = newHashMap();
+
 	private final DataFormatter dataFormatter;
 
+	/**
+	 * @param configuration
+	 *            the configuration
+	 * @param dataFormatter
+	 *            used for formatting cell values
+	 */
 	@Inject
 	public ExcelDataSource(final Configuration configuration, final DataFormatter dataFormatter) {
 		super(configuration);
@@ -52,14 +62,16 @@ public class ExcelDataSource extends BaseDataSource {
 	}
 
 	/**
-	 * CSV files are not loaded here, this is done on-access (lazy loading).
+	 * Loads and cache Excel file contents.
+	 * 
+	 * @return a list of {@link ExcelFile} instances
 	 */
 	protected List<ExcelFile> getExcelFiles() {
 		if (excelFiles == null) {
 			excelFiles = newArrayListWithCapacity(3);
 
 			for (int i = 0;; ++i) {
-				String baseKey = "dataSource." + getName() + "." + i;
+				String baseKey = String.format("dataSource.%s.%d", getName(), i);
 				String path = configuration.get(baseKey + ".path");
 				if (path == null) {
 					break;
@@ -71,7 +83,7 @@ public class ExcelDataSource extends BaseDataSource {
 				ExcelFile file = new ExcelFile(new File(path), dataOrientation, dataFormatter);
 
 				try {
-					file.open();
+					file.load();
 				} catch (InvalidFormatException ex) {
 					throw new JFunkException(ex.getMessage(), ex);
 				} catch (IOException ex) {
@@ -93,6 +105,7 @@ public class ExcelDataSource extends BaseDataSource {
 		for (ExcelFile excelFile : getExcelFiles()) {
 			Map<String, List<Map<String, String>>> data = excelFile.getData();
 			List<Map<String, String>> dataList = data.get(dataSetKey);
+
 			if (dataList != null) {
 				MutableInt counter = dataSetIndices.get(dataSetKey);
 				if (counter == null) {
@@ -105,9 +118,14 @@ public class ExcelDataSource extends BaseDataSource {
 					return null;
 				}
 
+				// turn data map into a data set
 				Map<String, String> dataMap = dataList.get(counter.getValue());
+				DataSet dataSet = new DefaultDataSet(dataMap);
+
+				// advance the counter for the next dataset
 				counter.increment();
-				return new DefaultDataSet(dataMap);
+
+				return dataSet;
 			}
 		}
 		return null;
@@ -118,6 +136,7 @@ public class ExcelDataSource extends BaseDataSource {
 		for (ExcelFile excelFile : getExcelFiles()) {
 			Map<String, List<Map<String, String>>> data = excelFile.getData();
 			List<Map<String, String>> dataList = data.get(dataSetKey);
+
 			if (dataList != null) {
 				MutableInt counter = dataSetIndices.get(dataSetKey);
 				int size = dataList.size();
@@ -133,14 +152,16 @@ public class ExcelDataSource extends BaseDataSource {
 	}
 
 	/**
-	 * Loads an Excel file.
+	 * Handles an Excel file.
 	 */
-	static class ExcelFile {
+	public static class ExcelFile {
 
 		private final File file;
 		private final DataOrientation dataOrientation;
-		private Map<String, List<Map<String, String>>> data;
 		private final DataFormatter dataFormatter;
+
+		// lists of data maps by data set key
+		private Map<String, List<Map<String, String>>> data;
 
 		public ExcelFile(final File file, final DataOrientation dataOrientation, final DataFormatter dataFormatter) {
 			this.file = file;
@@ -148,7 +169,7 @@ public class ExcelDataSource extends BaseDataSource {
 			this.dataFormatter = dataFormatter;
 		}
 
-		public final void open() throws IOException, InvalidFormatException {
+		public final void load() throws IOException, InvalidFormatException {
 			FileInputStream fis = null;
 			Workbook excelWorkbook;
 			try {
@@ -190,7 +211,7 @@ public class ExcelDataSource extends BaseDataSource {
 
 						switch (dataOrientation) {
 							case rowbased:
-								if (rowIndex == 0) {
+								if (rowIndex == 0) { // header
 									if (dataMapList == null) {
 										dataMapList = newArrayListWithCapacity(cellCount);
 									}
@@ -198,7 +219,7 @@ public class ExcelDataSource extends BaseDataSource {
 										headers = newArrayListWithCapacity(cellCount);
 									}
 									headers.add(value);
-								} else {
+								} else { // data
 									Map<String, String> dataMap;
 									if (dataMapList.size() < rowIndex) {
 										dataMap = newHashMapWithExpectedSize(cellCount);
@@ -211,7 +232,7 @@ public class ExcelDataSource extends BaseDataSource {
 								}
 								break;
 							case columnbased:
-								if (cellIndex == 0) {
+								if (cellIndex == 0) { // header
 									if (dataMapList == null) {
 										dataMapList = newArrayListWithCapacity(rowCount);
 									}
@@ -219,7 +240,7 @@ public class ExcelDataSource extends BaseDataSource {
 										headers = newArrayListWithCapacity(rowCount);
 									}
 									headers.add(value);
-								} else {
+								} else { // data
 									Map<String, String> dataMap;
 									if (dataMapList.size() < cellIndex) {
 										dataMap = newHashMapWithExpectedSize(rowCount);
