@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.DataFormatter;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
@@ -49,7 +50,7 @@ public class ExcelDataSourceTest {
 	}
 
 	private void testExcelFile(final String path, final DataOrientation dataOrientation) throws InvalidFormatException, IOException {
-		ExcelFile excelFile = new ExcelFile(new File(path), dataOrientation);
+		ExcelFile excelFile = new ExcelFile(new File(path), dataOrientation, new DataFormatter());
 		excelFile.open();
 		Map<String, List<Map<String, String>>> actualData = excelFile.getData();
 		assertThat("data does not match expected data", actualData, equalTo(expectedData));
@@ -60,7 +61,7 @@ public class ExcelDataSourceTest {
 		config.put("dataSource.excel.0.path", path);
 		config.put("dataSource.excel.0.dataOrientation", dataOrientation.name());
 
-		ExcelDataSource ds = new ExcelDataSource(config);
+		ExcelDataSource ds = new ExcelDataSource(config, new DataFormatter());
 
 		Map<String, List<Map<String, String>>> actualData = newHashMapWithExpectedSize(3);
 

@@ -16,6 +16,8 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DataFormatter;
+import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -36,12 +38,17 @@ import com.mgmtp.jfunk.data.source.BaseDataSource;
 @ScriptScoped
 public class ExcelDataSource extends BaseDataSource {
 
+	// multiple Excel files may be specified
 	private List<ExcelFile> excelFiles;
+
+	// 
 	private final Map<String, MutableInt> dataSetIndices = newHashMap();
+	private final DataFormatter dataFormatter;
 
 	@Inject
-	public ExcelDataSource(final Configuration configuration) {
+	public ExcelDataSource(final Configuration configuration, final DataFormatter dataFormatter) {
 		super(configuration);
+		this.dataFormatter = dataFormatter;
 	}
 
 	/**
@@ -61,7 +68,7 @@ public class ExcelDataSource extends BaseDataSource {
 				DataOrientation dataOrientation = DataOrientation.valueOf(doString);
 
 				log.info("Opening Excel file: {}", path);
-				ExcelFile file = new ExcelFile(new File(path), dataOrientation);
+				ExcelFile file = new ExcelFile(new File(path), dataOrientation, dataFormatter);
 
 				try {
 					file.open();
@@ -133,10 +140,12 @@ public class ExcelDataSource extends BaseDataSource {
 		private final File file;
 		private final DataOrientation dataOrientation;
 		private Map<String, List<Map<String, String>>> data;
+		private final DataFormatter dataFormatter;
 
-		public ExcelFile(final File file, final DataOrientation dataOrientation) {
+		public ExcelFile(final File file, final DataOrientation dataOrientation, final DataFormatter dataFormatter) {
 			this.file = file;
 			this.dataOrientation = dataOrientation;
+			this.dataFormatter = dataFormatter;
 		}
 
 		public final void open() throws IOException, InvalidFormatException {
@@ -151,6 +160,7 @@ public class ExcelDataSource extends BaseDataSource {
 			}
 
 			final int sheetCount = excelWorkbook.getNumberOfSheets();
+			FormulaEvaluator formulaEvaluator = excelWorkbook.getCreationHelper().createFormulaEvaluator();
 
 			Map<String, List<Map<String, String>>> dataMapListMap = newHashMapWithExpectedSize(sheetCount);
 
@@ -162,15 +172,21 @@ public class ExcelDataSource extends BaseDataSource {
 				String sheetName = currentSheet.getSheetName();
 
 				int rowCount = currentSheet.getLastRowNum() + 1;
+				if (rowCount < 2) {
+					// sheet has no data, we need at least two rows,
+					// i. e. a header row and at least one data row
+					continue;
+				}
 
 				for (int rowIndex = 0; rowIndex < rowCount; ++rowIndex) {
 					Row currentRow = currentSheet.getRow(rowIndex);
+
 					short cellCount = currentRow.getLastCellNum();
 
 					for (short cellIndex = 0; cellIndex < cellCount; ++cellIndex) {
 						Cell currentCell = currentRow.getCell(cellIndex);
 
-						String value = currentCell.getStringCellValue();
+						String value = dataFormatter.formatCellValue(currentCell, formulaEvaluator);
 
 						switch (dataOrientation) {
 							case rowbased:
