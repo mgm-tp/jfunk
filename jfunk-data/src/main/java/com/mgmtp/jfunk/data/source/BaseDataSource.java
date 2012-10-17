@@ -8,7 +8,8 @@ import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -25,9 +26,10 @@ import com.mgmtp.jfunk.data.DataSet;
  * @version $Id$
  */
 public abstract class BaseDataSource implements DataSource {
+	protected final Logger log = LoggerFactory.getLogger(getClass());
+
 	protected final Map<String, Map<String, String>> fixedValues = Maps.newHashMap();
 	protected final Configuration configuration;
-	protected final Logger log = Logger.getLogger(getClass());
 	private Set<String> formDataKeys;
 	private final String name;
 	private final Map<String, DataSet> currentDataSets = Maps.newHashMap();
