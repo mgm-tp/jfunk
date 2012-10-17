@@ -10,7 +10,7 @@
 	<artifactId>jfunk</artifactId>
 	<packaging>pom</packaging>
 	<name>jFunk Parent POM</name>
-	<version>3.0.1-SNAPSHOT</version>
+	<version>3.1.0-SNAPSHOT</version>
 	<description>Java Functional Testing Framework Parent POM</description>
 
 	<scm>
@@ -58,6 +58,7 @@
 		<module>jfunk-data</module>
 		<module>jfunk-data-generator</module>
 		<module>jfunk-data-benerator</module>
+		<module>jfunk-data-excel</module>
 		<module>jfunk-samples</module>
 		<module>jfunk-server</module>
 		<module>jfunk-unit</module>
@@ -353,11 +354,12 @@
 				<groupId>org.testng</groupId>
 				<artifactId>testng</artifactId>
 				<version>6.4</version>
-			</dependency>
-			<dependency>
-				<groupId>junit</groupId>
-				<artifactId>junit</artifactId>
-				<version>4.7</version>
+				<exclusions>
+					<exclusion>
+						<artifactId>junit</artifactId>
+						<groupId>junit</groupId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>org.slf4j</groupId>
@@ -384,6 +386,32 @@
 				<artifactId>logback-classic</artifactId>
 				<version>1.0.6</version>
 			</dependency>
+			<dependency>
+				<groupId>org.apache.poi</groupId>
+				<artifactId>poi</artifactId>
+				<version>${poi.version}</version>
+				<type>jar</type>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.poi</groupId>
+				<artifactId>poi-ooxml</artifactId>
+				<version>${poi.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.hamcrest</groupId>
+				<artifactId>hamcrest-core</artifactId>
+				<version>1.3</version>
+			</dependency>
+			<dependency>
+				<groupId>org.hamcrest</groupId>
+				<artifactId>hamcrest-library</artifactId>
+				<version>1.3</version>
+			</dependency>
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>4.7</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
@@ -391,6 +419,16 @@
 		<dependency>
 			<groupId>org.testng</groupId>
 			<artifactId>testng</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.hamcrest</groupId>
+			<artifactId>hamcrest-core</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.hamcrest</groupId>
+			<artifactId>hamcrest-library</artifactId>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
@@ -417,6 +455,7 @@
 		<guice.version>3.0</guice.version>
 		<jersey.version>1.10</jersey.version>
 		<slf4j.version>1.6.6</slf4j.version>
+		<poi.version>3.8</poi.version>
 		<sonar.skippedModules>jfunk-samples</sonar.skippedModules>
 	</properties>
 </project>
