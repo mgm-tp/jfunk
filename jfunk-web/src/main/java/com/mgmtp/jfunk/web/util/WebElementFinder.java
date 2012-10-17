@@ -339,7 +339,8 @@ public final class WebElementFinder {
 		WebDriverWait webDriverWait = sleepMillis > 0L
 				? new WebDriverWait(webDriver, timeoutSeconds, sleepMillis)
 				: new WebDriverWait(webDriver, timeoutSeconds);
-		webDriverWait.ignoreAll(ImmutableList.of(NotFoundException.class, WebElementException.class, StaleElementReferenceException.class));
+		webDriverWait.ignoreAll(ImmutableList.<Class<? extends Throwable>>of(NotFoundException.class,
+				WebElementException.class, StaleElementReferenceException.class));
 		return webDriverWait;
 	}
 
