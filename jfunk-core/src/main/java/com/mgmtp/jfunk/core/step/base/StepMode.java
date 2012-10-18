@@ -19,9 +19,8 @@ public enum StepMode {
 	CHECK_VALUE,
 
 	/**
-	 * @deprecated Elster-specific, to be removed
+	 * Step mode with the intention that default values should be checked.
 	 */
-	@Deprecated
 	CHECK_DEFAULT,
 
 	/**

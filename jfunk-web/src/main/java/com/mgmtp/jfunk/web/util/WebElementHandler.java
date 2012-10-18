@@ -89,23 +89,27 @@ public final class WebElementHandler {
 	private final String dataKey;
 	private final Integer dataIndex;
 	private final StepMode stepMode;
+	private final DefaultsProvider defaultsProvider;
 	private final ElementTrafo setTrafo;
 	private final ElementTrafo checkTrafo;
 
 	private WebElementHandler(final WebElementFinder finder, final String value, final DataSet dataSet, final String dataKey,
-			final Integer dataIndex, final StepMode stepMode, final ElementTrafo setTrafo, final ElementTrafo checkTrafo) {
+			final Integer dataIndex, final StepMode stepMode, final DefaultsProvider defaultsProvider, final ElementTrafo setTrafo,
+			final ElementTrafo checkTrafo) {
 		this.finder = finder;
 		this.value = value;
 		this.dataSet = dataSet;
 		this.dataKey = dataKey;
 		this.dataIndex = dataIndex;
+		this.defaultsProvider = defaultsProvider;
 		this.stepMode = stepMode == null ? StepMode.SET_VALUE : stepMode;
 		this.setTrafo = setTrafo;
 		this.checkTrafo = checkTrafo;
 	}
 
 	private WebElementHandler(final Fields fields) {
-		this(fields.finder, fields.value, fields.dataSet, fields.dataKey, fields.dataIndex, fields.stepMode, fields.setTrafo, fields.checkTrafo);
+		this(fields.finder, fields.value, fields.dataSet, fields.dataKey, fields.dataIndex, fields.stepMode, fields.defaultsProvider,
+				fields.setTrafo, fields.checkTrafo);
 	}
 
 	/**
@@ -114,7 +118,7 @@ public final class WebElementHandler {
 	 * @return the new {@link WebElementHandler} instance
 	 */
 	public static WebElementHandler create() {
-		return new WebElementHandler(WebElementFinder.create(), null, null, null, null, null, null, null);
+		return new WebElementHandler(WebElementFinder.create(), null, null, null, null, null, null, null, null);
 	}
 
 	/**
@@ -305,6 +309,22 @@ public final class WebElementHandler {
 
 	/**
 	 * Creates a new {@link WebElementHandler} based on this {@link WebElementHandler} using the
+	 * specifed {@link DefaultsProvider}.
+	 * 
+	 * @param theDefaultsProvider
+	 *            provides default values to check when {@link StepMode} is
+	 *            {@link StepMode#CHECK_DEFAULT}
+	 * 
+	 * @return the new {@link WebElementHandler} instance
+	 */
+	public WebElementHandler checkDefaults(final DefaultsProvider theDefaultsProvider) {
+		Fields fields = new Fields(this);
+		fields.defaultsProvider = theDefaultsProvider;
+		return new WebElementHandler(fields);
+	}
+
+	/**
+	 * Creates a new {@link WebElementHandler} based on this {@link WebElementHandler} using the
 	 * specified {@link ElementTrafo} for transforming the value before it is set.
 	 * 
 	 * @param theSetTrafo
@@ -347,35 +367,12 @@ public final class WebElementHandler {
 				if (checkTrafo != null) {
 					checkValue = checkTrafo.trafo(checkValue);
 				}
+				checkValue(element, checkValue);
+				break;
 
-				String elementValue = element.getTagName().equalsIgnoreCase(WebConstants.SELECT)
-						? new Select(element).getFirstSelectedOption().getAttribute(WebConstants.VALUE)
-						: element.getAttribute(WebConstants.VALUE);
-
-				if (WebConstants.INPUT.equalsIgnoreCase(element.getTagName()) && WebConstants.RADIO.equals(element.getAttribute(WebConstants.TYPE))) {
-
-					List<WebElement> elements = finder.findAll();
-					for (WebElement webElement : elements) {
-						String elVal = webElement.getAttribute(WebConstants.VALUE);
-						if (elVal.equals(checkValue) && !webElement.isSelected()) {
-							throw new InvalidValueException(element, checkValue, elVal);
-						}
-					}
-
-				} else if (WebConstants.CHECKBOX.equals(element.getAttribute(WebConstants.TYPE))) {
-
-					boolean elVal = element.isSelected();
-					if (elVal != Boolean.valueOf(checkValue)) {
-						throw new InvalidValueException(element, checkValue, String.valueOf(elVal));
-					}
-
-				} else {
-
-					if (!Objects.equal(checkValue, elementValue)) {
-						throw new InvalidValueException(element, checkValue, elementValue);
-					}
-
-				}
+			case CHECK_DEFAULT:
+				checkState(defaultsProvider != null, "No DefaultsProvider set when StepMode is CHECK_DEFAULT.");
+				checkValue(element, defaultsProvider.getDefaultValue(dataSet, dataKey, dataIndex));
 				break;
 
 			case SET_VALUE:
@@ -461,6 +458,37 @@ public final class WebElementHandler {
 		}
 	}
 
+	private void checkValue(final WebElement element, final String checkValue) {
+		String elementValue = element.getTagName().equalsIgnoreCase(WebConstants.SELECT)
+				? new Select(element).getFirstSelectedOption().getAttribute(WebConstants.VALUE)
+				: element.getAttribute(WebConstants.VALUE);
+
+		if (WebConstants.INPUT.equalsIgnoreCase(element.getTagName()) && WebConstants.RADIO.equals(element.getAttribute(WebConstants.TYPE))) {
+
+			List<WebElement> elements = finder.findAll();
+			for (WebElement webElement : elements) {
+				String elVal = webElement.getAttribute(WebConstants.VALUE);
+				if (elVal.equals(checkValue) && !webElement.isSelected()) {
+					throw new InvalidValueException(element, checkValue, elVal);
+				}
+			}
+
+		} else if (WebConstants.CHECKBOX.equals(element.getAttribute(WebConstants.TYPE))) {
+
+			boolean elVal = element.isSelected();
+			if (elVal != Boolean.valueOf(checkValue)) {
+				throw new InvalidValueException(element, checkValue, String.valueOf(elVal));
+			}
+
+		} else {
+
+			if (!Objects.equal(checkValue, elementValue)) {
+				throw new InvalidValueException(element, checkValue, elementValue);
+			}
+
+		}
+	}
+
 	private String retrieveValue() {
 		if (value != null) {
 			return value;
@@ -492,6 +520,7 @@ public final class WebElementHandler {
 		private String dataKey;
 		private Integer dataIndex;
 		private StepMode stepMode;
+		private DefaultsProvider defaultsProvider;
 		private ElementTrafo setTrafo;
 		private ElementTrafo checkTrafo;
 
@@ -502,8 +531,13 @@ public final class WebElementHandler {
 			this.dataKey = handler.dataKey;
 			this.dataIndex = handler.dataIndex;
 			this.stepMode = handler.stepMode;
+			this.defaultsProvider = handler.defaultsProvider;
 			this.setTrafo = handler.setTrafo;
 			this.checkTrafo = handler.checkTrafo;
 		}
+	}
+
+	public static interface DefaultsProvider {
+		String getDefaultValue(DataSet dataSet, String dataKey, Integer dataIndex);
 	}
 }
