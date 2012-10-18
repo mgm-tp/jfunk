@@ -23,6 +23,7 @@ import com.mgmtp.jfunk.web.WebConstants;
  * 
  * @version $Id$
  */
+@Deprecated
 public class ClickElement extends WebDriverStep {
 	private final By by;
 	private final boolean ignoreIfNotFound;

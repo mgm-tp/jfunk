@@ -43,6 +43,7 @@ import com.mgmtp.jfunk.web.exception.InvalidValueException;
  * 
  * @version $Id$
  */
+@Deprecated
 public class JFunkWebElement extends WebDriverStep {
 	protected final By by;
 	protected final String dataKey;

@@ -372,7 +372,7 @@ public final class WebElementHandler {
 
 			case CHECK_DEFAULT:
 				checkState(defaultsProvider != null, "No DefaultsProvider set when StepMode is CHECK_DEFAULT.");
-				checkValue(element, defaultsProvider.getDefaultValue(dataSet, dataKey, dataIndex));
+				checkValue(element, defaultsProvider.get(element, dataSet, dataKey, dataIndex));
 				break;
 
 			case SET_VALUE:
@@ -538,6 +538,6 @@ public final class WebElementHandler {
 	}
 
 	public static interface DefaultsProvider {
-		String getDefaultValue(DataSet dataSet, String dataKey, Integer dataIndex);
+		String get(WebElement element, DataSet dataSet, String dataKey, Integer dataIndex);
 	}
 }
