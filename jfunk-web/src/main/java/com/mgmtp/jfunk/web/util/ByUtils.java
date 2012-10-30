@@ -9,6 +9,7 @@ import org.openqa.selenium.By;
  * 
  * @version $Id$
  */
+@Deprecated
 public class ByUtils {
 
 	private ByUtils() {

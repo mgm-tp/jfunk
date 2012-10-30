@@ -11,7 +11,7 @@ import com.google.common.base.Predicate;
  * @author rnaegele
  * @version $Id: $
  */
-public abstract class BasePredicate<T> implements Predicate<T> {
+public abstract class BasePredicate<T, R> implements Predicate<T> {
 
 	protected final Logger log = LoggerFactory.getLogger(getClass());
 
@@ -24,6 +24,10 @@ public abstract class BasePredicate<T> implements Predicate<T> {
 	}
 
 	protected abstract boolean doApply(final T input);
+
+	public R getResult() {
+		throw new UnsupportedOperationException("not implemented");
+	}
 
 	@Override
 	public String toString() {
