@@ -10,23 +10,15 @@ import org.openqa.selenium.WebElement;
  */
 public class WebElementException extends RuntimeException {
 
-	private final WebElement element;
-
-	/**
-	 * @param element
-	 *            the {@link WebElement} related to this exception
-	 * @param message
-	 *            the exception message
-	 */
-	public WebElementException(final WebElement element, final String message) {
-		super(message);
-		this.element = element;
+	public WebElementException(final String message, final Throwable cause) {
+		super(message, cause);
 	}
 
-	/**
-	 * @return the element
-	 */
-	public WebElement getElement() {
-		return element;
+	public WebElementException(final String message) {
+		super(message);
+	}
+
+	public WebElementException(final Throwable cause) {
+		super(cause);
 	}
 }

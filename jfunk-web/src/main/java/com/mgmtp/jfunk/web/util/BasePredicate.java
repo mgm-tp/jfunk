@@ -17,9 +17,8 @@ public abstract class BasePredicate<T, R> implements Predicate<T> {
 
 	@Override
 	public final boolean apply(final T input) {
-		log.info("Applying predicate: {}", this);
 		boolean result = doApply(input);
-		log.info("Predicate result: {}", result);
+		log.info("Predicate {}: {}", result ? "successful" : "failed", this);
 		return result;
 	}
 
@@ -31,6 +30,6 @@ public abstract class BasePredicate<T, R> implements Predicate<T> {
 
 	@Override
 	public String toString() {
-		return ToStringBuilder.reflectionToString(ToStringStyle.SHORT_PREFIX_STYLE);
+		return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
 	}
 }

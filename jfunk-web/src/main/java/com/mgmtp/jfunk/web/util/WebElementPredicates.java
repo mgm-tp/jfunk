@@ -14,11 +14,11 @@ public class WebElementPredicates {
 		// don't allow instantiation
 	}
 
-	public static BasePredicate<WebElement, Void> newTextMatchesPatternPredicate(final Pattern pattern) {
+	public static BasePredicate<WebElement, Void> textMatchesPattern(final Pattern pattern) {
 		return new TextMatchesPatternPredicate(pattern);
 	}
 
-	public static BasePredicate<WebElement, Void> newTextMatchesPatternPredicate(final String regex) {
+	public static BasePredicate<WebElement, Void> textMatchesPattern(final String regex) {
 		return new TextMatchesPatternPredicate(regex);
 	}
 
