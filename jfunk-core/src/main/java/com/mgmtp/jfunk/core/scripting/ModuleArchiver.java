@@ -161,9 +161,9 @@ public class ModuleArchiver {
 			}
 
 			Configuration configClone = configuration.clone();
-			configuration.put(JFunkConstants.CURRENT_MODULE_NAME, testModule.getName());
-			configuration.put(JFunkConstants.CURRENT_MODULE_RESULT, success ? JFunkConstants.OK : JFunkConstants.ERROR);
-			configuration.put(JFunkConstants.TESTMODULE_CLASS, testModule.getClass().getName());
+			configClone.put(JFunkConstants.CURRENT_MODULE_NAME, testModule.getName());
+			configClone.put(JFunkConstants.CURRENT_MODULE_RESULT, success ? JFunkConstants.OK : JFunkConstants.ERROR);
+			configClone.put(JFunkConstants.TESTMODULE_CLASS, testModule.getClass().getName());
 
 			saveDataSets(configClone);
 			saveConfiguration(configClone);

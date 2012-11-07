@@ -22,6 +22,14 @@ public class WebElementPredicates {
 		return new TextMatchesPatternPredicate(regex);
 	}
 
+	public static BasePredicate<WebElement, Void> attributeValueMatchesPattern(final Pattern pattern, final String attribute) {
+		return new AttributeValueMatchesPatternPredicate(pattern, attribute);
+	}
+
+	public static BasePredicate<WebElement, Void> attributeValueMatchesPattern(final String regex, final String attribute) {
+		return new AttributeValueMatchesPatternPredicate(regex, attribute);
+	}
+
 	private static class TextMatchesPatternPredicate extends BasePredicate<WebElement, Void> {
 
 		private final Pattern pattern;
@@ -31,12 +39,32 @@ public class WebElementPredicates {
 		}
 
 		public TextMatchesPatternPredicate(final String regex) {
-			this.pattern = Pattern.compile(regex);
+			this(Pattern.compile(regex));
 		}
 
 		@Override
 		public boolean doApply(final WebElement input) {
 			return pattern.matcher(input.getText()).matches();
+		}
+	}
+
+	private static class AttributeValueMatchesPatternPredicate extends BasePredicate<WebElement, Void> {
+
+		private final Pattern pattern;
+		private final String attribute;
+
+		public AttributeValueMatchesPatternPredicate(final Pattern pattern, final String attribute) {
+			this.pattern = pattern;
+			this.attribute = attribute;
+		}
+
+		public AttributeValueMatchesPatternPredicate(final String regex, final String attribute) {
+			this(Pattern.compile(regex), attribute);
+		}
+
+		@Override
+		public boolean doApply(final WebElement input) {
+			return pattern.matcher(input.getAttribute(attribute)).matches();
 		}
 	}
 }
