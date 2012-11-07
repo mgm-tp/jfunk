@@ -4,6 +4,7 @@ import static com.google.common.collect.Lists.newArrayListWithCapacity;
 import static com.google.common.collect.Maps.newHashMap;
 import static com.google.common.collect.Maps.newHashMapWithExpectedSize;
 import static com.google.common.io.Closeables.closeQuietly;
+import static org.apache.commons.lang3.StringUtils.trimToNull;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -23,6 +24,8 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 
+import com.google.common.base.Predicates;
+import com.google.common.collect.Maps;
 import com.mgmtp.jfunk.common.config.ScriptScoped;
 import com.mgmtp.jfunk.common.exception.JFunkException;
 import com.mgmtp.jfunk.common.util.Configuration;
@@ -218,7 +221,7 @@ public class ExcelDataSource extends BaseDataSource {
 									if (headers == null) {
 										headers = newArrayListWithCapacity(cellCount);
 									}
-									headers.add(value);
+									headers.add(trimToNull(value));
 								} else { // data
 									Map<String, String> dataMap;
 									if (dataMapList.size() < rowIndex) {
@@ -228,7 +231,10 @@ public class ExcelDataSource extends BaseDataSource {
 										dataMap = dataMapList.get(rowIndex - 1);
 									}
 
-									dataMap.put(headers.get(cellIndex), value);
+									String key = headers.get(cellIndex);
+									if (key != null) {
+										dataMap.put(key, value);
+									}
 								}
 								break;
 							case columnbased:
@@ -239,7 +245,7 @@ public class ExcelDataSource extends BaseDataSource {
 									if (headers == null) {
 										headers = newArrayListWithCapacity(rowCount);
 									}
-									headers.add(value);
+									headers.add(trimToNull(value));
 								} else { // data
 									Map<String, String> dataMap;
 									if (dataMapList.size() < cellIndex) {
@@ -248,7 +254,11 @@ public class ExcelDataSource extends BaseDataSource {
 									} else {
 										dataMap = dataMapList.get(cellIndex - 1);
 									}
-									dataMap.put(headers.get(rowIndex), value);
+
+									String key = headers.get(rowIndex);
+									if (key != null) {
+										dataMap.put(key, value);
+									}
 								}
 								break;
 							default:
@@ -260,7 +270,8 @@ public class ExcelDataSource extends BaseDataSource {
 				dataMapListMap.put(sheetName, dataMapList);
 			}
 
-			data = dataMapListMap;
+			// we have empty keys for empty rows/columns in the Excel sheet, which we need to filter out
+			data = Maps.filterKeys(dataMapListMap, Predicates.notNull());
 		}
 
 		/**
