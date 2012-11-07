@@ -99,7 +99,7 @@ public final class WebElementFinder {
 	 * @return the new {@link WebElementFinder} instance
 	 */
 	public WebElementFinder timeout(final long theTimeoutSeconds) {
-		checkArgument(theTimeoutSeconds > 0, "'theTimeoutSeconds' must be greater than zero");
+		checkArgument(theTimeoutSeconds >= 0, "'theTimeoutSeconds' must be greater than or equal to zero");
 		Fields fields = new Fields(this);
 		fields.timeoutSeconds = theTimeoutSeconds;
 		return new WebElementFinder(fields);
@@ -116,8 +116,8 @@ public final class WebElementFinder {
 	 * @return the {@link WebElementFinder} instance
 	 */
 	public WebElementFinder timeout(final long theTimeoutSeconds, final long theSleepMillis) {
-		checkArgument(theTimeoutSeconds > 0, "'theTimeoutSeconds' must be greater than zero");
-		checkArgument(theSleepMillis > 0, "'theSleepMillis' must be greater than zero");
+		checkArgument(theTimeoutSeconds >= 0, "'theTimeoutSeconds' must be greater than or equal to zero");
+		checkArgument(theSleepMillis >= 0, "'theSleepMillis' must be greater than or equal to zero");
 		Fields fields = new Fields(this);
 		fields.timeoutSeconds = theTimeoutSeconds;
 		fields.sleepMillis = theSleepMillis;
