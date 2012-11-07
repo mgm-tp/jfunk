@@ -49,6 +49,7 @@ public final class WebConstants {
 	public static final String WEBDRIVER_FIREFOX = "firefox";
 	public static final String WEBDRIVER_CHROME = "chrome";
 	public static final String WEBDRIVER_INTERNET_EXPLORER = "ie";
+	public static final String WEBDRIVER_REMOTE = "remote";
 	public static final String WEBDRIVER_IMPLICIT_WAIT_SECONDS = "webdriver.implicit.wait.seconds";
 	public static final String WEBDRIVER_DONT_QUIT = "webdriver.dont.quit";
 
@@ -65,6 +66,14 @@ public final class WebConstants {
 	public static final String HTMLUNIT_VALIDATE_JS = "htmlunit.validate.js";
 	public static final String HTMLUNIT_LOG_INCORRECT_CODE = "htmlunit.log.incorrect.code";
 	public static final String HTMLUNIT_SAVE_COMPLETE = "htmlunit.save.complete";
+
+	/*
+	 * RemoteWebDriver constants
+	 */
+	public static final String REMOTE_WEBDRIVER_URL = "webdriver.remote.url";
+	public static final String REMOTE_WEBDRIVER_BROWSER = "webdriver.remote.browser";
+	public static final String REMOTE_WEBDRIVER_BROWSER_VERSION = "webdriver.remote.browser.version";
+	public static final String REMOTE_WEBDRIVER_ENABLE_JAVASCRIPT = "webdriver.remote.enable_javascript";
 
 	/*
 	 * Properties for W3C markup validation service
