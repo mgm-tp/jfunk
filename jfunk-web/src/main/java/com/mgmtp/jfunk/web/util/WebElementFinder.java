@@ -35,7 +35,7 @@ import com.google.common.collect.ImmutableList;
  * thread-safe and safe to store as {@code static final} constants.
  * </p>
  * <p>
- * This class follows the same mechanisms as {@link WebElementHandler}.
+ * This class follows the same mechanisms as {@link FormInputHandler}.
  * </p>
  * 
  * <string>Usage Example:</strong>
@@ -44,7 +44,7 @@ import com.google.common.collect.ImmutableList;
  * WebElement element = WebElementFinder.create().by(By.id(&quot;someId&quot;)).displayed(true).webDriver(webDriver).find();
  * </pre>
  * 
- * @see WebElementHandler
+ * @see FormInputHandler
  * @author rnaegele
  * @version $Id$
  */
@@ -194,7 +194,7 @@ public final class WebElementFinder {
 	 * 
 	 * @param theBy
 	 *            locates the element to operate on
-	 * @return the new {@link WebElementHandler} instance
+	 * @return the new {@link FormInputHandler} instance
 	 */
 	public WebElementFinder by(final By theBy) {
 		Fields fields = new Fields(this);
@@ -208,7 +208,7 @@ public final class WebElementFinder {
 	 * 
 	 * @param theWebDriver
 	 *            the {@link WebDriver} to use
-	 * @return the new {@link WebElementHandler} instance
+	 * @return the new {@link FormInputHandler} instance
 	 */
 	public WebElementFinder webDriver(final WebDriver theWebDriver) {
 		Fields fields = new Fields(this);
