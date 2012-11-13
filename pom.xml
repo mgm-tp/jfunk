@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.mgmtp.maven.poms</groupId>
 		<artifactId>mgm-pom</artifactId>
-		<version>14</version>
+		<version>15</version>
 	</parent>
 	<groupId>com.mgmtp.jfunk</groupId>
 	<artifactId>jfunk</artifactId>
