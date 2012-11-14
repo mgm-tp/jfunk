@@ -13,6 +13,7 @@ import com.google.common.base.Preconditions;
 public class MailAccount {
 
 	private final String accountId;
+	private final String address;
 	private final MailAuthenticator authenticator;
 
 	public static final String MAIL_ACCOUNT_PREFIX = "mail.account.";
@@ -27,10 +28,11 @@ public class MailAccount {
 	 * @param password
 	 *            The password
 	 */
-	public MailAccount(final String accountId, final String user, final String password) {
+	public MailAccount(final String accountId, final String user, final String password, final String address) {
 		Preconditions.checkNotNull(accountId, "AccountId must not be null.");
 
 		this.accountId = accountId;
+		this.address = address;
 		this.authenticator = new MailAuthenticator(user, password);
 	}
 
@@ -76,6 +78,13 @@ public class MailAccount {
 	 */
 	public String getAccountId() {
 		return accountId;
+	}
+
+	/**
+	 * @return the address
+	 */
+	public String getAddress() {
+		return address;
 	}
 
 	public static class MailAuthenticator extends Authenticator {

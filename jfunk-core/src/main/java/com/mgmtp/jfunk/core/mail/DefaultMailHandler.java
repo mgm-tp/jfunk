@@ -44,9 +44,10 @@ public class DefaultMailHandler implements MailHandler, Disposable {
 		List<MailAccount> accounts;
 		if (accountId != null && accountId.length() > 0) {
 			log.info("Trying to use fixed e-mail account: " + accountId);
-			String user = config.get("mail.user");
-			String password = config.get("mail.password");
-			accounts = Lists.newArrayList(new MailAccount(accountId, user, password));
+			String user = config.get(EmailConstants.MAIL_USER);
+			String password = config.get(EmailConstants.MAIL_PASSWORD);
+			String address = config.get(EmailConstants.MAIL_ADDRESS);
+			accounts = Lists.newArrayList(new MailAccount(accountId, user, password, address));
 		} else {
 			log.info("Trying to get free e-mail account.");
 			accounts = getAccounts(config);
@@ -146,12 +147,15 @@ public class DefaultMailHandler implements MailHandler, Disposable {
 			Matcher m = pattern.matcher(accountKey);
 
 			String accountId = m.matches() ? m.group(1) : accountKey.substring(MAIL_ACCOUNT_PREFIX.length());
+
+			// necessary, so the below properties can be resolved
 			properties.put(EmailConstants.TESTING_EMAIL_ID, accountId);
 
 			String user = properties.get(EmailConstants.MAIL_USER);
 			String password = properties.get(EmailConstants.MAIL_PASSWORD);
+			String address = properties.get(EmailConstants.MAIL_ADDRESS);
 
-			accounts.add(new MailAccount(accountId, user, password));
+			accounts.add(new MailAccount(accountId, user, password, address));
 		}
 		return accounts;
 	}
