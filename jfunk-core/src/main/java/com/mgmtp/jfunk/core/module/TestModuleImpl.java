@@ -11,7 +11,8 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.mgmtp.jfunk.common.JFunkConstants;
 import com.mgmtp.jfunk.core.data.State;
@@ -61,7 +62,7 @@ import com.mgmtp.jfunk.data.DataSet;
 @NotThreadSafe
 public class TestModuleImpl implements TestModule {
 
-	protected final Logger log = Logger.getLogger(getClass());
+	protected final Logger log = LoggerFactory.getLogger(getClass());
 
 	@Inject
 	StepExecutor stepExecutor;
