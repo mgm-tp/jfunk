@@ -75,6 +75,8 @@ class UnitSupport {
 
 			eventBus.post(new BeforeRunEvent());
 		} catch (Exception ex) {
+			// Must log and throw in order to get the exception into jFunk's log file.
+			log.error(ex.getMessage(), ex);
 			throw new IllegalStateException("Error initializing JFunkRunner", ex);
 		}
 	}

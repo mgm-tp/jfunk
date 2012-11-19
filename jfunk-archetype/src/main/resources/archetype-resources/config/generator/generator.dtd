@@ -76,7 +76,6 @@ abhaengig vom typ (class) kann es sich um einen zusammengesetzten, bedingten, od
 	dependent (true | false) "false"
 	charset_id CDATA #IMPLIED
 >
-<!ELEMENT anmeldesteuern (#PCDATA)>
 <!ELEMENT source (constraint | constraint_ref)>
 <!ELEMENT target (constraint | constraint_ref)>
 <!ELEMENT constraint_ref EMPTY>
