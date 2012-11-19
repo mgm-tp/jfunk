@@ -129,7 +129,7 @@ public final class Configuration extends ExtendedProperties {
 	 */
 	private void loadExtraFiles(final String filterPrefix) {
 		while (true) {
-			Map<String, String> view = Maps.filterKeys(this, Predicates.startsWithPredicate(filterPrefix));
+			Map<String, String> view = Maps.filterKeys(this, Predicates.startsWith(filterPrefix));
 
 			// we need to keep them separately in order to be able to reload them (see put method)
 			extraFileProperties.putAll(view);

@@ -1,5 +1,7 @@
 package com.mgmtp.jfunk.core.mail;
 
+import static com.mgmtp.jfunk.common.util.Predicates.startsWith;
+
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -20,7 +22,6 @@ import com.mgmtp.jfunk.common.exception.JFunkException;
 import com.mgmtp.jfunk.common.util.Configuration;
 import com.mgmtp.jfunk.common.util.Disposable;
 import com.mgmtp.jfunk.common.util.ExtendedProperties;
-import com.mgmtp.jfunk.common.util.Predicates;
 
 /**
  * Default-{@link MailHandler}-Implementation for retrieving mail accounts from the configuration.
@@ -138,7 +139,7 @@ public class DefaultMailHandler implements MailHandler, Disposable {
 	private static List<MailAccount> getAccounts(final ExtendedProperties props) {
 		ExtendedProperties properties = props.clone();
 
-		Map<String, String> view = Maps.filterKeys(props, Predicates.startsWithPredicate(MAIL_ACCOUNT_PREFIX));
+		Map<String, String> view = Maps.filterKeys(props, startsWith(MAIL_ACCOUNT_PREFIX));
 
 		Pattern pattern = Pattern.compile("mail\\.account.(.+)(\\.user|\\.password|\\.address)");
 

@@ -47,7 +47,7 @@ public abstract class BaseDataSource implements DataSource {
 
 	protected Set<String> getFormDataKeys() {
 		try {
-			Map<String, String> view = Maps.filterKeys(configuration, Predicates.startsWithPredicate(JFunkConstants.FORM_DATA_PREFIX));
+			Map<String, String> view = Maps.filterKeys(configuration, Predicates.startsWith(JFunkConstants.FORM_DATA_PREFIX));
 			formDataKeys = Sets.newHashSetWithExpectedSize(view.size());
 
 			for (String key : view.keySet()) {

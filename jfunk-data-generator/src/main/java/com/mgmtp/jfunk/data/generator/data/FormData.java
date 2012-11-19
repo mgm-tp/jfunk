@@ -87,7 +87,7 @@ public class FormData {
 		resetValues(constraintContainer);
 		generateValues(constraintContainer);
 
-		//First of all, all indexed entries.
+		//First of all, all unindexed entries.
 		for (String id : ids) {
 			if (id.equals(excludedKey)) {
 				continue;
@@ -156,7 +156,6 @@ public class FormData {
 						break;
 					}
 				}
-
 				//Reset entries for next run when all values for an index have been generated.
 				for (Field field : fieldSet) {
 					if (!key.equals(field.getDataKey())) {

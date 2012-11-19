@@ -23,7 +23,7 @@ public class Predicates {
 	 *            The pattern
 	 * @return {@code true} for any string that matches its given regular expression
 	 */
-	public static Predicate<String> regexPredicate(final Pattern pattern) {
+	public static Predicate<String> matchesRegex(final Pattern pattern) {
 		return new Predicate<String>() {
 			@Override
 			public boolean apply(final String input) {
@@ -40,9 +40,9 @@ public class Predicates {
 	 *            The pattern
 	 * @return {@code true} for any string that matches its given regular expression
 	 */
-	public static Predicate<String> regexPredicate(final String regex) {
+	public static Predicate<String> matchesRegex(final String regex) {
 		final Pattern pattern = Pattern.compile(regex);
-		return regexPredicate(pattern);
+		return matchesRegex(pattern);
 	}
 
 	/**
@@ -53,7 +53,7 @@ public class Predicates {
 	 *            The prefix
 	 * @return {@code true} for any string that starts with the specified prefix
 	 */
-	public static Predicate<String> startsWithPredicate(final String prefix) {
+	public static Predicate<String> startsWith(final String prefix) {
 		return new Predicate<String>() {
 			@Override
 			public boolean apply(final String input) {
@@ -70,7 +70,7 @@ public class Predicates {
 	 *            The prefix
 	 * @return {@code true} for any string that ends with the specified prefix
 	 */
-	public static Predicate<String> endsWithPredicate(final String prefix) {
+	public static Predicate<String> endsWith(final String prefix) {
 		return new Predicate<String>() {
 			@Override
 			public boolean apply(final String input) {
