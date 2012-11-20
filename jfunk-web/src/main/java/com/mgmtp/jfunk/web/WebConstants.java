@@ -71,9 +71,6 @@ public final class WebConstants {
 	 * RemoteWebDriver constants
 	 */
 	public static final String REMOTE_WEBDRIVER_URL = "webdriver.remote.url";
-	public static final String REMOTE_WEBDRIVER_BROWSER = "webdriver.remote.browser";
-	public static final String REMOTE_WEBDRIVER_BROWSER_VERSION = "webdriver.remote.browser.version";
-	public static final String REMOTE_WEBDRIVER_ENABLE_JAVASCRIPT = "webdriver.remote.enable_javascript";
 
 	/*
 	 * Properties for W3C markup validation service
