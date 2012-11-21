@@ -1,17 +1,24 @@
 package com.mgmtp.jfunk.web.util;
 
+import static com.google.common.collect.Iterables.getOnlyElement;
+import static com.google.common.collect.Sets.difference;
+
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NotFoundException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
+import com.google.common.collect.Sets.SetView;
 import com.mgmtp.jfunk.common.config.ScriptScoped;
 import com.mgmtp.jfunk.data.DataSet;
 
@@ -108,5 +115,69 @@ public class WebDriverTool {
 
 	public void processField(final By by, final String dataSetKey, final String dataKey, final Integer dataIndex) {
 		fih.by(by).dataSet(dataSets.get(dataSetKey)).dataKeyWithIndex(dataKey, dataIndex).perform();
+	}
+
+	/**
+	 * Opens a new window and switches to it. The window to switch to is determined by diffing the
+	 * given {@code existingWindowHandles} with the current ones. The difference must be exactly one
+	 * window handle which is then used to switch to.
+	 * 
+	 * @param openClickBy
+	 *            identifies the element to click on in order to open the new window
+	 * @param timeoutSeconds
+	 *            the timeout in seconds to wait for the new window to open
+	 * @return the handle of the newly opened window
+	 */
+	public String openNewWindow(final By openClickBy, final long timeoutSeconds) {
+		return openNewWindow(new Runnable() {
+			@Override
+			public void run() {
+				click(openClickBy);
+			}
+		}, timeoutSeconds);
+	}
+
+	/**
+	 * Opens a new window and switches to it. The window to switch to is determined by diffing the
+	 * given {@code existingWindowHandles} with the current ones. The difference must be exactly one
+	 * window handle which is then used to switch to.
+	 * 
+	 * @param openCommand
+	 *            logic for opening the new window
+	 * @param timeoutSeconds
+	 *            the timeout in seconds to wait for the new window to open
+	 * @return the handle of the newly opened window
+	 */
+	public String openNewWindow(final Runnable openCommand, final long timeoutSeconds) {
+		final Set<String> existingWindowHandles = webDriver.getWindowHandles();
+
+		openCommand.run();
+
+		BasePredicate<WebDriver, String> predicate = new BasePredicate<WebDriver, String>() {
+			private String result;
+
+			@Override
+			protected boolean doApply(final WebDriver input) {
+				Set<String> newWindowHandles = webDriver.getWindowHandles();
+				SetView<String> newWindows = difference(newWindowHandles, existingWindowHandles);
+				if (newWindows.isEmpty()) {
+					throw new NotFoundException("No new window found.");
+				}
+				result = getOnlyElement(newWindows);
+				return true;
+			}
+
+			@Override
+			public String getResult() {
+				return result;
+			}
+		};
+
+		WebDriverWait wait = new WebDriverWait(webDriver, timeoutSeconds);
+		wait.until(predicate);
+
+		String newHandle = predicate.getResult();
+		webDriver.switchTo().window(newHandle);
+		return newHandle;
 	}
 }
