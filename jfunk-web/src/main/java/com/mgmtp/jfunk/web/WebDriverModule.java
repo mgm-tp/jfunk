@@ -4,6 +4,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.Maps.newHashMapWithExpectedSize;
 import static com.google.common.collect.Sets.newTreeSet;
+import static org.apache.commons.lang3.StringUtils.trimToNull;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -28,6 +29,9 @@ import com.mgmtp.jfunk.common.JFunkConstants;
 import com.mgmtp.jfunk.common.config.ScriptScoped;
 import com.mgmtp.jfunk.common.util.Configuration;
 import com.mgmtp.jfunk.web.util.DumpFileCreator;
+import com.mgmtp.jfunk.web.util.FormInputHandler;
+import com.mgmtp.jfunk.web.util.WebDriverTool;
+import com.mgmtp.jfunk.web.util.WebElementFinder;
 
 /**
  * @author rnaegele
@@ -49,6 +53,7 @@ public class WebDriverModule extends BaseWebDriverModule {
 		bind(BrowserVersion.class).toInstance(BrowserVersion.INTERNET_EXPLORER_8);
 		bind(AjaxController.class).to(NicelyResynchronizingAjaxController.class);
 		bind(DumpFileCreator.class);
+		bind(WebDriverTool.class);
 
 		bindWebDriver(WebConstants.WEBDRIVER_HTMLUNIT, HtmlUnitDriverProvider.class, ScriptScoped.class);
 		bindWebDriver(WebConstants.WEBDRIVER_FIREFOX, FirefoxDriverProvider.class, ScriptScoped.class);
@@ -148,5 +153,57 @@ public class WebDriverModule extends BaseWebDriverModule {
 		}
 
 		return result;
+	}
+
+	@Provides
+	@ScriptScoped
+	protected WebElementFinder provideWebElementFinder(final WebDriver webDriver, final Configuration config) {
+		WebElementFinder wef = WebElementFinder.create().webDriver(webDriver);
+
+		String value = trimToNull(config.get(WebConstants.WEF_ENABLED));
+		if (value != null) {
+			wef = wef.enabled(Boolean.parseBoolean(value));
+		}
+		value = trimToNull(config.get(WebConstants.WEF_DISPLAYED));
+		if (value != null) {
+			wef = wef.displayed(Boolean.parseBoolean(value));
+		}
+		value = trimToNull(config.get(WebConstants.WEF_SELECTED));
+		if (value != null) {
+			wef = wef.selected(Boolean.parseBoolean(value));
+		}
+		long timeout = config.getLong(WebConstants.WEF_TIMEOUT_SECONDS, 0L);
+		if (timeout > 0L) {
+			long sleepMillis = config.getLong(WebConstants.WEF_SLEEP_MILLIS, 0L);
+			wef = sleepMillis > 0L ? wef.timeout(timeout, sleepMillis) : wef.timeout(timeout);
+		}
+
+		return wef;
+	}
+
+	@Provides
+	@ScriptScoped
+	protected FormInputHandler provideFormInputHandler(final WebDriver webDriver, final Configuration config) {
+		FormInputHandler fih = FormInputHandler.create().webDriver(webDriver);
+
+		String value = trimToNull(config.get(WebConstants.FIH_ENABLED));
+		if (value != null) {
+			fih = fih.enabled(Boolean.parseBoolean(value));
+		}
+		value = trimToNull(config.get(WebConstants.FIH_DISPLAYED));
+		if (value != null) {
+			fih = fih.displayed(Boolean.parseBoolean(value));
+		}
+		value = trimToNull(config.get(WebConstants.FIH_SELECTED));
+		if (value != null) {
+			fih = fih.selected(Boolean.parseBoolean(value));
+		}
+		long timeout = config.getLong(WebConstants.FIH_TIMEOUT_SECONDS, 0L);
+		if (timeout > 0L) {
+			long sleepMillis = config.getLong(WebConstants.FIH_SLEEP_MILLIS, 0L);
+			fih = sleepMillis > 0L ? fih.timeout(timeout, sleepMillis) : fih.timeout(timeout);
+		}
+
+		return fih;
 	}
 }
