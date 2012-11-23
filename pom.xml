@@ -10,12 +10,12 @@
 	<artifactId>jfunk</artifactId>
 	<packaging>pom</packaging>
 	<name>jFunk Parent POM</name>
-	<version>3.1.0-alpha-3</version>
+	<version>3.1.0-SNAPSHOT</version>
 	<description>Java Functional Testing Framework Parent POM</description>
 
 	<scm>
-		<developerConnection>scm:svn:https://svncvs.mgm-edv.de/repos/jfunk/tags/jfunk-3.1.0-alpha-3</developerConnection>
-		<url>https://fisheye01.mgm-tp.com/viewrep/JFUNK/tags/jfunk-3.1.0-alpha-3</url>
+		<developerConnection>scm:svn:https://svncvs.mgm-edv.de/repos/jfunk/trunk</developerConnection>
+		<url>https://fisheye01.mgm-tp.com/viewrep/JFUNK/</url>
 	</scm>
 
 	<url>https://wiki.mgm-tp.com/confluence/display/KNOWHOW/jFunk</url>
