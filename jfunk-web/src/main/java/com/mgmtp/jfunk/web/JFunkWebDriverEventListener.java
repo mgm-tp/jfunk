@@ -6,7 +6,6 @@ import static org.apache.commons.io.FileUtils.deleteQuietly;
 import static org.apache.commons.io.FileUtils.writeStringToFile;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.EnumMap;
 
 import javax.inject.Inject;
@@ -181,10 +180,11 @@ public class JFunkWebDriverEventListener implements WebDriverEventListener {
 				continue;
 			}
 
-			File f = dumpFileCreatorProvider.get().createDumpFile(new File(moduleArchiveDir, saveOutput.getIdentifier()),
-					saveOutput.getExtension(), driver.getCurrentUrl(), action);
-
+			File f = null;
 			try {
+				f = dumpFileCreatorProvider.get().createDumpFile(new File(moduleArchiveDir, saveOutput.getIdentifier()),
+						saveOutput.getExtension(), driver.getCurrentUrl(), action);
+
 				if (f == null) {
 					return;
 				}
@@ -230,8 +230,8 @@ public class JFunkWebDriverEventListener implements WebDriverEventListener {
 					default:
 						throw new IllegalStateException("unknown enum constant");
 				}
-			} catch (IOException ex) {
-				log.error("Could not save file: " + f, ex);
+			} catch (Exception ex) {
+				log.error("Could not save file: {}. {}", f, ex.getMessage());
 			}
 		}
 	}
