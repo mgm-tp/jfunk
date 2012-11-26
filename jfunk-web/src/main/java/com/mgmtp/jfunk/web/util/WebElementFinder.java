@@ -243,6 +243,11 @@ public final class WebElementFinder {
 					}
 					return el;
 				}
+
+				@Override
+				public String toString() {
+					return WebElementFinder.this.toString();
+				}
 			});
 		} else {
 			element = webDriver.findElement(by);
@@ -291,6 +296,11 @@ public final class WebElementFinder {
 							throw new WebElementException("No matching element found.");
 						}
 						return result;
+					}
+
+					@Override
+					public String toString() {
+						return WebElementFinder.this.toString();
 					}
 				});
 			} else {
