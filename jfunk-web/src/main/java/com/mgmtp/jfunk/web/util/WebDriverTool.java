@@ -5,6 +5,7 @@ import static com.google.common.collect.Sets.difference;
 
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 import javax.inject.Inject;
@@ -94,6 +95,22 @@ public class WebDriverTool {
 		new Actions(webDriver).moveToElement(element).perform();
 	}
 
+	public WebElement hover(final By by, final By byToAppear) {
+		WebElement element = find(by);
+		new Actions(webDriver).moveToElement(element).perform();
+
+		WebElementFinder finder = wef.timeout(1L, 200L).by(byToAppear);
+		NoSuchElementException exception = null;
+		for (int i = 0; i < 10; ++i) {
+			try {
+				return finder.find();
+			} catch (NoSuchElementException ex) {
+				exception = ex;
+			}
+		}
+		throw exception;
+	}
+
 	public String getAttributeValue(final By by, final String attributeName) {
 		WebElement element = find(by);
 		return element.getAttribute(attributeName);
@@ -115,6 +132,10 @@ public class WebDriverTool {
 
 	public void processField(final By by, final String dataSetKey, final String dataKey, final Integer dataIndex) {
 		fih.by(by).dataSet(dataSets.get(dataSetKey)).dataKeyWithIndex(dataKey, dataIndex).perform();
+	}
+
+	public void processField(final By by, final String value) {
+		fih.by(by).value(value).perform();
 	}
 
 	/**
