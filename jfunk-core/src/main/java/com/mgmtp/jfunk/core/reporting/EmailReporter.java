@@ -5,6 +5,7 @@ import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Lists.newArrayListWithCapacity;
 import static org.apache.commons.io.IOUtils.LINE_SEPARATOR;
 import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.trimToNull;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -12,6 +13,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.activation.DataHandler;
+import javax.annotation.Nullable;
 import javax.annotation.concurrent.ThreadSafe;
 import javax.inject.Inject;
 import javax.mail.BodyPart;
@@ -53,7 +55,7 @@ public final class EmailReporter implements Reporter {
 	private final EmailParserFactory emailParserFactory;
 
 	@Inject
-	public EmailReporter(final EmailParserFactory emailParserFactory, @ReportMailRecipients final String recipients) {
+	public EmailReporter(final EmailParserFactory emailParserFactory, @Nullable @ReportMailRecipients final String recipients) {
 		this.emailParserFactory = emailParserFactory;
 		this.recipients = recipients;
 	}
@@ -70,6 +72,11 @@ public final class EmailReporter implements Reporter {
 
 	@Override
 	public synchronized void createReport() throws IOException {
+		if (trimToNull(recipients) == null) {
+			log.warn("No recipients for global e-mail report set. Cannot send report.");
+			return;
+		}
+
 		if (!reportDataList.isEmpty()) {
 			String content = createEmailContent();
 			sendMessage(content);
