@@ -13,7 +13,6 @@ import javax.inject.Provider;
 
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.Credentials;
-import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.HttpClient;
 import org.apache.log4j.Logger;
@@ -45,7 +44,7 @@ public class JFunkHtmlUnitDriverImpl extends HtmlUnitDriver implements Incorrect
 	protected final HtmlUnitWebDriverParams webDriverParams;
 	protected final HtmlUnitSSLParams sslParams;
 	protected final AjaxController ajaxController;
-	protected final Map<String, UsernamePasswordCredentials> credentialsMap;
+	protected final Map<String, CredentialsProvider> credentialsProviderMap;
 
 	protected HttpClient httpClient;
 
@@ -56,7 +55,7 @@ public class JFunkHtmlUnitDriverImpl extends HtmlUnitDriver implements Incorrect
 	protected final Provider<Set<WebWindowListener>> listenersProvider;
 
 	protected JFunkHtmlUnitDriverImpl(final BrowserVersion browserVersion, final HtmlUnitWebDriverParams webDriverParams,
-			final AjaxController ajaxController, final HtmlUnitSSLParams sslParams, final Map<String, UsernamePasswordCredentials> credentialsMap,
+			final AjaxController ajaxController, final HtmlUnitSSLParams sslParams, final Map<String, CredentialsProvider> credentialsProviderMap,
 			final Provider<DumpFileCreator> htmlFileCreatorProvider, final Provider<File> moduleArchiveDirProvider,
 			final Provider<Set<WebWindowListener>> listenersProvider) {
 
@@ -65,7 +64,7 @@ public class JFunkHtmlUnitDriverImpl extends HtmlUnitDriver implements Incorrect
 		this.webDriverParams = webDriverParams;
 		this.sslParams = sslParams;
 		this.ajaxController = ajaxController;
-		this.credentialsMap = credentialsMap;
+		this.credentialsProviderMap = credentialsProviderMap;
 		this.htmlFileCreatorProvider = htmlFileCreatorProvider;
 		this.moduleArchiveDirProvider = moduleArchiveDirProvider;
 		this.listenersProvider = listenersProvider;
@@ -139,10 +138,10 @@ public class JFunkHtmlUnitDriverImpl extends HtmlUnitDriver implements Incorrect
 		String host = authscope.getHost();
 		log.debug("Retrieving credentials for host " + host);
 
-		UsernamePasswordCredentials credentials = credentialsMap.get(host);
-		checkState(credentials != null, "No credentials found for host " + host);
+		CredentialsProvider credentialsProvider = credentialsProviderMap.get(host);
+		checkState(credentialsProvider != null, "No credentials provider found for host " + host);
 
-		return credentials;
+		return credentialsProvider.getCredentials(authscope);
 	}
 
 	@Override

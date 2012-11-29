@@ -7,7 +7,7 @@ import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Provider;
 
-import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.CredentialsProvider;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.events.WebDriverEventListener;
 
@@ -27,7 +27,7 @@ public class HtmlUnitDriverProvider extends BaseWebDriverProvider {
 	protected final HtmlUnitSSLParams sslParams;
 	protected final BrowserVersion browserVersion;
 	protected final AjaxController ajaxController;
-	protected final Map<String, UsernamePasswordCredentials> credentialsMap;
+	protected final Map<String, CredentialsProvider> credentialsProviderMap;
 	protected final Provider<DumpFileCreator> htmlFileCreatorProvider;
 	protected final Provider<File> moduleArchiveDirProvider;
 	protected final Provider<Set<WebWindowListener>> listenersProvider;
@@ -35,7 +35,7 @@ public class HtmlUnitDriverProvider extends BaseWebDriverProvider {
 	@Inject
 	protected HtmlUnitDriverProvider(final Configuration config, final Set<WebDriverEventListener> eventListeners,
 			final HtmlUnitWebDriverParams webDriverParams, final HtmlUnitSSLParams sslParams, final BrowserVersion browserVersion,
-			final AjaxController ajaxController, final Map<String, UsernamePasswordCredentials> credentialsMap,
+			final AjaxController ajaxController, final Map<String, CredentialsProvider> credentialsProviderMap,
 			final Provider<DumpFileCreator> htmlFileCreatorProvider, @ModuleArchiveDir final Provider<File> moduleArchiveDirProvider,
 			final Provider<Set<WebWindowListener>> listenersProvider) {
 		super(config, eventListeners);
@@ -43,7 +43,7 @@ public class HtmlUnitDriverProvider extends BaseWebDriverProvider {
 		this.sslParams = sslParams;
 		this.browserVersion = browserVersion;
 		this.ajaxController = ajaxController;
-		this.credentialsMap = credentialsMap;
+		this.credentialsProviderMap = credentialsProviderMap;
 		this.htmlFileCreatorProvider = htmlFileCreatorProvider;
 		this.moduleArchiveDirProvider = moduleArchiveDirProvider;
 		this.listenersProvider = listenersProvider;
@@ -51,7 +51,7 @@ public class HtmlUnitDriverProvider extends BaseWebDriverProvider {
 
 	@Override
 	protected WebDriver createWebDriver() {
-		return new JFunkHtmlUnitDriverImpl(browserVersion, webDriverParams, ajaxController, sslParams, credentialsMap, htmlFileCreatorProvider,
-				moduleArchiveDirProvider, listenersProvider);
+		return new JFunkHtmlUnitDriverImpl(browserVersion, webDriverParams, ajaxController, sslParams,
+				credentialsProviderMap, htmlFileCreatorProvider, moduleArchiveDirProvider, listenersProvider);
 	}
 }

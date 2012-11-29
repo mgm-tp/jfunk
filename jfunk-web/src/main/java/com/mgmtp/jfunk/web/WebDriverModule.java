@@ -12,12 +12,13 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.CredentialsProvider;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.events.WebDriverEventListener;
 
 import com.gargoylesoftware.htmlunit.AjaxController;
 import com.gargoylesoftware.htmlunit.BrowserVersion;
+import com.gargoylesoftware.htmlunit.DefaultCredentialsProvider;
 import com.gargoylesoftware.htmlunit.NicelyResynchronizingAjaxController;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Maps;
@@ -126,8 +127,8 @@ public class WebDriverModule extends BaseWebDriverModule {
 	}
 
 	@Provides
-	protected Map<String, UsernamePasswordCredentials> provideHtmlUnitCredentialsMap(final Configuration config) {
-		Map<String, UsernamePasswordCredentials> result = newHashMapWithExpectedSize(1);
+	protected Map<String, CredentialsProvider> provideHtmlUnitCredentialsProviderMap(final Configuration config) {
+		Map<String, CredentialsProvider> result = newHashMapWithExpectedSize(1);
 
 		// extract sorted credential keys
 		Set<String> credentialKeys = newTreeSet(Maps.filterKeys(config, new Predicate<String>() {
@@ -149,7 +150,9 @@ public class WebDriverModule extends BaseWebDriverModule {
 			// as set is sorted, the next key is that for the username for the current host
 			String username = config.get(it.next());
 
-			result.put(host, new UsernamePasswordCredentials(username, password));
+			DefaultCredentialsProvider credentialsProvider = new DefaultCredentialsProvider();
+			credentialsProvider.addCredentials(username, password);
+			result.put(host, credentialsProvider);
 		}
 
 		return result;
