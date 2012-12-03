@@ -13,6 +13,7 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NotFoundException;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
@@ -100,11 +101,13 @@ public class WebDriverTool {
 		new Actions(webDriver).moveToElement(element).perform();
 
 		WebElementFinder finder = wef.timeout(1L, 200L).by(byToAppear);
-		NoSuchElementException exception = null;
+		RuntimeException exception = null;
 		for (int i = 0; i < 10; ++i) {
 			try {
 				return finder.find();
 			} catch (NoSuchElementException ex) {
+				exception = ex;
+			} catch (TimeoutException ex) {
 				exception = ex;
 			}
 		}
