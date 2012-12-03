@@ -20,6 +20,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import com.google.common.base.Predicate;
 import com.google.common.collect.Sets.SetView;
 import com.mgmtp.jfunk.common.config.ScriptScoped;
 import com.mgmtp.jfunk.data.DataSet;
@@ -48,8 +49,16 @@ public class WebDriverTool {
 		return wef.by(by).find();
 	}
 
+	public WebElement find(final By by, final Predicate<WebElement> condition) {
+		return wef.by(by).condition(condition).find();
+	}
+
 	public List<WebElement> findAll(final By by) {
 		return wef.by(by).findAll();
+	}
+
+	public List<WebElement> findAll(final By by, final Predicate<WebElement> condition) {
+		return wef.by(by).condition(condition).findAll();
 	}
 
 	public void waitUntilNotFound(final By by) {
