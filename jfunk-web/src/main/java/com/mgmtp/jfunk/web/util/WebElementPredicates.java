@@ -1,5 +1,7 @@
 package com.mgmtp.jfunk.web.util;
 
+import static org.apache.commons.lang3.StringUtils.normalizeSpace;
+
 import java.util.regex.Pattern;
 
 import org.openqa.selenium.WebElement;
@@ -12,6 +14,22 @@ public class WebElementPredicates {
 
 	private WebElementPredicates() {
 		// don't allow instantiation
+	}
+
+	public static BasePredicate<WebElement, Void> textEquals(final String value) {
+		return new TextEqualsPredicate(value, true);
+	}
+
+	public static BasePredicate<WebElement, Void> textEquals(final String value, final boolean normalizeSpace) {
+		return new TextEqualsPredicate(value, normalizeSpace);
+	}
+
+	public static BasePredicate<WebElement, Void> textContains(final String value) {
+		return new TextContainsPredicate(value, true);
+	}
+
+	public static BasePredicate<WebElement, Void> textContains(final String value, final boolean normalizeSpace) {
+		return new TextContainsPredicate(value, normalizeSpace);
 	}
 
 	public static BasePredicate<WebElement, Void> textMatchesPattern(final Pattern pattern) {
@@ -28,6 +46,46 @@ public class WebElementPredicates {
 
 	public static BasePredicate<WebElement, Void> attributeValueMatchesPattern(final String regex, final String attribute) {
 		return new AttributeValueMatchesPatternPredicate(regex, attribute);
+	}
+
+	private static class TextEqualsPredicate extends BasePredicate<WebElement, Void> {
+
+		private final String value;
+		private final boolean normalizeSpace;
+
+		public TextEqualsPredicate(final String value, final boolean normalizeSpace) {
+			this.value = value;
+			this.normalizeSpace = normalizeSpace;
+		}
+
+		@Override
+		public boolean doApply(final WebElement input) {
+			String text = input.getText();
+			if (normalizeSpace) {
+				text = normalizeSpace(text);
+			}
+			return text.equals(value);
+		}
+	}
+
+	private static class TextContainsPredicate extends BasePredicate<WebElement, Void> {
+
+		private final String value;
+		private final boolean normalizeSpace;
+
+		public TextContainsPredicate(final String value, final boolean normalizeSpace) {
+			this.value = value;
+			this.normalizeSpace = normalizeSpace;
+		}
+
+		@Override
+		public boolean doApply(final WebElement input) {
+			String text = input.getText();
+			if (normalizeSpace) {
+				text = normalizeSpace(text);
+			}
+			return text.contains(value);
+		}
 	}
 
 	private static class TextMatchesPatternPredicate extends BasePredicate<WebElement, Void> {
