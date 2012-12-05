@@ -76,11 +76,13 @@ public class WebDriverTool {
 		throw new WebDriverException("Element has not disappeared: " + by);
 	}
 
-	public void tryClick(final By by) {
+	public boolean tryClick(final By by) {
 		List<WebElement> elements = wef.timeout(2L).by(by).findAll();
 		if (elements.size() > 0) {
 			elements.get(0).click();
+			return true;
 		}
+		return false;
 	}
 
 	public void sendKeys(final By by, final CharSequence... keysToSend) {
