@@ -123,10 +123,6 @@ class UnitSupport {
 	}
 
 	void afterTest() {
-		if (!scriptScope.isScopeEntered()) {
-			// TODO this is a hack, see https://jira.mgm-tp.com/jira/browse/MQA-946
-			scriptScope.enterScope();
-		}
 		eventBus.post(new AfterRunEvent());
 	}
 }
