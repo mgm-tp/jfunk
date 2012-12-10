@@ -62,12 +62,12 @@ public class WebDriverTool {
 	}
 
 	public void waitUntilNotFound(final By by) {
-		for (int i = 0; i < 20; ++i) {
+		for (int i = 0; i < 25; ++i) {
 			if (WebElementFinder.create().webDriver(webDriver).by(by).findAll().isEmpty()) {
 				return;
 			}
 			try {
-				Thread.sleep(100L);
+				Thread.sleep(500L);
 			} catch (InterruptedException ex) {
 				Thread.currentThread().interrupt();
 				break;
