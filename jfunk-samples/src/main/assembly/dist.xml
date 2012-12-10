@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-	<!-- $Id$ -->
 <assembly>
 	<id>dist</id>
 	<formats>
 		<format>zip</format>
 	</formats>
 	<includeBaseDirectory>false</includeBaseDirectory>
+	<!-- <files>
+		<file>
+			<source>${project.build.directory}/maven-shared-archive-resources/copyright.txt</source>
+			<outputDirectory>/</outputDirectory>
+			<filtered>true</filtered>
+		</file>
+	</files> -->
 	<fileSets>
 		<fileSet>
 			<directory>${basedir}</directory>
