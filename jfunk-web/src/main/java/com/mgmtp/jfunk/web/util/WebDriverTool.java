@@ -7,11 +7,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NotFoundException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
@@ -31,6 +33,21 @@ import com.mgmtp.jfunk.data.DataSet;
  */
 @ScriptScoped
 public class WebDriverTool {
+
+	private static final String APPEND_OPEN_WINDOW_LINK_SCRIPT_TEMPLATE = "(function() { "
+			+ "var jFunkAnchorTag = document.createElement('a');"
+			+ "jFunkAnchorTag.appendChild(document.createTextNode('jfunk-new-window-link'));"
+			+ "jFunkAnchorTag.setAttribute('id', '%s');"
+			+ "jFunkAnchorTag.setAttribute('href', '%s');"
+			+ "jFunkAnchorTag.setAttribute('target', '_blank');"
+			+ "jFunkAnchorTag.setAttribute('style', 'display:block; z-index: 100000; position: relative;');"
+			+ "document.getElementsByTagName('body')[0].appendChild(jFunkAnchorTag);"
+			+ "}());";
+
+	private static final String REMOVE_OPEN_WINDOW_LINK_SCRIPT_TEMPLATE = "(function() { "
+			+ "var jFunkAnchorTag = document.getElementById('%s');"
+			+ "jFunkAnchorTag.parentNode.removeChild(jFunkAnchorTag);"
+			+ "}());";
 
 	private final WebDriver webDriver;
 	private final WebElementFinder wef;
@@ -62,12 +79,12 @@ public class WebDriverTool {
 	}
 
 	public void waitUntilNotFound(final By by) {
-		for (int i = 0; i < 25; ++i) {
+		for (int i = 0; i < 120; ++i) {
 			if (WebElementFinder.create().webDriver(webDriver).by(by).findAll().isEmpty()) {
 				return;
 			}
 			try {
-				Thread.sleep(500L);
+				Thread.sleep(1000L);
 			} catch (InterruptedException ex) {
 				Thread.currentThread().interrupt();
 				break;
@@ -161,7 +178,7 @@ public class WebDriverTool {
 	 *            identifies the element to click on in order to open the new window
 	 * @param timeoutSeconds
 	 *            the timeout in seconds to wait for the new window to open
-	 * @return the handle of the newly opened window
+	 * @return the handle of window that opened the new window
 	 */
 	public String openNewWindow(final By openClickBy, final long timeoutSeconds) {
 		return openNewWindow(new Runnable() {
@@ -173,6 +190,41 @@ public class WebDriverTool {
 	}
 
 	/**
+	 * Opens a new window blank window ({@code about:blank}) and switches to it. The new window is
+	 * opened by inserting a new link with {@code target='_blank'} and {@code href='about:blank'} at
+	 * the end of the page, which is then clicked and removed again afterwards.
+	 * 
+	 * @return the handle of window that opened the new window
+	 */
+	public String openNewWindow() {
+		return openNewWindow("about:blank");
+	}
+
+	/**
+	 * Opens a new window, switches to it, and loads the given URL in the new window. The new window
+	 * is opened by inserting a new link with {@code target='_blank'} and {@code href='about:blank'}
+	 * at the end of the page, which is then clicked and removed again afterwards.
+	 * 
+	 * @param url
+	 *            the url to open
+	 * @return the handle of window that opened the new window
+	 */
+	public String openNewWindow(final String url) {
+		String id = UUID.randomUUID().toString();
+		// add link
+		((JavascriptExecutor) webDriver).executeScript(String.format(APPEND_OPEN_WINDOW_LINK_SCRIPT_TEMPLATE, id, url));
+		String oldHandle = openNewWindow(By.id(id), 2L);
+		String newHandle = webDriver.getWindowHandle();
+
+		// remove link again
+		webDriver.switchTo().window(oldHandle);
+		((JavascriptExecutor) webDriver).executeScript(String.format(REMOVE_OPEN_WINDOW_LINK_SCRIPT_TEMPLATE, id));
+
+		webDriver.switchTo().window(newHandle);
+		return oldHandle;
+	}
+
+	/**
 	 * Opens a new window and switches to it. The window to switch to is determined by diffing the
 	 * given {@code existingWindowHandles} with the current ones. The difference must be exactly one
 	 * window handle which is then used to switch to.
@@ -181,9 +233,10 @@ public class WebDriverTool {
 	 *            logic for opening the new window
 	 * @param timeoutSeconds
 	 *            the timeout in seconds to wait for the new window to open
-	 * @return the handle of the newly opened window
+	 * @return the handle of window that opened the new window
 	 */
 	public String openNewWindow(final Runnable openCommand, final long timeoutSeconds) {
+		String oldHandle = webDriver.getWindowHandle();
 		final Set<String> existingWindowHandles = webDriver.getWindowHandles();
 
 		openCommand.run();
@@ -213,6 +266,6 @@ public class WebDriverTool {
 
 		String newHandle = predicate.getResult();
 		webDriver.switchTo().window(newHandle);
-		return newHandle;
+		return oldHandle;
 	}
 }
