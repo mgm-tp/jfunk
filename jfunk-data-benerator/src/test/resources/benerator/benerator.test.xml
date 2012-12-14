@@ -1,4 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+     Copyright (c) mgm technology partners GmbH, Munich.
+
+     See the copyright.txt file distributed with this work for additional
+     information regarding copyright ownership and intellectual property rights.
+
+-->
 <setup xmlns="http://databene.org/benerator/0.5.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://databene.org/benerator/0.5.9 http://databene.org/benerator-0.5.9.xsd">
 
 	<create-entities name="ustva" count="1" consumer="com.mgmtp.jfunk.data.benerator.BeneratorDataSource$DataSetConsumer">

@@ -1,3 +1,11 @@
+<!--
+
+     Copyright (c) mgm technology partners GmbH, Munich.
+
+     See the copyright.txt file distributed with this work for additional
+     information regarding copyright ownership and intellectual property rights.
+
+-->
 <!-- edited with XMLSpy v2008 (http://www.altova.com) by Jochen Dost (mgm technology partners GmbH) -->
 <!-- Root element -->
 <!ELEMENT configuration (format, charsets, controls, fields, constraints)>

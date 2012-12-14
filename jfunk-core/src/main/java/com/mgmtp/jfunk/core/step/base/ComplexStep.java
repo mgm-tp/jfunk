@@ -1,3 +1,9 @@
+/*
+ *  Copyright (c) mgm technology partners GmbH, Munich.
+ *
+ *  See the copyright.txt file distributed with this work for additional
+ *  information regarding copyright ownership and intellectual property rights.
+ */
 package com.mgmtp.jfunk.core.step.base;
 
 import static com.google.common.base.Preconditions.checkState;

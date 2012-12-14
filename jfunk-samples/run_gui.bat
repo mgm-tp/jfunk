@@ -1,3 +1,10 @@
+@REM
+@REM  Copyright (c) mgm technology partners GmbH, Munich.
+@REM
+@REM  See the copyright.txt file distributed with this work for additional
+@REM  information regarding copyright ownership and intellectual property rights.
+@REM
+
 @ECHO OFF
 
 CALL setenv.bat

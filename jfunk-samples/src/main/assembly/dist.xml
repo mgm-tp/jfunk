@@ -1,17 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+     Copyright (c) mgm technology partners GmbH, Munich.
+
+     See the copyright.txt file distributed with this work for additional
+     information regarding copyright ownership and intellectual property rights.
+
+-->
 <assembly>
 	<id>dist</id>
 	<formats>
 		<format>zip</format>
 	</formats>
 	<includeBaseDirectory>false</includeBaseDirectory>
-	<!-- <files>
+	<files>
 		<file>
 			<source>${project.build.directory}/maven-shared-archive-resources/copyright.txt</source>
 			<outputDirectory>/</outputDirectory>
 			<filtered>true</filtered>
 		</file>
-	</files> -->
+	</files>
 	<fileSets>
 		<fileSet>
 			<directory>${basedir}</directory>

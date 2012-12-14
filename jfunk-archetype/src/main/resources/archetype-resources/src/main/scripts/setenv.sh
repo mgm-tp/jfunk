@@ -1,4 +1,11 @@
 #!/bin/sh
+#
+#  Copyright (c) mgm technology partners GmbH, Munich.
+#
+#  See the copyright.txt file distributed with this work for additional
+#  information regarding copyright ownership and intellectual property rights.
+#
+
 
 # Do not edit! Automagically processed by Maven.
 JFUNK_VERSION=${project.version}

@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.mgmtp.maven.poms</groupId>
 		<artifactId>mgm-pom</artifactId>
-		<version>15</version>
+		<version>16</version>
 	</parent>
 	<groupId>com.mgmtp.jfunk</groupId>
 	<artifactId>jfunk</artifactId>
@@ -135,7 +135,7 @@
 				<configuration>
 					<suppressCommitBeforeTag>false</suppressCommitBeforeTag>
 					<scmCommentPrefix>MQA-000000: [maven-release-plugin] </scmCommentPrefix>
-					<releaseProfiles>buildmeta,dist,sonar</releaseProfiles>
+					<releaseProfiles>buildmeta,dist,sonar,include-license</releaseProfiles>
 				</configuration>
 			</plugin>
 		</plugins>
@@ -457,5 +457,6 @@
 		<slf4j.version>1.6.6</slf4j.version>
 		<poi.version>3.8</poi.version>
 		<sonar.skippedModules>jfunk-samples</sonar.skippedModules>
+		<license.year>2012</license.year>
 	</properties>
 </project>
