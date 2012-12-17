@@ -3,7 +3,7 @@
 	<parent>
 		<artifactId>jfunk</artifactId>
 		<groupId>com.mgmtp.jfunk</groupId>
-		<version>3.1.0-alpha-5</version>
+		<version>3.1.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>jfunk-data-benerator</artifactId>
 	<name>jFunk Benerator Integration</name>
