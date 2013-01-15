@@ -84,13 +84,13 @@ public class WebDriverTool {
 		return wef.by(by).condition(condition).findAll();
 	}
 
-	public void waitUntilNotFound(final By by) {
-		for (int i = 0; i < 120; ++i) {
+	public void waitUntilNotFound(final By by, final long sleepMillisBetweenTries, final int numTries) {
+		for (int i = 0; i < numTries; ++i) {
 			if (WebElementFinder.create().webDriver(webDriver).by(by).findAll().isEmpty()) {
 				return;
 			}
 			try {
-				Thread.sleep(1000L);
+				Thread.sleep(sleepMillisBetweenTries);
 			} catch (InterruptedException ex) {
 				Thread.currentThread().interrupt();
 				break;

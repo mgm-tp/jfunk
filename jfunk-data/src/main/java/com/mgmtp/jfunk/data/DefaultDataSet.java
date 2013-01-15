@@ -121,7 +121,7 @@ public class DefaultDataSet implements DataSet {
 	@Override
 	public boolean getValueAsBoolean(final String key) {
 		String value = getValue(key);
-		return Boolean.valueOf(value);
+		return Boolean.parseBoolean(value);
 	}
 
 	@Override

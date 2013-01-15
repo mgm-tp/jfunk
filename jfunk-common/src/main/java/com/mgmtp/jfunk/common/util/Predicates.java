@@ -70,17 +70,34 @@ public class Predicates {
 
 	/**
 	 * Creates a {@link Predicate} that returns {@code true} for any string that ends with the
-	 * specified prefix.
+	 * specified suffix.
 	 * 
-	 * @param prefix
-	 *            The prefix
-	 * @return {@code true} for any string that ends with the specified prefix
+	 * @param suffix
+	 *            The suffix
+	 * @return {@code true} for any string that ends with the specified suffix
 	 */
-	public static Predicate<String> endsWith(final String prefix) {
+	public static Predicate<String> endsWith(final String suffix) {
 		return new Predicate<String>() {
 			@Override
 			public boolean apply(final String input) {
-				return input.endsWith(prefix);
+				return input.endsWith(suffix);
+			}
+		};
+	}
+
+	/**
+	 * Creates a {@link Predicate} that returns {@code true} for any string that contains the
+	 * specified prefix.
+	 * 
+	 * @param value
+	 *            The value
+	 * @return {@code true} for any string that contains the specified prefix
+	 */
+	public static Predicate<String> contains(final String value) {
+		return new Predicate<String>() {
+			@Override
+			public boolean apply(final String input) {
+				return input.contains(value);
 			}
 		};
 	}
