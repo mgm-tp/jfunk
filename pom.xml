@@ -206,7 +206,12 @@
 			<dependency>
 				<groupId>com.google.guava</groupId>
 				<artifactId>guava</artifactId>
-				<version>12.0</version>
+				<version>13.0.1</version>
+			</dependency>
+			<dependency>
+				<groupId>com.google.code.findbugs</groupId>
+				<artifactId>jsr305</artifactId>
+				<version>2.0.1</version>
 			</dependency>
 			<dependency>
 				<groupId>org.databene</groupId>
@@ -290,7 +295,7 @@
 			<dependency>
 				<groupId>org.seleniumhq.selenium</groupId>
 				<artifactId>selenium-java</artifactId>
-				<version>2.25.0</version>
+				<version>2.28.0</version>
 				<exclusions>
 					<exclusion>
 						<artifactId>commons-logging</artifactId>
@@ -347,7 +352,7 @@
 			<dependency>
 				<groupId>org.mockito</groupId>
 				<artifactId>mockito-all</artifactId>
-				<version>1.9.0</version>
+				<version>1.9.5</version>
 				<scope>test</scope>
 			</dependency>
 			<dependency>
@@ -384,7 +389,7 @@
 			<dependency>
 				<groupId>ch.qos.logback</groupId>
 				<artifactId>logback-classic</artifactId>
-				<version>1.0.6</version>
+				<version>1.0.9</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.poi</groupId>
@@ -453,10 +458,10 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<guice.version>3.0</guice.version>
-		<jersey.version>1.10</jersey.version>
-		<slf4j.version>1.6.6</slf4j.version>
-		<poi.version>3.8</poi.version>
+		<jersey.version>1.16</jersey.version>
+		<slf4j.version>1.7.2</slf4j.version>
+		<poi.version>3.9</poi.version>
 		<sonar.skippedModules>jfunk-samples</sonar.skippedModules>
-		<license.year>2012</license.year>
+		<license.year>2013</license.year>
 	</properties>
 </project>
