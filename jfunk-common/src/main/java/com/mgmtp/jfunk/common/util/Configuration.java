@@ -6,7 +6,7 @@
  */
 package com.mgmtp.jfunk.common.util;
 
-import static com.google.common.collect.Maps.newHashMapWithExpectedSize;
+import static com.google.common.collect.Lists.newArrayList;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -16,7 +16,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
+import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
@@ -29,6 +31,7 @@ import org.apache.log4j.Logger;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Queues;
 import com.mgmtp.jfunk.common.JFunkConstants;
 import com.mgmtp.jfunk.common.exception.JFunkException;
 
@@ -48,9 +51,11 @@ public final class Configuration extends ExtendedProperties {
 
 	private transient ZipFile zipArchive;
 
-	private final Map<String, String> extraFileProperties = newHashMapWithExpectedSize(5);
+	private final List<String> extraFileProperties = newArrayList();
 
 	private final Charset charset;
+
+	private boolean loading;
 
 	/**
 	 * Creates an empty instance.
@@ -96,6 +101,7 @@ public final class Configuration extends ExtendedProperties {
 	public void load(final String fileName, final boolean preserveExisting) {
 		InputStream is = null;
 		try {
+			loading = true;
 			if (fileName.endsWith(JFunkConstants.ZIP_FILE_SUFFIX)) {
 				log.info("Loading zip archive '" + fileName + "'...");
 				zipArchive = new ZipFile(fileName);
@@ -115,6 +121,7 @@ public final class Configuration extends ExtendedProperties {
 		} catch (IOException ex) {
 			throw new JFunkException("Error loading properties: " + fileName, ex);
 		} finally {
+			loading = false;
 			IOUtils.closeQuietly(is);
 		}
 	}
@@ -136,23 +143,27 @@ public final class Configuration extends ExtendedProperties {
 	private void loadExtraFiles(final String filterPrefix) {
 		while (true) {
 			Map<String, String> view = Maps.filterKeys(this, Predicates.startsWith(filterPrefix));
-
-			// we need to keep them separately in order to be able to reload them (see put method)
-			extraFileProperties.putAll(view);
-
 			if (view.isEmpty()) {
 				break;
 			}
 
-			// We need a copy because we only have a view, so we can remove the original keys.
-			Map<String, String> copy = Maps.newHashMap(view);
+			Queue<String> fileKeys = Queues.newArrayDeque(view.values());
+
+			// we need to keep them separately in order to be able to reload them (see put method)
+			extraFileProperties.addAll(fileKeys);
 
 			// Remove original keys in order to prevent a stack overflow
 			view.clear();
 
-			for (String fileName : copy.values()) {
+			for (String fileNameKey = null; (fileNameKey = fileKeys.poll()) != null;) {
 				// Recursion
-				load(processPropertyValue(fileName));
+				String fileName = processPropertyValue(fileNameKey);
+				if (PLACEHOLDER_PATTERN.matcher(fileName).find()) {
+					// not all placeholders were resolved, so we enqueue it again to process another file first
+					fileKeys.offer(fileName);
+				} else {
+					load(fileName);
+				}
 			}
 		}
 	}
@@ -161,19 +172,22 @@ public final class Configuration extends ExtendedProperties {
 	public String put(final String key, final String value) {
 		String result = super.put(key, value);
 
-		if (!Strings.isNullOrEmpty(value)) {
-			// reloads extra files if the contains placeholders and
-			// the properties the placeholders refer to are changed
-			for (String extraFile : extraFileProperties.values()) {
-				Matcher matcher = PLACEHOLDER_PATTERN.matcher(extraFile);
-				while (matcher.find()) {
-					if (matcher.group(1).equals(key)) {
-						load(processPropertyValue(extraFile));
+		if (!loading) {
+			// put is also called during loading, so we need to exclude this re-loading mechanism there,
+			// it is not necessary and may lead to errors because not all placeholders might have been resolved yet
+			if (!Strings.isNullOrEmpty(value)) {
+				// reloads extra files if the contains placeholders and
+				// the properties the placeholders refer to are changed
+				for (String extraFile : extraFileProperties) {
+					Matcher matcher = PLACEHOLDER_PATTERN.matcher(extraFile);
+					while (matcher.find()) {
+						if (matcher.group(1).equals(key)) {
+							load(processPropertyValue(extraFile));
+						}
 					}
 				}
 			}
 		}
-
 		return result;
 	}
 
