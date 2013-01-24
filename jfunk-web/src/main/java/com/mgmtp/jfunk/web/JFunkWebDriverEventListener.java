@@ -159,7 +159,7 @@ public class JFunkWebDriverEventListener implements WebDriverEventListener {
 
 	@Override
 	public void onException(final Throwable throwable, final WebDriver driver) {
-		// unused
+		savePage(driver, "onException", null);
 	}
 
 	/**
