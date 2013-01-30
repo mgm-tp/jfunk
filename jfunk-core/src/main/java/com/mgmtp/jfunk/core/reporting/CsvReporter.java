@@ -9,6 +9,7 @@ package com.mgmtp.jfunk.core.reporting;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Lists.newArrayListWithCapacity;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 import java.nio.charset.Charset;
 import java.util.List;
@@ -184,6 +185,28 @@ public class CsvReporter extends AbstractFileReporter {
 			// additional result column
 			appendEscapedAndQuoted(sb, i++, data.getTestObject().getName());
 			appendEscapedAndQuoted(sb, i++, data.isSuccess() ? JFunkConstants.OK : JFunkConstants.ERROR);
+
+			if (data.isSuccess()) {
+				Throwable th = data.getThrowable();
+				String msg = th.getMessage();
+
+				Throwable root = th;
+				while (root.getCause() != null) {
+					root = root.getCause();
+				}
+
+				String rootMsg = root.getMessage();
+				if (rootMsg != null && !rootMsg.equals(msg)) {
+					msg += " - Root Message: " + rootMsg;
+				}
+
+				if (isBlank(msg)) {
+					msg = th.getClass().getName();
+				}
+				appendEscapedAndQuoted(sb, i++, msg);
+			} else {
+				appendEscapedAndQuoted(sb, i++, "");
+			}
 
 			if (sb.isEmpty()) {
 				log.info("Ignoring empty row in report");
