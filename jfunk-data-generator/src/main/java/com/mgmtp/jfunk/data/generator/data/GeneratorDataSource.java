@@ -84,8 +84,9 @@ public final class GeneratorDataSource extends BaseDataSource {
 			gen.setTestmode(StringUtils.isNotEmpty(configuration.get(JFunkConstants.TESTMERKER)));
 			getFormDataKeys(); // Makes sure fixed values are loaded
 			FormData data = formDataFactory.create(key, gen, fixedValues);
+
+			DataSet ds = new DefaultDataSet();
 			if (data.generate()) {
-				DataSet ds = new DefaultDataSet();
 				Map<String, FormEntry> entries = data.getEntries();
 
 				for (FormEntry entry : entries.values()) {
@@ -96,9 +97,8 @@ public final class GeneratorDataSource extends BaseDataSource {
 				 * See MQA-745 for details.
 				 */
 				//				cleanUp(ds);
-				return ds;
 			}
-			return null;
+			return ds;
 		} catch (IOException ex) {
 			throw new IllegalStateException("Error creating form data: " + key, ex);
 		}
