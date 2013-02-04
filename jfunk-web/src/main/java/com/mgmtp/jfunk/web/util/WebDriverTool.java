@@ -131,13 +131,13 @@ public class WebDriverTool {
 	}
 
 	public WebElement hover(final By by, final By byToAppear) {
-		WebElement element = find(by);
-		new Actions(webDriver).moveToElement(element).perform();
-
 		WebElementFinder finder = wef.timeout(1L, 200L).by(byToAppear);
+
 		RuntimeException exception = null;
 		for (int i = 0; i < 10; ++i) {
 			try {
+				WebElement element = find(by);
+				new Actions(webDriver).moveToElement(element).perform();
 				return finder.find();
 			} catch (NoSuchElementException ex) {
 				exception = ex;
