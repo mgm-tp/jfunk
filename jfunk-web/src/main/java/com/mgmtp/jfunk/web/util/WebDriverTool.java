@@ -21,6 +21,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NotFoundException;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
@@ -142,6 +143,8 @@ public class WebDriverTool {
 			} catch (NoSuchElementException ex) {
 				exception = ex;
 			} catch (TimeoutException ex) {
+				exception = ex;
+			} catch (StaleElementReferenceException ex) {
 				exception = ex;
 			}
 		}
