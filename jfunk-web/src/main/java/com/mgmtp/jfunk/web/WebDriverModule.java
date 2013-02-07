@@ -35,6 +35,7 @@ import com.google.inject.name.Names;
 import com.mgmtp.jfunk.common.JFunkConstants;
 import com.mgmtp.jfunk.common.config.ScriptScoped;
 import com.mgmtp.jfunk.common.util.Configuration;
+import com.mgmtp.jfunk.web.event.WebDriverScriptEngineEventHandler;
 import com.mgmtp.jfunk.web.util.DumpFileCreator;
 import com.mgmtp.jfunk.web.util.FormInputHandler;
 import com.mgmtp.jfunk.web.util.WebDriverTool;
@@ -61,6 +62,8 @@ public class WebDriverModule extends BaseWebDriverModule {
 		bind(AjaxController.class).to(NicelyResynchronizingAjaxController.class);
 		bind(DumpFileCreator.class);
 		bind(WebDriverTool.class);
+
+		bindEventHandler().to(WebDriverScriptEngineEventHandler.class);
 
 		bindWebDriver(WebConstants.WEBDRIVER_HTMLUNIT, HtmlUnitDriverProvider.class, ScriptScoped.class);
 		bindWebDriver(WebConstants.WEBDRIVER_FIREFOX, FirefoxDriverProvider.class, ScriptScoped.class);

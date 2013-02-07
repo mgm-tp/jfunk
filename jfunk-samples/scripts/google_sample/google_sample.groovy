@@ -22,26 +22,24 @@ String url = 'http://www.google.com'
 set 'archiving.mode' to 'all'
 set 'archive.dir' to 'testruns/google'
 
-registerReporter CsvReporter.forDataSet('google').create()
+//registerReporter CsvReporter.forDataSet('google').create()
 
-generate 'google'
+//generate 'google'
 
-run new GoogleModule()
+//run new GoogleModule()
 
 generate 'google'
 
 module ('GoogleScriptModule', [dataSetKey: 'google']) {
 
-	// Load page
-	step new LoadPage(url)
+	webDriver.get(url)
 
 	// Enter form value (form name=f, form field=q)
 	searchTerm = get('${google searchTerm}')
 
-	step new JFunkWebElement(By.name('q'), searchTerm)
+	wdt.processField(By.name('q'), searchTerm)
 
-	// Click submit button
-	step new SendKeysStep(By.name('q'), Keys.ENTER)
+	wdt.sendKeys(By.name('q'), Keys.ENTER)
 
 	// Search for text on page
 	step new CheckHtml4Pattern("(?s).*$searchTerm.*")
