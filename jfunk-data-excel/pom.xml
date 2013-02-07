@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>com.mgmtp.jfunk</groupId>
 		<artifactId>jfunk</artifactId>
-		<version>3.1.0-alpha-6</version>
+		<version>3.1.0-alpha-7-SNAPSHOT</version>
 	</parent>
 	<artifactId>jfunk-data-excel</artifactId>
 	<name>jfunk-data-excel</name>
