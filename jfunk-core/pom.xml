@@ -37,7 +37,7 @@
 						</goals>
 						<configuration>
 							<sources>
-								<source>${project.basedir}/src/main/groovy</source>
+								<source>${basedir}/src/main/groovy</source>
 							</sources>
 						</configuration>
 					</execution>
@@ -62,12 +62,6 @@
 		<dependency>
 			<groupId>com.mgmtp.jfunk</groupId>
 			<artifactId>jfunk-common</artifactId>
-			<exclusions>
-				<exclusion>
-					<artifactId>log4j</artifactId>
-					<groupId>log4j</groupId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>com.mgmtp.jfunk</groupId>

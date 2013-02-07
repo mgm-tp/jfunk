@@ -16,12 +16,12 @@
 	<build>
 		<resources>
 			<resource>
-				<directory>\${project.basedir}/src/main/resources</directory>
+				<directory>\${basedir}/src/main/resources</directory>
 			</resource>
 			<resource>
-				<targetPath>\${project.basedir}</targetPath>
+				<targetPath>\${basedir}</targetPath>
 				<filtering>true</filtering>
-				<directory>\${project.basedir}/src/main/scripts</directory>
+				<directory>\${basedir}/src/main/scripts</directory>
 				<includes>
 					<include>setenv.bat</include>
 					<include>setenv.sh</include>
@@ -43,7 +43,7 @@
 							<excludeDefaultDirectories>true</excludeDefaultDirectories>
 							<filesets>
 								<fileset>
-									<directory>\${project.basedir}/lib</directory>
+									<directory>\${basedir}/lib</directory>
 									<includes>
 										<include>*.jar</include>
 									</includes>
@@ -65,7 +65,7 @@
 							<goal>copy-dependencies</goal>
 						</goals>
 						<configuration>
-							<outputDirectory>\${project.basedir}/lib</outputDirectory>
+							<outputDirectory>\${basedir}/lib</outputDirectory>
 						</configuration>
 					</execution>
 				</executions>
