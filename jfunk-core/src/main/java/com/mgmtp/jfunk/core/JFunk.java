@@ -172,7 +172,7 @@ public final class JFunk extends JFunkBase {
 
 					try {
 						success = scriptExecutor.executeScript(script, scriptProperties);
-					} catch (Exception th) {
+					} catch (Throwable th) {
 						success = false;
 						LOG.error(th.getMessage(), th);
 					}
