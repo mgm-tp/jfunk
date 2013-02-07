@@ -187,6 +187,8 @@ public class CsvReporter extends AbstractFileReporter {
 			appendEscapedAndQuoted(sb, i++, data.isSuccess() ? JFunkConstants.OK : JFunkConstants.ERROR);
 
 			if (data.isSuccess()) {
+				appendEscapedAndQuoted(sb, i++, "");
+			} else {
 				Throwable th = data.getThrowable();
 				String msg = th.getMessage();
 
@@ -204,8 +206,6 @@ public class CsvReporter extends AbstractFileReporter {
 					msg = th.getClass().getName();
 				}
 				appendEscapedAndQuoted(sb, i++, msg);
-			} else {
-				appendEscapedAndQuoted(sb, i++, "");
 			}
 
 			if (sb.isEmpty()) {
