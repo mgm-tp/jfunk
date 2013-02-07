@@ -59,7 +59,7 @@ import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mgmtp.jfunk.common.config.ModuleScoped;
+import com.mgmtp.jfunk.common.config.ScriptScoped;
 import com.mgmtp.jfunk.common.util.Configuration;
 import com.mgmtp.jfunk.core.exception.MailException;
 
@@ -68,7 +68,7 @@ import com.mgmtp.jfunk.core.exception.MailException;
  * 
  * @version $Id$
  */
-@ModuleScoped
+@ScriptScoped
 public class EmailParser {
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
