@@ -1,7 +1,7 @@
 /*
- *  Copyright (c) mgm technology partners GmbH, Munich.
+ *  Copyright (C) 2013 mgm technology partners GmbH, Munich.
  *
- *  See the copyright.txt file distributed with this work for additional
+ *  See the LICENSE file distributed with this work for additional
  *  information regarding copyright ownership and intellectual property rights.
  */
 package com.mgmtp.jfunk.common.exception;

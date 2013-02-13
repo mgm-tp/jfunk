@@ -1,7 +1,7 @@
 @REM
-@REM  Copyright (c) mgm technology partners GmbH, Munich.
+@REM  Copyright (C) 2013 mgm technology partners GmbH, Munich.
 @REM
-@REM  See the copyright.txt file distributed with this work for additional
+@REM  See the LICENSE file distributed with this work for additional
 @REM  information regarding copyright ownership and intellectual property rights.
 @REM
 
