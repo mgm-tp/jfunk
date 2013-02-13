@@ -6,8 +6,6 @@
  */
 package com.mgmtp.jfunk.core.step;
 
-import static com.mgmtp.jfunk.common.util.Varargs.va;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -94,7 +92,7 @@ public class CheckString4Pattern extends BaseStep {
 
 	@Override
 	public void execute() throws StepException {
-		log.info("Regular expression {} must {}match in string {}", va(pattern, mustExist ? "" : "not ", source));
+		log.info("Regular expression {} must {}match in string {}", pattern, mustExist ? "" : "not ", source);
 
 		Matcher matcher = pattern.matcher(source);
 		boolean match = matcher.matches();

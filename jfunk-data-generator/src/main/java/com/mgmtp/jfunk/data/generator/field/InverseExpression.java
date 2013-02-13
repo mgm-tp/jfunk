@@ -92,6 +92,9 @@ public final class InverseExpression extends Field {
 						bad = 1;
 						total = 1;
 					}
+					break;
+				default:
+					break;
 			}
 		}
 		/*

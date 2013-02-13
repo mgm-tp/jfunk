@@ -60,6 +60,7 @@ public class Sum extends BaseConstraint {
 		super(random, element, generator);
 		format = FormatFactory.getNumberFormat(element);
 		summands = new ArrayList<ConstraintWrap>();
+		@SuppressWarnings("unchecked")
 		List<Element> constraints = element.getChildren(XMLTags.SUMMAND);
 		for (Element element2 : constraints) {
 			summands.add(new ConstraintWrap(element2));

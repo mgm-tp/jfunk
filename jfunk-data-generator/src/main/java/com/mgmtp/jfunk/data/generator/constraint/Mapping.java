@@ -63,9 +63,11 @@ public class Mapping extends BaseConstraint {
 
 	public Mapping(final MathRandom random, final Element element, final Generator g) {
 		super(random, element, g);
+		@SuppressWarnings("unchecked")
 		List<Element> entries = element.getChildren(XMLTags.ENTRY);
 		map = new HashMap<String, Constraint>(entries.size());
 		for (Element el : entries) {
+			@SuppressWarnings("unchecked")
 			List<Element> keys = el.getChildren(XMLTags.KEY);
 			for (Element key : keys) {
 				map.put(key.getText(), getConstraint(el));

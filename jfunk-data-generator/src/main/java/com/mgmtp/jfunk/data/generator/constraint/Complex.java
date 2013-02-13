@@ -67,6 +67,7 @@ public class Complex extends BaseConstraint {
 		dependent = "true".equals(el.getAttributeValue(XMLTags.DEPENDENT));
 		constraints = new ArrayList<Constraint>();
 		ConstraintFactory factory = generator.getConstraintFactory();
+		@SuppressWarnings("unchecked")
 		List<Element> children = el.getChildren();
 		for (Element child : children) {
 			if (XMLTags.CONSTRAINT.equals(child.getName())) {

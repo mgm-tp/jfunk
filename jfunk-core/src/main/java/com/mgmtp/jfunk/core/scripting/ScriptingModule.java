@@ -6,7 +6,6 @@
  */
 package com.mgmtp.jfunk.core.scripting;
 
-import com.google.inject.assistedinject.FactoryModuleBuilder;
 import com.mgmtp.jfunk.core.config.BaseJFunkGuiceModule;
 
 /**

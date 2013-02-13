@@ -44,6 +44,7 @@ public final class Enumeration extends Field {
 
 	public Enumeration(final MathRandom random, final Element element, final String characterSetId) {
 		super(random, element, characterSetId);
+		@SuppressWarnings("unchecked")
 		List<Element> valueElements = element.getChildren(XMLTags.VALUE);
 		values = Lists.newArrayListWithExpectedSize(valueElements.size());
 		for (Element valueElement : valueElements) {

@@ -263,6 +263,7 @@ public class BaseMailObject {
 				out.println("# HEADER  #");
 				out.println("###########");
 
+				@SuppressWarnings("unchecked")
 				Enumeration<Header> headers = msg.getAllHeaders();
 				while (headers.hasMoreElements()) {
 					Header header = headers.nextElement();

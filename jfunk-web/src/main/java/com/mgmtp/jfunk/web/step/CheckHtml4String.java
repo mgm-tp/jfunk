@@ -6,7 +6,6 @@
  */
 package com.mgmtp.jfunk.web.step;
 
-import static com.mgmtp.jfunk.common.util.Varargs.va;
 import static org.apache.commons.lang3.StringUtils.containsIgnoreCase;
 
 import com.mgmtp.jfunk.core.exception.ValidationException;
@@ -88,7 +87,7 @@ public class CheckHtml4String extends WebDriverStep {
 	@Override
 	public void execute() {
 		log.info("String '{}' must {}exist in the page source. Search is {}case-sensitive.",
-				va(string, mustExist ? "" : "not ", caseSensitive ? "" : "not "));
+				string, mustExist ? "" : "not ", caseSensitive ? "" : "not ");
 
 		String pageSource = getWebDriver().getPageSource();
 		boolean outcome = caseSensitive ? pageSource.contains(string) : containsIgnoreCase(pageSource, string);

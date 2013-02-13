@@ -6,7 +6,6 @@
  */
 package com.mgmtp.jfunk.web;
 
-import static com.mgmtp.jfunk.common.util.Varargs.va;
 import static org.apache.commons.io.FileUtils.copyFile;
 import static org.apache.commons.io.FileUtils.deleteQuietly;
 import static org.apache.commons.io.FileUtils.writeStringToFile;
@@ -206,7 +205,7 @@ public class JFunkWebDriverEventListener implements WebDriverEventListener {
 						writeStringToFile(f, html.toString(), "UTF-8");
 						copyFile(f, new File(moduleArchiveDir, JFunkConstants.LASTPAGE_HTML));
 						log.debug("Saving page: filename={}, action={}, trigger={}, response={}",
-								va(f.getName(), action, triggeredBy, driver.getCurrentUrl()));
+								f.getName(), action, triggeredBy, driver.getCurrentUrl());
 						break;
 					case PNG:
 						if (driver instanceof TakesScreenshot) {
@@ -214,7 +213,7 @@ public class JFunkWebDriverEventListener implements WebDriverEventListener {
 							if (tmpFile != null) {
 								copyFile(tmpFile, f);
 								log.debug("Saving page: filename={}, action={}, trigger={}, response={}",
-										va(f.getName(), action, triggeredBy, driver.getCurrentUrl()));
+										f.getName(), action, triggeredBy, driver.getCurrentUrl());
 								deleteQuietly(tmpFile);
 							}
 						}

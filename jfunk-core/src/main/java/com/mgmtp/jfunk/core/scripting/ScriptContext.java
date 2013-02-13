@@ -11,7 +11,6 @@ import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Lists.newArrayListWithExpectedSize;
 import static com.google.common.collect.Sets.newHashSetWithExpectedSize;
-import static com.mgmtp.jfunk.common.util.Varargs.va;
 import groovy.lang.Closure;
 
 import java.awt.Dimension;
@@ -634,7 +633,7 @@ public class ScriptContext {
 		String resolvedEntryKey = resolveProperty(entryKey);
 		String resolvedValue = resolveProperty(value);
 
-		log.debug("Setting entry '{}' in data set '{}' to fixed value '{}'", va(resolvedEntryKey, resolvedDataSetKey, resolvedValue));
+		log.debug("Setting entry '{}' in data set '{}' to fixed value '{}'", resolvedEntryKey, resolvedDataSetKey, resolvedValue);
 		dataSourceProvider.get().setFixedValue(resolvedDataSetKey, resolvedEntryKey, resolvedValue);
 	}
 

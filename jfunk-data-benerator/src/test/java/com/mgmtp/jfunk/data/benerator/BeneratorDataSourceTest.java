@@ -37,6 +37,7 @@ public class BeneratorDataSourceTest {
 	 * This method is annotated with {@link BeforeMethod}, because we need a fresh data source for
 	 * every test.
 	 */
+	@SuppressWarnings("unchecked")
 	@BeforeMethod
 	public void setUp() throws IOException, JDOMException {
 		ClassLoader cl = Thread.currentThread().getContextClassLoader();

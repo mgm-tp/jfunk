@@ -162,6 +162,7 @@ public final class GeneratorDataSource extends BaseDataSource {
 				if (indexedFieldsFile != null) {
 					Document doc = builder.build(ResourceLoader.getConfigInputStream(indexedFieldsFile));
 
+					@SuppressWarnings("unchecked")
 					List<Element> elements = doc.getRootElement().getChildren("field-set");
 					for (Element fieldSetElem : elements) {
 						String id = fieldSetElem.getAttributeValue("id");
@@ -170,6 +171,7 @@ public final class GeneratorDataSource extends BaseDataSource {
 						FieldSet fieldSet = new FieldSet(id, dataKey, dependsOn);
 						indexedFields.addFieldSet(fieldSet);
 
+						@SuppressWarnings("unchecked")
 						List<Element> fieldElems = fieldSetElem.getChildren("field");
 						for (Element fieldElem : fieldElems) {
 							String fieldId = fieldElem.getAttributeValue("id");

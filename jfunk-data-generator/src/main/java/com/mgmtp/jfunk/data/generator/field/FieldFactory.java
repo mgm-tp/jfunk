@@ -69,12 +69,12 @@ public class FieldFactory {
 	 * This method returns the class object from which a new instance shall be generated. To achieve
 	 * this the class attribute of the passed element is taken to determine the class name.
 	 */
-	private Class<Field> getClassObject(final Element element) {
+	private Class<? extends Field> getClassObject(final Element element) {
 		String className = element.getAttributeValue(XMLTags.CLASS);
-		Class<Field> classObject = null;
+		Class<? extends Field> classObject = null;
 		try {
 			className = className.indexOf('.') > 0 ? className : getClass().getPackage().getName() + '.' + className;
-			classObject = (Class<Field>) Class.forName(className);
+			classObject = Class.forName(className).asSubclass(Field.class);
 		} catch (ClassNotFoundException e) {
 			throw new IllegalStateException("could not get class " + className, e);
 		}

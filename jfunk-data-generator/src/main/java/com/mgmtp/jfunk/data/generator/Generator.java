@@ -124,11 +124,13 @@ public class Generator {
 			Element root = doc.getRootElement();
 
 			Element charsetsElement = root.getChild(XMLTags.CHARSETS);
+			@SuppressWarnings("unchecked")
 			List<Element> charsetElements = charsetsElement.getChildren(XMLTags.CHARSET);
 			for (Element element : charsetElements) {
 				CharacterSet.initCharacterSet(element);
 			}
 
+			@SuppressWarnings("unchecked")
 			List<Element> constraintElements = root.getChild(XMLTags.CONSTRAINTS).getChildren(XMLTags.CONSTRAINT);
 			constraints = Lists.newArrayListWithExpectedSize(constraintElements.size());
 			for (Element element : constraintElements) {

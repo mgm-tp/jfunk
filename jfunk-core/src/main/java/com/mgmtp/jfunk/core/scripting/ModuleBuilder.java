@@ -106,7 +106,7 @@ final class ModuleBuilder extends BuilderSupport {
 	}
 
 	@Override
-	protected Object createNode(final Object name, final Map attrs) {
+	protected Object createNode(final Object name, @SuppressWarnings("rawtypes") final Map attrs) {
 		return createNode(name, attrs, null);
 	}
 
@@ -116,7 +116,7 @@ final class ModuleBuilder extends BuilderSupport {
 	}
 
 	@Override
-	public Object createNode(final Object name, final Map attrs, final Object value) {
+	public Object createNode(final Object name, @SuppressWarnings("rawtypes") final Map attrs, final Object value) {
 		if ("module".equals(name)) {
 			moduleScope.enterScope();
 			ScriptModule scriptModule = new ScriptModule(value.toString(), (String) attrs.get("dataSetKey"));

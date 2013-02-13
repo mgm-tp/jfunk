@@ -38,6 +38,7 @@ public class EnumerationControl extends BaseFieldControl {
 	public EnumerationControl(final MathRandom random, final Element el, final Range range) {
 		super(random, el, range);
 
+		@SuppressWarnings("unchecked")
 		List<Element> caseElements = el.getChildren(XMLTags.CASE);
 		for (Element caseElement : caseElements) {
 			String type = caseElement.getAttributeValue(XMLTags.TYPE);

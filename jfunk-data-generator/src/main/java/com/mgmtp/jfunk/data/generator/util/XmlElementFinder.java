@@ -117,6 +117,7 @@ public class XmlElementFinder {
 	 */
 	public static Element search(final Element root, final String elementName, final String idAttributeName, final String id) {
 		Element element = null;
+		@SuppressWarnings("unchecked")
 		List<Element> children = root.getChildren();
 		for (Element e : children) {
 			if (elementName == null || e.getName().equals(elementName)) {
@@ -140,6 +141,7 @@ public class XmlElementFinder {
 	 * @return the Child with the name ignoring namespaces
 	 */
 	public static Element getChild(final String name, final Element root) {
+		@SuppressWarnings("unchecked")
 		List<Element> allChildren = root.getChildren();
 		for (Element child : allChildren) {
 			if (child.getName().equals(name)) {
@@ -154,6 +156,7 @@ public class XmlElementFinder {
 	 *         namespaces
 	 */
 	public static List<Element> getChildren(final String name, final Element root) {
+		@SuppressWarnings("unchecked")
 		List<Element> allChildren = root.getChildren();
 		ArrayList<Element> children = new ArrayList<Element>(allChildren.size());
 		for (Element child : allChildren) {
