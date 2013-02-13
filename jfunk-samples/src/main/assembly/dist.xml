@@ -13,14 +13,15 @@
 		<format>zip</format>
 	</formats>
 	<includeBaseDirectory>false</includeBaseDirectory>
-	<files>
-		<file>
-			<source>${project.build.directory}/maven-shared-archive-resources/copyright.txt</source>
-			<outputDirectory>/</outputDirectory>
-			<filtered>true</filtered>
-		</file>
-	</files>
 	<fileSets>
+		<fileSet>
+			<directory>${project.build.directory}/maven-shared-archive-resources/META-INF</directory>
+			<outputDirectory>/</outputDirectory>
+			<includes>
+				<include>LICENSE</include>
+				<include>NOTICE</include>
+			</includes>
+		</fileSet>
 		<fileSet>
 			<directory>${basedir}</directory>
 			<outputDirectory>/</outputDirectory>
