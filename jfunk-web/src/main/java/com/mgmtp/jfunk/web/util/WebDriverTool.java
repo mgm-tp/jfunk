@@ -35,8 +35,15 @@ import com.mgmtp.jfunk.common.config.ScriptScoped;
 import com.mgmtp.jfunk.data.DataSet;
 
 /**
+ * <p>
+ * Utility class for enhancing {@link WebDriver} functionality. Uses {@link WebElementFinder} and
+ * {@link FormInputHandler} internally and thus can handle timeouts implicitly.
+ * </p>
+ * <p>
+ * An script-scoped instance of this class can be retrieve via dependency injection.
+ * </p>
+ * 
  * @author rnaegele
- * @version $Id: $
  */
 @ScriptScoped
 public class WebDriverTool {
@@ -62,29 +69,75 @@ public class WebDriverTool {
 	private final Map<String, DataSet> dataSets;
 
 	@Inject
-	WebDriverTool(final WebDriver webDriver, final WebElementFinder wef, final FormInputHandler fih, final Map<String, DataSet> dataSets) {
+	WebDriverTool(final WebDriver webDriver, final WebElementFinder wef, final FormInputHandler fih,
+			final Map<String, DataSet> dataSets) {
 		this.webDriver = webDriver;
 		this.wef = wef;
 		this.fih = fih;
 		this.dataSets = dataSets;
 	}
 
+	/**
+	 * Finds the first element. Uses the internal {@link WebElementFinder}.
+	 * 
+	 * @param by
+	 *            the {@link By} used to locate the element
+	 * @return the element
+	 */
 	public WebElement find(final By by) {
 		return wef.by(by).find();
 	}
 
+	/**
+	 * Finds the first element. Uses the internal {@link WebElementFinder}, which tries to apply the
+	 * specified {@code condition} until it times out.
+	 * 
+	 * @param by
+	 *            the {@link By} used to locate the element
+	 * @param condition
+	 *            a condition the found element must meet
+	 * @return the element
+	 */
 	public WebElement find(final By by, final Predicate<WebElement> condition) {
 		return wef.by(by).condition(condition).find();
 	}
 
+	/**
+	 * Finds all elements. Uses the internal {@link WebElementFinder}.
+	 * 
+	 * @param by
+	 *            the {@link By} used to locate the elements
+	 * @return the list of elements
+	 */
 	public List<WebElement> findAll(final By by) {
 		return wef.by(by).findAll();
 	}
 
+	/**
+	 * Finds all elements. Uses the internal {@link WebElementFinder}, which tries to apply the
+	 * specified {@code condition} until it times out.
+	 * 
+	 * @param by
+	 *            the {@link By} used to locate the element
+	 * @param condition
+	 *            a condition the found elements must meet
+	 * @return the list of elements
+	 */
 	public List<WebElement> findAll(final By by, final Predicate<WebElement> condition) {
 		return wef.by(by).condition(condition).findAll();
 	}
 
+	/**
+	 * Waits until an element can no longer be found on the current page. The method keeps trying to
+	 * find the element in a loop.
+	 * 
+	 * @param by
+	 *            the {@link By} used to locate the element that is supposed to disappear
+	 * @param sleepMillisBetweenTries
+	 *            the time in milliseconds to sleep after each loop iteration
+	 * @param numTries
+	 *            the number of times looping
+	 */
 	public void waitUntilNotFound(final By by, final long sleepMillisBetweenTries, final int numTries) {
 		for (int i = 0; i < numTries; ++i) {
 			if (WebElementFinder.create().webDriver(webDriver).by(by).findAll().isEmpty()) {
@@ -100,6 +153,13 @@ public class WebDriverTool {
 		throw new WebDriverException("Element has not disappeared: " + by);
 	}
 
+	/**
+	 * Tries to find and element and clicks on it if found. Uses a timeout of two seconds.
+	 * 
+	 * @param by
+	 *            the {@link By} used to locate the element
+	 * @return {@code true} if the element was found and clicked, {@code false} otherwise
+	 */
 	public boolean tryClick(final By by) {
 		List<WebElement> elements = wef.timeout(2L).by(by).findAll();
 		if (elements.size() > 0) {
@@ -109,28 +169,77 @@ public class WebDriverTool {
 		return false;
 	}
 
+	/**
+	 * Delegates to {@link #find(By)} and calls {@link WebElement#sendKeys(CharSequence...)
+	 * sendKeys(CharSequence...)} on the returned element.
+	 * 
+	 * @param by
+	 *            the {@link By} used to locate the element
+	 * @param keysToSend
+	 *            the keys to send
+	 */
 	public void sendKeys(final By by, final CharSequence... keysToSend) {
 		find(by).sendKeys(keysToSend);
 	}
 
+	/**
+	 * Delegates to {@link #find(By)} and calls {@link WebElement#clear() clear()} on the returned
+	 * element.
+	 * 
+	 * @param by
+	 *            the {@link By} used to locate the element
+	 */
 	public void clear(final By by) {
 		find(by).clear();
 	}
 
+	/**
+	 * Delegates to {@link #find(By)} and calls {@link WebElement#click() click()} on the returned
+	 * element.
+	 * 
+	 * @param by
+	 *            the {@link By} used to locate the element
+	 */
 	public void click(final By by) {
 		find(by).click();
 	}
 
+	/**
+	 * Delegates to {@link #find(By)} and the performs a context-click using the {@link Actions}
+	 * class.
+	 * 
+	 * @param by
+	 *            the {@link By} used to locate the element
+	 */
 	public void contextClick(final By by) {
 		WebElement element = find(by);
 		new Actions(webDriver).contextClick(element).perform();
 	}
 
+	/**
+	 * Delegates to {@link #find(By)} and then moves the mouse to the returned element using the
+	 * {@link Actions} class.
+	 * 
+	 * @param by
+	 *            the {@link By} used to locate the element
+	 */
 	public void hover(final By by) {
 		WebElement element = find(by);
 		new Actions(webDriver).moveToElement(element).perform();
 	}
 
+	/**
+	 * Delegates to {@link #find(By)}, moves the mouse to the returned element using the
+	 * {@link Actions} class and then tries to find and element using {@code byToAppear} with a
+	 * timeout of 1 seconds, retrying up to ten times because hovers sometimes do not work very
+	 * reliably.
+	 * 
+	 * @param by
+	 *            the {@link By} used to locate the element
+	 * @param byToAppear
+	 *            the {@link By} used to locate the element that is supposed to appear after
+	 *            hovering
+	 */
 	public WebElement hover(final By by, final By byToAppear) {
 		WebElementFinder finder = wef.timeout(1L, 200L).by(byToAppear);
 
@@ -151,29 +260,91 @@ public class WebDriverTool {
 		throw exception;
 	}
 
+	/**
+	 * Delegates to {@link #find(By)} and then calls {@link WebElement#getAttribute(String)
+	 * getAttribute(String)} on the returned element.
+	 * 
+	 * @param by
+	 *            the {@link By} used to locate the element
+	 * @param attributeName
+	 *            the attribute name
+	 * @return the attribute value
+	 */
 	public String getAttributeValue(final By by, final String attributeName) {
 		WebElement element = find(by);
 		return element.getAttribute(attributeName);
 	}
 
+	/**
+	 * Delegates to {@link #find(By)} and then calls {@link WebElement#getText() getText()} on the
+	 * returned element. The element's text is passed to {@link StringUtils#normalizeSpace(String)}.
+	 * 
+	 * @param by
+	 *            the {@link By} used to locate the element
+	 * @return the text
+	 */
 	public String getElementText(final By by) {
 		return getElementText(by, true);
 	}
 
+	/**
+	 * Delegates to {@link #find(By)} and then calls {@link WebElement#getText() getText()} on the
+	 * returned element. If {@code normalizeSpace} is {@code true}, the element's text is passed to
+	 * {@link StringUtils#normalizeSpace(String)}.
+	 * 
+	 * @param by
+	 *            the {@link By} used to locate the element
+	 * @param normalizeSpace
+	 *            specifies whether whitespace in the element text are to be normalized
+	 * @return the text
+	 */
 	public String getElementText(final By by, final boolean normalizeSpace) {
 		WebElement element = find(by);
 		String text = element.getText();
 		return normalizeSpace ? StringUtils.normalizeSpace(text) : text;
 	}
 
+	/**
+	 * Uses the internal {@link FormInputHandler} to set a form field.
+	 * 
+	 * @param by
+	 *            the {@link By} used to locate the element representing an HTML input or textarea
+	 * @param dataSetKey
+	 *            the data set key
+	 * @param dataKey
+	 *            the key used to retrieve the value for the field from the data set with the
+	 *            specifies data set key
+	 */
 	public void processField(final By by, final String dataSetKey, final String dataKey) {
 		fih.by(by).dataSet(dataSets.get(dataSetKey)).dataKey(dataKey).perform();
 	}
 
+	/**
+	 * Uses the internal {@link FormInputHandler} to set an indexed form field.
+	 * 
+	 * @param by
+	 *            the {@link By} used to locate the element representing an HTML input or textarea
+	 * @param dataSetKey
+	 *            the data set key
+	 * @param dataKey
+	 *            the key used to retrieve the value for the field from the data set with the
+	 *            specifies data set key
+	 * @param dataIndex
+	 *            the index for looking up dat value in the data set
+	 */
 	public void processField(final By by, final String dataSetKey, final String dataKey, final Integer dataIndex) {
 		fih.by(by).dataSet(dataSets.get(dataSetKey)).dataKeyWithIndex(dataKey, dataIndex).perform();
 	}
 
+	/**
+	 * Uses the internal {@link FormInputHandler} to set form field. This method does not use a data
+	 * set to retrieve the value.
+	 * 
+	 * @param by
+	 *            the {@link By} used to locate the element representing an HTML input or textarea
+	 * @param value
+	 *            the value to set the field to
+	 */
 	public void processField(final By by, final String value) {
 		fih.by(by).value(value).perform();
 	}
