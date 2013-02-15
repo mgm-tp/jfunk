@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import com.google.inject.Key;
 import com.google.inject.Provider;
 import com.google.inject.Scope;
+import com.mgmtp.jfunk.common.util.Disposable;
 
 /**
  * Guice scope which uses thread-local storage for Guice-managed objects. A scope context needs to
@@ -85,26 +86,13 @@ public class StackedScope implements Scope {
 	 * stack.
 	 */
 	public void exitScope() {
-		scopeStackCache.get().pop();
-		log.debug("Exited scope.");
-	}
-
-	public <T> void removeFromScope(final Key<T> key) {
-		Map<Key<?>, Object> map = scopeStackCache.get().peek();
-		Object object = map.remove(key);
-		if (object != null) {
-			log.debug("Removed object from scope cache: [key=, object={}]", key, object);
-		} else {
-			log.warn("Could not remove object with key '{}' from scope cache. No such object in cache.", key);
+		Map<Key<?>, Object> scopeMap = scopeStackCache.get().pop();
+		for (Object obj : scopeMap.values()) {
+			if (obj instanceof Disposable) {
+				((Disposable) obj).dispose();
+			}
 		}
-	}
-
-	/**
-	 * Clean-up method which clears the whole thread-local storage for the current thread. the
-	 * internal stack will be empty afterwards.
-	 */
-	public void cleanUp() {
-		scopeStackCache.remove();
+		log.debug("Exited scope.");
 	}
 
 	@Override

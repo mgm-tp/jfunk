@@ -48,14 +48,16 @@ import com.mgmtp.jfunk.web.util.WebElementFinder;
 public class WebDriverModule extends BaseWebDriverModule {
 
 	private static final Pattern HOST_EXTRACTION_PATTERN =
-			Pattern.compile("(?<=\\Q" + WebConstants.HTMLUNIT_CREDENTIALS_PREFIX + ".\\E).*(?=\\Q." + JFunkConstants.PASSWORD + "\\E)");
+			Pattern.compile("(?<=\\Q" + WebConstants.HTMLUNIT_CREDENTIALS_PREFIX + ".\\E).*(?=\\Q." + JFunkConstants.PASSWORD
+					+ "\\E)");
 
 	@Override
 	protected void doConfigureWebDriverModule() {
 		// Create an extra binding for the WebDriverEventListener using a qualifier annotation.
 		// The Multibinder for the event listener will then link to this binding so it may be overridden.
 		// This is necessary because multibindings themselves cannot be overridden.
-		bind(WebDriverEventListener.class).annotatedWith(DefaultWebDriverEventListener.class).to(JFunkWebDriverEventListener.class);
+		bind(WebDriverEventListener.class).annotatedWith(DefaultWebDriverEventListener.class).to(
+				JFunkWebDriverEventListener.class);
 		bindWebDriverEventListener().to(Key.get(WebDriverEventListener.class, DefaultWebDriverEventListener.class));
 
 		bind(BrowserVersion.class).toInstance(BrowserVersion.INTERNET_EXPLORER_8);
@@ -70,8 +72,6 @@ public class WebDriverModule extends BaseWebDriverModule {
 		bindWebDriver(WebConstants.WEBDRIVER_CHROME, ChromeDriverProvider.class, ScriptScoped.class);
 		bindWebDriver(WebConstants.WEBDRIVER_INTERNET_EXPLORER, InternetExplorerDriverProvider.class, ScriptScoped.class);
 		bindWebDriver(WebConstants.WEBDRIVER_REMOTE, RemoteWebDriverProvider.class, ScriptScoped.class);
-
-		bindScriptScopedDisposable().to(WebDriverDisposable.class);
 	}
 
 	@Provides
@@ -108,7 +108,8 @@ public class WebDriverModule extends BaseWebDriverModule {
 		boolean logIncorrectCode = config.getBoolean(WebConstants.HTMLUNIT_LOG_INCORRECT_CODE, true);
 		log.info(WebConstants.HTMLUNIT_LOG_INCORRECT_CODE + "=" + logIncorrectCode);
 
-		return new HtmlUnitWebDriverParams(connectionTimeout, refuseCookies, redirect, javascriptEnabled, validateJavascript, ignoreResponseCode,
+		return new HtmlUnitWebDriverParams(connectionTimeout, refuseCookies, redirect, javascriptEnabled, validateJavascript,
+				ignoreResponseCode,
 				autoRefresh, logIncorrectCode);
 	}
 

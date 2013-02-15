@@ -6,6 +6,7 @@
  */
 package com.mgmtp.jfunk.common.config;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.Maps.newHashMap;
 
@@ -17,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import com.google.inject.Key;
 import com.google.inject.Provider;
 import com.google.inject.Scope;
+import com.mgmtp.jfunk.common.util.Disposable;
 
 /**
  * Guice scope which uses thread-local storage for Guice-managed objects. A scope context needs to
@@ -92,8 +94,15 @@ public class ThreadScope implements Scope {
 	 *             if there is no scope context for the current thread
 	 */
 	public void exitScope() {
-		checkState(scopeCache.get() != null, "No scope map found for the current thread. Forgot to call enterScope()?");
+		Map<Key<?>, Object> scopeMap = checkNotNull(scopeCache.get(),
+				"No scope map found for the current thread. Forgot to call enterScope()?");
 		scopeCache.remove();
+
+		for (Object obj : scopeMap.values()) {
+			if (obj instanceof Disposable) {
+				((Disposable) obj).dispose();
+			}
+		}
 		log.debug("Exited scope.");
 	}
 

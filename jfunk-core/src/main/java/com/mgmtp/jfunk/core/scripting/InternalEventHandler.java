@@ -38,21 +38,15 @@ class InternalEventHandler {
 	private final Provider<ModuleArchiver> moduleArchiverProvider;
 	private final Provider<ScriptContext> scriptContextProvider;
 	private final Provider<Deque<ReportData>> reportDataStackProvider;
-	private final Provider<Set<Disposable>> moduleScopedDisposablesProvider;
-	private final Provider<Set<Disposable>> scriptScopedDisposablesProvider;
 	private final Set<Reporter> globalReporters;
 
 	@Inject
-	InternalEventHandler(final Provider<ModuleArchiver> moduleArchiverProvider, final Provider<ScriptContext> scriptContextProvider,
-			final Provider<Deque<ReportData>> reportDataStackProvider,
-			@ModuleScopedDisposables final Provider<Set<Disposable>> moduleScopedDisposablesProvider,
-			@ScriptScopedDisposables final Provider<Set<Disposable>> scriptScopedDisposablesProvider,
-			final Set<Reporter> globalReporters) {
+	InternalEventHandler(final Provider<ModuleArchiver> moduleArchiverProvider,
+			final Provider<ScriptContext> scriptContextProvider,
+			final Provider<Deque<ReportData>> reportDataStackProvider, final Set<Reporter> globalReporters) {
 		this.moduleArchiverProvider = moduleArchiverProvider;
 		this.scriptContextProvider = scriptContextProvider;
 		this.reportDataStackProvider = reportDataStackProvider;
-		this.moduleScopedDisposablesProvider = moduleScopedDisposablesProvider;
-		this.scriptScopedDisposablesProvider = scriptScopedDisposablesProvider;
 		this.globalReporters = globalReporters;
 	}
 
@@ -86,13 +80,7 @@ class InternalEventHandler {
 				addReportResults(reportData);
 			}
 		} finally {
-			try {
-				moduleArchiverProvider.get().finishArchiving(module, event.getThrowable());
-			} finally {
-				for (Disposable disposable : moduleScopedDisposablesProvider.get()) {
-					disposable.dispose();
-				}
-			}
+			moduleArchiverProvider.get().finishArchiving(module, event.getThrowable());
 		}
 	}
 
@@ -135,15 +123,9 @@ class InternalEventHandler {
 	@Subscribe
 	@AllowConcurrentEvents
 	public void handleAfterScript(@SuppressWarnings("unused") final AfterScriptEvent event) {
-		try {
-			Set<Reporter> scriptReporters = scriptContextProvider.get().getReporters();
-			for (Reporter reporter : scriptReporters) {
-				createReport(reporter);
-			}
-		} finally {
-			for (Disposable disposable : scriptScopedDisposablesProvider.get()) {
-				disposable.dispose();
-			}
+		Set<Reporter> scriptReporters = scriptContextProvider.get().getReporters();
+		for (Reporter reporter : scriptReporters) {
+			createReport(reporter);
 		}
 	}
 
