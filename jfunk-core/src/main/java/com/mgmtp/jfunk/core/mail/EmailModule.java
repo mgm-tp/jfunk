@@ -24,6 +24,7 @@ public class EmailModule extends BaseJFunkGuiceModule {
 		bind(EmailParserFactory.class);
 		bind(MailHandler.class).to(DefaultMailHandler.class);
 		bindEventHandler().to(EmailEventHandler.class);
+		bindScriptScopedDisposable().to(DefaultMailHandler.class);
 	}
 
 	@Provides

@@ -72,6 +72,7 @@ public class WebDriverModule extends BaseWebDriverModule {
 		bindWebDriver(WebConstants.WEBDRIVER_CHROME, ChromeDriverProvider.class, ScriptScoped.class);
 		bindWebDriver(WebConstants.WEBDRIVER_INTERNET_EXPLORER, InternetExplorerDriverProvider.class, ScriptScoped.class);
 		bindWebDriver(WebConstants.WEBDRIVER_REMOTE, RemoteWebDriverProvider.class, ScriptScoped.class);
+		bindScriptScopedDisposable().to(WebDriverDisposable.class);
 	}
 
 	@Provides
