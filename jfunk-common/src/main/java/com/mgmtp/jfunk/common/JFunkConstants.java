@@ -47,6 +47,7 @@ public final class JFunkConstants {
 	public static final String TRUE = "true";
 	public static final String FALSE = "false";
 	public static final String CURRENT_MODULE_RESULT = "current.module.result";
+	public static final String CURRENT_MODULE_ERROR = "current.module.error";
 	public static final String CURRENT_MODULE_NAME = "current.module.name";
 	public static final String TESTMODULE_CLASS = "testmodule.class";
 

@@ -93,8 +93,8 @@ public class ScriptContext {
 	private File script;
 
 	@Inject
-	ScriptContext(final Provider<DataSource> dataSourceProvider, final Configuration config, final MathRandom random, final EventBus eventBus,
-			final Injector injector, final Provider<ModuleBuilder> moduleBuilderProvider, final StackedScope moduleScope,
+	ScriptContext(final Provider<DataSource> dataSourceProvider, final Configuration config, final MathRandom random,
+			final EventBus eventBus, final Injector injector, final Provider<ModuleBuilder> moduleBuilderProvider, final StackedScope moduleScope,
 			final CsvDataProcessor csvDataProcessor, final Charset charset) {
 		this.dataSourceProvider = dataSourceProvider;
 		this.config = config;
@@ -378,10 +378,10 @@ public class ScriptContext {
 		try {
 			closure.call();
 		} catch (final Exception ex) {
-			log.error("Exception executing optional block: {}", ex.getMessage());
+			log.error("Exception executing optional block: " + ex.getMessage(), ex);
 			errors.add(ex);
 		} catch (AssertionError err) {
-			log.error("Assertion failed executing optional block: {}", err.getMessage());
+			log.error("Assertion failed executing optional block: " + err.getMessage(), err);
 			errors.add(err);
 		}
 		log.info("... finished execution of optional block");
@@ -402,7 +402,8 @@ public class ScriptContext {
 	 *            the {@link Closure} representing a Groovy block
 	 */
 	@Cmd
-	public void processCsvFile(final String csvFile, final String delimiter, final char quoteChar, final Charset charset, final Closure<Void> closure) {
+	public void processCsvFile(final String csvFile, final String delimiter, final char quoteChar, final Charset charset,
+			final Closure<Void> closure) {
 		File f = new File(csvFile);
 		try {
 			config.extractFromArchive(f, true);

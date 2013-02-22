@@ -93,7 +93,8 @@ public class ModuleArchiver {
 	 *            the archive directory
 	 */
 	@Inject
-	ModuleArchiver(final Configuration configuration, final DataSource dataSource, @ArchiveDir final File archiveDir, final Charset charset) {
+	ModuleArchiver(final Configuration configuration, final DataSource dataSource, @ArchiveDir final File archiveDir,
+			final Charset charset) {
 		this.configuration = configuration;
 		this.dataSource = dataSource;
 		this.archiveDir = archiveDir;
@@ -113,7 +114,8 @@ public class ModuleArchiver {
 
 		String archiveName = configuration.get(JFunkConstants.ARCHIVE_FILE);
 		if (StringUtils.isBlank(archiveName)) {
-			archiveName = String.format(DIR_PATTERN, testModule.getName(), FORMAT.format(new Date()), Thread.currentThread().getName());
+			archiveName = String.format(DIR_PATTERN, testModule.getName(), Thread.currentThread().getName(),
+					FORMAT.format(new Date()));
 		}
 
 		moduleArchiveDir = new File(archiveDir, archiveName);
@@ -277,7 +279,8 @@ public class ModuleArchiver {
 			// available for the key.
 			if (data != null) {
 				File f = new File(dir, entry.getKey() + JFunkConstants.FORM_PROPERTIES_ENDING);
-				config.put(JFunkConstants.FORM_DATA_PREFIX + entry.getKey() + JFunkConstants.PROPERTIES_ENDING, "formdata/" + f.getName());
+				config.put(JFunkConstants.FORM_DATA_PREFIX + entry.getKey() + JFunkConstants.PROPERTIES_ENDING,
+						"formdata/" + f.getName());
 				FileOutputStream out = null;
 				try {
 					out = new FileOutputStream(f);
@@ -312,7 +315,8 @@ public class ModuleArchiver {
 			return;
 		}
 
-		File zipFile = new File(moduleArchiveDir.getParentFile(), moduleArchiveDir.getName() + (success ? "_ok.zip" : "_error.zip"));
+		File zipFile = new File(moduleArchiveDir.getParentFile(), moduleArchiveDir.getName()
+				+ (success ? "_ok.zip" : "_error.zip"));
 		log.info("Creating zip file " + zipFile + " from directory " + this);
 
 		ZipOutputStream zipOut = null;

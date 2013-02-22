@@ -78,8 +78,8 @@ public class CsvReporter extends AbstractFileReporter {
 	 * @param charset
 	 *            the charset for the report
 	 */
-	CsvReporter(final String fileName, final List<String> headers, final String delimiter, final char quoteChar, final String dataSetKey,
-			final Charset charset) {
+	CsvReporter(final String fileName, final List<String> headers, final String delimiter, final char quoteChar,
+			final String dataSetKey, final Charset charset) {
 		super(fileName, charset);
 
 		if (headers == null) {
@@ -136,6 +136,7 @@ public class CsvReporter extends AbstractFileReporter {
 		// additional default columns
 		appendEscapedAndQuoted(sb, i++, JFunkConstants.CURRENT_MODULE_NAME);
 		appendEscapedAndQuoted(sb, i++, JFunkConstants.CURRENT_MODULE_RESULT);
+		appendEscapedAndQuoted(sb, i++, JFunkConstants.CURRENT_MODULE_ERROR);
 
 		header = sb.toString();
 	}
@@ -162,6 +163,7 @@ public class CsvReporter extends AbstractFileReporter {
 				initColumns();
 			}
 
+			Map<String, DataSet> dataSets = currentDataSetsProvider.get();
 			StrBuilder sb = new StrBuilder(256);
 			int i = 0;
 			for (Column column : columns) {
@@ -170,7 +172,7 @@ public class CsvReporter extends AbstractFileReporter {
 
 				if (StringUtils.isNotBlank(dsKey)) {
 					// get value from data set
-					DataSet ds = currentDataSetsProvider.get().get(dsKey);
+					DataSet ds = dataSets.get(dsKey);
 					checkNotNull(ds, "No data set available for key: " + dsKey);
 					value = ds.getValue(column.key);
 				} else {
@@ -268,7 +270,8 @@ public class CsvReporter extends AbstractFileReporter {
 			} else if (a.length == 1) {
 				this.key = header;
 			} else {
-				throw new IllegalArgumentException("Only one space is allowed as a separator: " + key + " contains more than one space");
+				throw new IllegalArgumentException("Only one space is allowed as a separator: " + key
+						+ " contains more than one space");
 			}
 		}
 
