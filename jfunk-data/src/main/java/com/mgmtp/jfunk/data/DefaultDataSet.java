@@ -175,6 +175,11 @@ public class DefaultDataSet implements DataSet {
 	}
 
 	@Override
+	public void resetFixedValue(final String key) {
+		fixedValues.remove(key);
+	}
+
+	@Override
 	public void resetFixedValues() {
 		fixedValues.clear();
 	}

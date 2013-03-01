@@ -56,8 +56,8 @@ import com.google.common.collect.ImmutableList;
  */
 public final class WebElementFinder {
 
-	private static final List<Class<? extends Throwable>> IGNORED_EXCEPTIONS = ImmutableList.<Class<? extends Throwable>>of(NotFoundException.class,
-			WebElementException.class, StaleElementReferenceException.class);
+	private static final List<Class<? extends Throwable>> IGNORED_EXCEPTIONS = ImmutableList.<Class<? extends Throwable>>of(
+			NotFoundException.class, WebElementException.class, StaleElementReferenceException.class);
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
@@ -69,9 +69,11 @@ public final class WebElementFinder {
 	private final Boolean displayed;
 	private final Boolean selected;
 	private final Predicate<WebElement> condition;
+	private final boolean inverted;
 
-	private WebElementFinder(final WebDriver webDriver, final By by, final long timeoutSeconds, final long sleepMillis, final Boolean enabled,
-			final Boolean displayed, final Boolean selected, final Predicate<WebElement> condition) {
+	private WebElementFinder(final WebDriver webDriver, final By by, final long timeoutSeconds, final long sleepMillis,
+			final Boolean enabled, final Boolean displayed, final Boolean selected, final Predicate<WebElement> condition,
+			final boolean inverted) {
 		this.webDriver = webDriver;
 		this.by = by;
 		this.timeoutSeconds = timeoutSeconds;
@@ -80,11 +82,12 @@ public final class WebElementFinder {
 		this.displayed = displayed;
 		this.selected = selected;
 		this.condition = condition;
+		this.inverted = inverted;
 	}
 
 	private WebElementFinder(final Fields fields) {
-		this(fields.webDriver, fields.by, fields.timeoutSeconds, fields.sleepMillis, fields.enabled, fields.displayed, fields.selected,
-				fields.condition);
+		this(fields.webDriver, fields.by, fields.timeoutSeconds, fields.sleepMillis, fields.enabled, fields.displayed,
+				fields.selected, fields.condition, fields.inverted);
 	}
 
 	/**
@@ -93,7 +96,7 @@ public final class WebElementFinder {
 	 * @return the new {@link WebElementFinder} instance
 	 */
 	public static WebElementFinder create() {
-		return new WebElementFinder(null, null, 0L, 0L, null, null, null, null);
+		return new WebElementFinder(null, null, 0L, 0L, null, null, null, null, false);
 	}
 
 	/**
@@ -242,10 +245,8 @@ public final class WebElementFinder {
 				public WebElement apply(final WebDriver input) {
 					WebElement el = input.findElement(by);
 					checkElement(el);
-					if (condition != null) {
-						if (!condition.apply(el)) {
-							throw new WebElementException(String.format("Condition not met for element %s: %s", el, condition));
-						}
+					if (condition != null && !condition.apply(el)) {
+						throw new WebElementException(String.format("Condition not met for element %s: %s", el, condition));
 					}
 					return el;
 				}
@@ -258,10 +259,8 @@ public final class WebElementFinder {
 		} else {
 			element = webDriver.findElement(by);
 			checkElement(element);
-			if (condition != null) {
-				if (!condition.apply(element)) {
-					throw new WebElementException(String.format("Condition not met for element %s: %s", element, condition));
-				}
+			if (condition != null && !condition.apply(element)) {
+				throw new WebElementException(String.format("Condition not met for element %s: %s", element, condition));
 			}
 		}
 
@@ -485,6 +484,7 @@ public final class WebElementFinder {
 		private Boolean displayed;
 		private Boolean selected;
 		private Predicate<WebElement> condition;
+		private final boolean inverted;
 
 		private Fields(final WebElementFinder finder) {
 			this.webDriver = finder.webDriver;
@@ -495,6 +495,7 @@ public final class WebElementFinder {
 			this.displayed = finder.displayed;
 			this.selected = finder.selected;
 			this.condition = finder.condition;
+			this.inverted = finder.inverted;
 		}
 	}
 }

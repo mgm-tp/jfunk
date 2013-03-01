@@ -167,12 +167,25 @@ public interface DataSet {
 	String removeValue(final String key, int index);
 
 	/**
+	 * Resets the value which was set by {@link #setFixedValue(String, String)}.
+	 * 
+	 * @param key
+	 *            the entry key
+	 */
+	void resetFixedValue(String key);
+
+	/**
 	 * Resets all values which were set by {@link #setFixedValue(String, String)}.
 	 */
 	void resetFixedValues();
 
 	/**
-	 * FIXME it is unclear why we need this - {@link #setValue(String, String)} should be sufficient
+	 * Sets a fixed value.
+	 * 
+	 * @param key
+	 *            The entry key.
+	 * @param value
+	 *            The fixed value.
 	 */
 	void setFixedValue(final String key, final String value);
 

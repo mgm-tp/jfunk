@@ -153,7 +153,7 @@ public abstract class BaseDataSource implements DataSource {
 		}
 		DataSet dataSet = getCurrentDataSets().get(dataSetKey);
 		if (dataSet != null) {
-			dataSet.setFixedValue(entryKey, null);
+			dataSet.resetFixedValue(entryKey);
 		}
 	}
 

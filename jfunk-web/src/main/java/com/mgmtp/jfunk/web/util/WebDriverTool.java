@@ -24,11 +24,11 @@ import org.openqa.selenium.NotFoundException;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Sets.SetView;
 import com.mgmtp.jfunk.common.config.ScriptScoped;
@@ -128,30 +128,195 @@ public class WebDriverTool {
 	}
 
 	/**
-	 * Waits until an element can no longer be found on the current page. The method keeps trying to
-	 * find the element in a loop.
+	 * Repeatedly applies the current {@link WebDriver} instance to the specifed function until one
+	 * of the following occurs:
 	 * 
-	 * @param by
-	 *            the {@link By} used to locate the element that is supposed to disappear
-	 * @param sleepMillisBetweenTries
-	 *            the time in milliseconds to sleep after each loop iteration
-	 * @param numTries
-	 *            the number of times looping
+	 * <ol>
+	 * <li>the function returns neither null nor false,</li>
+	 * <li>the function throws an unignored exception,</li>
+	 * <li>the timeout expires,
+	 * <li>the current thread is interrupted</li>
+	 * </ol>
+	 * 
+	 * @param function
+	 *            the function
+	 * @param <V>
+	 *            the function's expected return type
+	 * @return the function's return value if the function returned something different from null or
+	 *         false before the timeout expired
+	 * @throws TimeoutException
+	 *             if the timeout expires.
 	 */
-	public void waitUntilNotFound(final By by, final long sleepMillisBetweenTries, final int numTries) {
-		for (int i = 0; i < numTries; ++i) {
-			if (WebElementFinder.create().webDriver(webDriver).by(by).findAll().isEmpty()) {
-				return;
-			}
-			try {
-				Thread.sleep(sleepMillisBetweenTries);
-			} catch (InterruptedException ex) {
-				Thread.currentThread().interrupt();
-				break;
-			}
-		}
-		throw new WebDriverException("Element has not disappeared: " + by);
+	public <V> V waitFor(final Function<? super WebDriver, V> function) {
+		return newWebDriverWait().until(function);
 	}
+
+	/**
+	 * Repeatedly applies the current {@link WebDriver} instance to the specifed function until one
+	 * of the following occurs:
+	 * 
+	 * <ol>
+	 * <li>the function returns neither null nor false,</li>
+	 * <li>the function throws an unignored exception,</li>
+	 * <li>the timeout expires,
+	 * <li>the current thread is interrupted</li>
+	 * </ol>
+	 * 
+	 * @param function
+	 *            the function
+	 * @param timeoutSeconds
+	 *            the timeout in seconds
+	 * @param <V>
+	 *            the function's expected return type
+	 * @return the function's return value if the function returned something different from null or
+	 *         false before the timeout expired
+	 * @throws TimeoutException
+	 *             if the timeout expires.
+	 */
+	public <V> V waitFor(final Function<? super WebDriver, V> function, final long timeoutSeconds) {
+		return newWebDriverWait(timeoutSeconds).until(function);
+	}
+
+	/**
+	 * Repeatedly applies the current {@link WebDriver} instance to the specifed function until one
+	 * of the following occurs:
+	 * 
+	 * <ol>
+	 * <li>the function returns neither null nor false,</li>
+	 * <li>the function throws an unignored exception,</li>
+	 * <li>the timeout expires,
+	 * <li>the current thread is interrupted</li>
+	 * </ol>
+	 * 
+	 * The method uses the same timeout and milliseconds to sleep between polls as the internally
+	 * used default {@link WebElementFinder} instance
+	 * 
+	 * @param function
+	 *            the function
+	 * @param timeoutSeconds
+	 *            the timeout in seconds
+	 * @param sleepMillis
+	 *            the time in milliseconds to sleep between polls
+	 * @param <V>
+	 *            the function's expected return type
+	 * @return the function's return value if the function returned something different from null or
+	 *         false before the timeout expired
+	 * @throws TimeoutException
+	 *             if the timeout expires.
+	 */
+	public <V> V waitFor(final Function<? super WebDriver, V> function, final long timeoutSeconds, final long sleepMillis) {
+		return newWebDriverWait(timeoutSeconds, sleepMillis).until(function);
+	}
+
+	/**
+	 * Repeatedly applies the current {@link WebDriver} instance to the specified predicate until
+	 * the timeout expires or the predicate evaluates to true.
+	 * 
+	 * @param predicate
+	 *            the predicate to wait on
+	 * @throws TimeoutException
+	 *             if the timeout expires.
+	 */
+	public void waitFor(final Predicate<WebDriver> predicate) {
+		newWebDriverWait().until(predicate);
+	}
+
+	/**
+	 * Repeatedly applies the current {@link WebDriver} instance to the specified predicate until
+	 * the timeout expires or the predicate evaluates to true.
+	 * 
+	 * @param predicate
+	 *            the predicate to wait on
+	 * @param timeoutSeconds
+	 *            the timeout in seconds
+	 * @throws TimeoutException
+	 *             if the timeout expires.
+	 */
+	public void waitFor(final Predicate<WebDriver> predicate, final long timeoutSeconds) {
+		newWebDriverWait(timeoutSeconds).until(predicate);
+	}
+
+	/**
+	 * Repeatedly applies the current {@link WebDriver} instance to the specified predicate until
+	 * the timeout expires or the predicate evaluates to true.
+	 * 
+	 * @param predicate
+	 *            the predicate to wait on
+	 * @param timeoutSeconds
+	 *            the timeout in seconds
+	 * @param sleepMillis
+	 *            the time in milliseconds to sleep between polls
+	 * @throws TimeoutException
+	 *             if the timeout expires.
+	 */
+	public void waitFor(final Predicate<WebDriver> predicate, final long timeoutSeconds, final long sleepMillis) {
+		newWebDriverWait(timeoutSeconds, sleepMillis).until(predicate);
+	}
+
+	/**
+	 * Creates a new {@link WebDriverWait} with the same timeout and milliseconds to sleep between
+	 * polls as the internally used default {@link WebElementFinder} instance.
+	 * 
+	 * @return the newly created {@link WebDriverWait} instance
+	 */
+	public WebDriverWait newWebDriverWait() {
+		return wef.getSleepMillis() > 0L
+				? newWebDriverWait(wef.getTimeoutSeconds(), wef.getSleepMillis())
+				: newWebDriverWait(wef.getTimeoutSeconds());
+	}
+
+	/**
+	 * Creates a new {@link WebDriverWait} with the specified timeout.
+	 * 
+	 * @param timeoutSeconds
+	 *            the timeout in seconds
+	 * 
+	 * @return the newly created {@link WebDriverWait} instance
+	 */
+	public WebDriverWait newWebDriverWait(final long timeoutSeconds) {
+		return new LoggingWebDriverWait(webDriver, timeoutSeconds);
+	}
+
+	/**
+	 * Creates a new {@link WebDriverWait} with the specified timeout and milliseconds to sleep
+	 * between polls.
+	 * 
+	 * @param timeoutSeconds
+	 *            the timeout in seconds
+	 * @param sleepMillis
+	 *            the time in milliseconds to sleep between polls
+	 * 
+	 * @return the newly created {@link WebDriverWait} instance
+	 */
+	public WebDriverWait newWebDriverWait(final long timeoutSeconds, final long sleepMillis) {
+		return new LoggingWebDriverWait(webDriver, timeoutSeconds, sleepMillis);
+	}
+
+	//	/**
+	//	 * Waits until an element can no longer be found on the current page. The method keeps trying to
+	//	 * find the element in a loop.
+	//	 * 
+	//	 * @param by
+	//	 *            the {@link By} used to locate the element that is supposed to disappear
+	//	 * @param sleepMillisBetweenTries
+	//	 *            the time in milliseconds to sleep after each loop iteration
+	//	 * @param numTries
+	//	 *            the number of times looping
+	//	 */
+	//	public void waitUntilNotFound(final By by, final long sleepMillisBetweenTries, final int numTries) {
+	//		for (int i = 0; i < numTries; ++i) {
+	//			if (WebElementFinder.create().webDriver(webDriver).by(by).findAll().isEmpty()) {
+	//				return;
+	//			}
+	//			try {
+	//				Thread.sleep(sleepMillisBetweenTries);
+	//			} catch (InterruptedException ex) {
+	//				Thread.currentThread().interrupt();
+	//				break;
+	//			}
+	//		}
+	//		throw new WebDriverException("Element has not disappeared: " + by);
+	//	}
 
 	/**
 	 * Tries to find and element and clicks on it if found. Uses a timeout of two seconds.
@@ -205,7 +370,7 @@ public class WebDriverTool {
 	}
 
 	/**
-	 * Delegates to {@link #find(By)} and the performs a context-click using the {@link Actions}
+	 * Delegates to {@link #find(By)} and then performs a context-click using the {@link Actions}
 	 * class.
 	 * 
 	 * @param by
@@ -214,6 +379,18 @@ public class WebDriverTool {
 	public void contextClick(final By by) {
 		WebElement element = find(by);
 		new Actions(webDriver).contextClick(element).perform();
+	}
+
+	/**
+	 * Delegates to {@link #find(By)} and then performs a double-click using the {@link Actions}
+	 * class.
+	 * 
+	 * @param by
+	 *            the {@link By} used to locate the element
+	 */
+	public void doubleClick(final By by) {
+		WebElement element = find(by);
+		new Actions(webDriver).doubleClick(element).perform();
 	}
 
 	/**
@@ -421,30 +598,24 @@ public class WebDriverTool {
 
 		openCommand.run();
 
-		BasePredicate<WebDriver, String> predicate = new BasePredicate<WebDriver, String>() {
-			private String result;
-
+		Function<WebDriver, String> function = new Function<WebDriver, String>() {
 			@Override
-			protected boolean doApply(final WebDriver input) {
+			public String apply(final WebDriver input) {
 				Set<String> newWindowHandles = webDriver.getWindowHandles();
 				SetView<String> newWindows = difference(newWindowHandles, existingWindowHandles);
 				if (newWindows.isEmpty()) {
 					throw new NotFoundException("No new window found.");
 				}
-				result = getOnlyElement(newWindows);
-				return true;
+				return getOnlyElement(newWindows);
 			}
 
 			@Override
-			public String getResult() {
-				return result;
+			public String toString() {
+				return "to open new window";
 			}
 		};
 
-		WebDriverWait wait = new WebDriverWait(webDriver, timeoutSeconds);
-		wait.until(predicate);
-
-		String newHandle = predicate.getResult();
+		String newHandle = waitFor(function);
 		webDriver.switchTo().window(newHandle);
 		return oldHandle;
 	}

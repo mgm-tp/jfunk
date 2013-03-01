@@ -12,6 +12,8 @@ import java.util.regex.Pattern;
 
 import org.openqa.selenium.WebElement;
 
+import com.google.common.base.Predicate;
+
 /**
  * @author rnaegele
  * @version $Id: Predicates.java 28330 2012-10-09 13:16:34Z reinhard.naegele $
@@ -22,81 +24,96 @@ public class WebElementPredicates {
 		// don't allow instantiation
 	}
 
-	public static BasePredicate<WebElement, Void> textEquals(final String value) {
+	public static Predicate<WebElement> textEquals(final String value) {
 		return new TextEqualsPredicate(value, true);
 	}
 
-	public static BasePredicate<WebElement, Void> textEquals(final String value, final boolean normalizeSpace) {
+	public static Predicate<WebElement> textEquals(final String value, final boolean normalizeSpace) {
 		return new TextEqualsPredicate(value, normalizeSpace);
 	}
 
-	public static BasePredicate<WebElement, Void> textContains(final String value) {
+	public static Predicate<WebElement> textContains(final String value) {
 		return new TextContainsPredicate(value, true);
 	}
 
-	public static BasePredicate<WebElement, Void> textContains(final String value, final boolean normalizeSpace) {
+	public static Predicate<WebElement> textContains(final String value, final boolean normalizeSpace) {
 		return new TextContainsPredicate(value, normalizeSpace);
 	}
 
-	public static BasePredicate<WebElement, Void> textMatchesPattern(final Pattern pattern) {
+	public static Predicate<WebElement> textMatchesPattern(final Pattern pattern) {
 		return new TextMatchesPatternPredicate(pattern);
 	}
 
-	public static BasePredicate<WebElement, Void> textMatchesPattern(final String regex) {
+	public static Predicate<WebElement> textMatchesPattern(final String regex) {
 		return new TextMatchesPatternPredicate(regex);
 	}
 
-	public static BasePredicate<WebElement, Void> attributeValueMatchesPattern(final Pattern pattern, final String attribute) {
+	public static Predicate<WebElement> attributeValueMatchesPattern(final Pattern pattern, final String attribute) {
 		return new AttributeValueMatchesPatternPredicate(pattern, attribute);
 	}
 
-	public static BasePredicate<WebElement, Void> attributeValueMatchesPattern(final String regex, final String attribute) {
+	public static Predicate<WebElement> attributeValueMatchesPattern(final String regex, final String attribute) {
 		return new AttributeValueMatchesPatternPredicate(regex, attribute);
 	}
 
-	private static class TextEqualsPredicate extends BasePredicate<WebElement, Void> {
+	private static class TextEqualsPredicate implements Predicate<WebElement> {
 
-		private final String value;
+		private final String text;
 		private final boolean normalizeSpace;
+		private String currentText;
 
-		public TextEqualsPredicate(final String value, final boolean normalizeSpace) {
-			this.value = value;
+		public TextEqualsPredicate(final String text, final boolean normalizeSpace) {
+			this.text = text;
 			this.normalizeSpace = normalizeSpace;
 		}
 
 		@Override
-		public boolean doApply(final WebElement input) {
-			String text = input.getText();
+		public boolean apply(final WebElement input) {
+			currentText = input.getText();
 			if (normalizeSpace) {
-				text = normalizeSpace(text);
+				currentText = normalizeSpace(currentText);
 			}
-			return text.equals(value);
+			return currentText.equals(text);
+		}
+
+		@Override
+		public String toString() {
+			return String.format("%selement text to be '%s'. Current text: '%s'",
+					normalizeSpace ? "normalized " : "", text, currentText);
 		}
 	}
 
-	private static class TextContainsPredicate extends BasePredicate<WebElement, Void> {
+	private static class TextContainsPredicate implements Predicate<WebElement> {
 
-		private final String value;
+		private final String text;
 		private final boolean normalizeSpace;
+		private String currentText;
 
-		public TextContainsPredicate(final String value, final boolean normalizeSpace) {
-			this.value = value;
+		public TextContainsPredicate(final String text, final boolean normalizeSpace) {
+			this.text = text;
 			this.normalizeSpace = normalizeSpace;
 		}
 
 		@Override
-		public boolean doApply(final WebElement input) {
-			String text = input.getText();
+		public boolean apply(final WebElement input) {
+			currentText = input.getText();
 			if (normalizeSpace) {
-				text = normalizeSpace(text);
+				currentText = normalizeSpace(text);
 			}
-			return text.contains(value);
+			return currentText.contains(text);
+		}
+
+		@Override
+		public String toString() {
+			return String.format("%selement text to contain '%s'. Current text: '%s'",
+					normalizeSpace ? "normalized " : "", text, currentText);
 		}
 	}
 
-	private static class TextMatchesPatternPredicate extends BasePredicate<WebElement, Void> {
+	private static class TextMatchesPatternPredicate implements Predicate<WebElement> {
 
 		private final Pattern pattern;
+		private String currentText;
 
 		public TextMatchesPatternPredicate(final Pattern pattern) {
 			this.pattern = pattern;
@@ -107,15 +124,22 @@ public class WebElementPredicates {
 		}
 
 		@Override
-		public boolean doApply(final WebElement input) {
-			return pattern.matcher(input.getText()).matches();
+		public boolean apply(final WebElement input) {
+			currentText = input.getText();
+			return pattern.matcher(currentText).matches();
+		}
+
+		@Override
+		public String toString() {
+			return String.format("element text to match pattern '%s'. Current text: '%s'", pattern, currentText);
 		}
 	}
 
-	private static class AttributeValueMatchesPatternPredicate extends BasePredicate<WebElement, Void> {
+	private static class AttributeValueMatchesPatternPredicate implements Predicate<WebElement> {
 
 		private final Pattern pattern;
 		private final String attribute;
+		private String currentAttributeValue;
 
 		public AttributeValueMatchesPatternPredicate(final Pattern pattern, final String attribute) {
 			this.pattern = pattern;
@@ -127,8 +151,15 @@ public class WebElementPredicates {
 		}
 
 		@Override
-		public boolean doApply(final WebElement input) {
-			return pattern.matcher(input.getAttribute(attribute)).matches();
+		public boolean apply(final WebElement input) {
+			currentAttributeValue = input.getAttribute(attribute);
+			return pattern.matcher(currentAttributeValue).matches();
+		}
+
+		@Override
+		public String toString() {
+			return String.format("attribute '%s' to match pattern '%s'. Current value: '%s'",
+					attribute, pattern, currentAttributeValue);
 		}
 	}
 }

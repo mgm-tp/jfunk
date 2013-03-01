@@ -93,6 +93,11 @@ public final class EmptyDataSet implements DataSet {
 	}
 
 	@Override
+	public void resetFixedValue(final String key) {
+		// no-op
+	}
+
+	@Override
 	public void resetFixedValues() {
 		// no-op
 	}
