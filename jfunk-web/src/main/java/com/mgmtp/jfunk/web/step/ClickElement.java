@@ -21,6 +21,7 @@ import com.mgmtp.jfunk.web.util.WebDriverTool;
  * {@link WebConstants#DOUBLECLICK} is set to {@code true}, double-clicks are performed instead of
  * single clicks.
  */
+@Deprecated
 public class ClickElement extends BaseStep {
 	private final By by;
 	private final boolean ignoreIfNotFound;
