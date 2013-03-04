@@ -107,7 +107,7 @@ public final class Configuration extends ExtendedProperties {
 				zipArchive = new ZipFile(fileName);
 				ZipEntry entry = zipArchive.getEntry(JFunkConstants.SCRIPT_PROPERTIES);
 				if (entry == null) {
-					entry = zipArchive.getEntry("testing.properties");
+					entry = zipArchive.getEntry("script.properties");
 				}
 				is = zipArchive.getInputStream(entry);
 				// keeping preExisting properties is activated with preserveExisting set to true
