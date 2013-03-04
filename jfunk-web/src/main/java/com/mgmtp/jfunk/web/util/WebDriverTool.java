@@ -292,32 +292,6 @@ public class WebDriverTool {
 		return new LoggingWebDriverWait(webDriver, timeoutSeconds, sleepMillis);
 	}
 
-	//	/**
-	//	 * Waits until an element can no longer be found on the current page. The method keeps trying to
-	//	 * find the element in a loop.
-	//	 * 
-	//	 * @param by
-	//	 *            the {@link By} used to locate the element that is supposed to disappear
-	//	 * @param sleepMillisBetweenTries
-	//	 *            the time in milliseconds to sleep after each loop iteration
-	//	 * @param numTries
-	//	 *            the number of times looping
-	//	 */
-	//	public void waitUntilNotFound(final By by, final long sleepMillisBetweenTries, final int numTries) {
-	//		for (int i = 0; i < numTries; ++i) {
-	//			if (WebElementFinder.create().webDriver(webDriver).by(by).findAll().isEmpty()) {
-	//				return;
-	//			}
-	//			try {
-	//				Thread.sleep(sleepMillisBetweenTries);
-	//			} catch (InterruptedException ex) {
-	//				Thread.currentThread().interrupt();
-	//				break;
-	//			}
-	//		}
-	//		throw new WebDriverException("Element has not disappeared: " + by);
-	//	}
-
 	/**
 	 * Tries to find and element and clicks on it if found. Uses a timeout of two seconds.
 	 * 
