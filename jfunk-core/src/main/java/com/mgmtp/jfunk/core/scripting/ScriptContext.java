@@ -94,7 +94,8 @@ public class ScriptContext {
 
 	@Inject
 	ScriptContext(final Provider<DataSource> dataSourceProvider, final Configuration config, final MathRandom random,
-			final EventBus eventBus, final Injector injector, final Provider<ModuleBuilder> moduleBuilderProvider, final StackedScope moduleScope,
+			final EventBus eventBus, final Injector injector, final Provider<ModuleBuilder> moduleBuilderProvider,
+			final StackedScope moduleScope,
 			final CsvDataProcessor csvDataProcessor, final Charset charset) {
 		this.dataSourceProvider = dataSourceProvider;
 		this.config = config;
@@ -500,7 +501,7 @@ public class ScriptContext {
 	}
 
 	void doRun(final TestModule testModule) {
-		Throwable th = null;
+		Throwable throwable = null;
 		TestModule moduleToRun = testModule;
 
 		try {
@@ -513,18 +514,8 @@ public class ScriptContext {
 			eventBus.post(new InternalBeforeModuleEvent(moduleToRun));
 			eventBus.post(new BeforeModuleEvent(moduleToRun));
 			moduleToRun.execute();
-		} catch (RuntimeException ex) {
-			th = ex;
-
-			// We need to log the exception here on module level,
-			// so it makes it into the log file in the module's archive
-			log.error("Exception executing module: " + moduleToRun.getName(), ex);
-
-			// Wrap into ModuleExecutionException, so we know later that
-			// we don't have to log it again.
-			throw new ModuleExecutionException(moduleToRun, ex);
 		} catch (AssertionError err) {
-			th = err;
+			throwable = err;
 
 			// We need to log the exception here on module level,
 			// so it makes it into the log file in the module's archive
@@ -533,11 +524,22 @@ public class ScriptContext {
 			// Wrap into ModuleExecutionException, so we know later that
 			// we don't have to log it again.
 			throw new ModuleExecutionException(moduleToRun, err);
+		} catch (Throwable th) {
+			// We have to catch throwable to make sure any error makes it into a test's archive
+			throwable = th;
+
+			// We need to log the exception here on module level,
+			// so it makes it into the log file in the module's archive
+			log.error("Error executing module: " + moduleToRun.getName(), th);
+
+			// Wrap into ModuleExecutionException, so we know later that
+			// we don't have to log it again.
+			throw new ModuleExecutionException(moduleToRun, th);
 		} finally {
 			try {
-				moduleToRun.setError(th != null);
-				eventBus.post(new AfterModuleEvent(moduleToRun, th));
-				eventBus.post(new InternalAfterModuleEvent(moduleToRun, th));
+				moduleToRun.setError(throwable != null);
+				eventBus.post(new AfterModuleEvent(moduleToRun, throwable));
+				eventBus.post(new InternalAfterModuleEvent(moduleToRun, throwable));
 			} finally {
 				moduleScope.exitScope();
 			}

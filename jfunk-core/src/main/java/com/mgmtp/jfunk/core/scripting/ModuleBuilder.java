@@ -22,6 +22,7 @@ import com.google.common.eventbus.EventBus;
 import com.google.inject.Injector;
 import com.mgmtp.jfunk.common.config.ScriptScoped;
 import com.mgmtp.jfunk.common.config.StackedScope;
+import com.mgmtp.jfunk.common.exception.JFunkException;
 import com.mgmtp.jfunk.core.event.AfterModuleEvent;
 import com.mgmtp.jfunk.core.event.BeforeModuleEvent;
 import com.mgmtp.jfunk.core.event.ModuleInitializedEvent;
@@ -53,32 +54,39 @@ final class ModuleBuilder extends BuilderSupport {
 	@Override
 	protected Object doInvokeMethod(final String methodName, final Object name, final Object args) {
 		boolean isModule = "module".equals(methodName);
-		Throwable th = null;
+		Throwable throwable = null;
 
 		try {
 			return super.doInvokeMethod(methodName, name, args);
 		} catch (ModuleExecutionException ex) {
-			th = ex;
+			throwable = ex;
 
 			// already handled, so just re-throw
 			throw ex;
-		} catch (RuntimeException ex) {
-			th = ex;
-
-			handleThrowable("Exception executing module: ", isModule, ex);
-			throw ex;
 		} catch (AssertionError err) {
-			th = err;
+			throwable = err;
 
 			handleThrowable("Assertion failed in module: ", isModule, err);
 			throw err;
+		} catch (RuntimeException ex) {
+			throwable = ex;
+
+			handleThrowable("Exception executing module: ", isModule, ex);
+			throw ex;
+		} catch (Throwable ex) {
+			// We have to catch throwable to make sure any error makes it into a test's archive
+			throwable = ex;
+
+			handleThrowable("Exception executing module: ", isModule, ex);
+			// not nice but we cannot rethrow a Throwable
+			throw new JFunkException(throwable);
 		} finally {
 			if (isModule) {
 				try {
 					TestModuleImpl module = moduleStack.pop();
-					module.setError(th != null);
-					eventBus.post(new AfterModuleEvent(module, th));
-					eventBus.post(new InternalAfterModuleEvent(module, th));
+					module.setError(throwable != null);
+					eventBus.post(new AfterModuleEvent(module, throwable));
+					eventBus.post(new InternalAfterModuleEvent(module, throwable));
 				} finally {
 					moduleScope.exitScope();
 				}
