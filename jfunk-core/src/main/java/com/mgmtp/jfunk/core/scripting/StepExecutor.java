@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.eventbus.EventBus;
 import com.google.inject.Injector;
+import com.mgmtp.jfunk.common.exception.JFunkException;
 import com.mgmtp.jfunk.core.event.AfterStepEvent;
 import com.mgmtp.jfunk.core.event.BeforeStepEvent;
 import com.mgmtp.jfunk.core.event.StepEvent;
@@ -49,13 +50,12 @@ public class StepExecutor {
 
 	public void executeStep(final Step step, final int index) {
 		executeStep(step, index, true);
-
 	}
 
 	public void executeStep(final Step step, final int index, final boolean triggerEvents) {
 		// perform DI on step
 		injector.injectMembers(step);
-		Throwable th = null;
+		Throwable throwable = null;
 
 		try {
 			if (triggerEvents) {
@@ -64,21 +64,28 @@ public class StepExecutor {
 			}
 			step.execute();
 		} catch (RuntimeException ex) {
-			th = ex;
+			throwable = ex;
 
 			if (handleThrowable(step, ex)) {
 				throw ex;
 			}
 		} catch (AssertionError err) {
-			th = err;
+			throwable = err;
 
 			if (handleThrowable(step, err)) {
 				throw err;
 			}
+		} catch (Throwable th) {
+			throwable = th;
+
+			if (handleThrowable(step, th)) {
+				// not nice but cannot re-throw a Throwable
+				throw new JFunkException(th);
+			}
 		} finally {
 			if (triggerEvents) {
-				eventBus.post(new AfterStepEvent(step, index, th));
-				eventBus.post(new InternalAfterStepEvent(step, index, th));
+				eventBus.post(new AfterStepEvent(step, index, throwable));
+				eventBus.post(new InternalAfterStepEvent(step, index, throwable));
 			}
 		}
 	}
