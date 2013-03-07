@@ -171,7 +171,7 @@ public class TestModuleImpl implements TestModule {
 	 * @return the test module's default {@link DataSet}
 	 */
 	protected DataSet getDataSet() {
-		return dataSetKey != null ? dataSets.get(dataSetKey) : null;
+		return dataSets != null && dataSetKey != null ? dataSets.get(dataSetKey) : null;
 	}
 
 	/**
