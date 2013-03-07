@@ -21,6 +21,7 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.Validate;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.remote.Augmenter;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.events.WebDriverEventListener;
@@ -83,6 +84,6 @@ public class RemoteWebDriverProvider extends BaseWebDriverProvider {
 		}
 
 		log.info("Starting remote web driver with capability: {}", desiredCapabilities);
-		return new RemoteWebDriver(url, desiredCapabilities);
+		return new Augmenter().augment(new RemoteWebDriver(url, desiredCapabilities));
 	}
 }
