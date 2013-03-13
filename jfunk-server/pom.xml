@@ -24,6 +24,14 @@
 			<artifactId>jfunk-core</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>com.mgmtp.jfunk</groupId>
+			<artifactId>jfunk-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.mgmtp.jfunk</groupId>
+			<artifactId>jfunk-data-generator</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>com.google.inject</groupId>
 			<artifactId>guice</artifactId>
 		</dependency>
