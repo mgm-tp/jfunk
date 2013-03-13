@@ -22,8 +22,9 @@
 	<description>Java Functional Testing Framework Parent POM</description>
 
 	<scm>
-		<developerConnection>scm:svn:https://svncvs.mgm-edv.de/repos/jfunk/trunk</developerConnection>
-		<url>https://fisheye01.mgm-tp.com/viewrep/JFUNK/</url>
+		<developerConnection>scm:git:ssh://hudson@gerrit.mgm-tp.com:29418/mqa/jfunk</developerConnection>
+		<connection>scm:git:ssh://hudson@gerrit.mgm-tp.com:29418/mqa/jfunk</connection>
+		<tag>HEAD</tag>
 	</scm>
 
 	<url>https://wiki.mgm-tp.com/confluence/display/KNOWHOW/jFunk</url>
