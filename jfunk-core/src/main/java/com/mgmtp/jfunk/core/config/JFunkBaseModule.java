@@ -62,8 +62,6 @@ public final class JFunkBaseModule extends BaseJFunkGuiceModule {
 
 	@Override
 	protected void doConfigure() {
-		binder().requireExplicitBindings();
-
 		ThreadScope scope = new ThreadScope();
 		scope.enterScope(); // need to enter it right away for the main thread
 
@@ -90,7 +88,8 @@ public final class JFunkBaseModule extends BaseJFunkGuiceModule {
 		install(new ScriptingModule());
 	}
 
-	private <T extends Scope> void bindScope(final Class<T> scopeClass, final T scope, final Class<? extends Annotation> scopeAnnotation) {
+	private <T extends Scope> void bindScope(final Class<T> scopeClass, final T scope,
+			final Class<? extends Annotation> scopeAnnotation) {
 		// We need a custom thread scope for things related to test runs, because each test runs in
 		// its own thread. This gives us thread-local Guice singletons.
 		bindScope(scopeAnnotation, scope);
