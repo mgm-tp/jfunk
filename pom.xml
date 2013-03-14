@@ -144,6 +144,7 @@
 					<suppressCommitBeforeTag>false</suppressCommitBeforeTag>
 					<scmCommentPrefix>MQA-000000: [maven-release-plugin] </scmCommentPrefix>
 					<releaseProfiles>dist,include-license</releaseProfiles>
+					<preparationGoals>clean verify</preparationGoals>
 				</configuration>
 			</plugin>
 		</plugins>
