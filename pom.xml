@@ -140,7 +140,6 @@
 			</plugin>
 			<plugin>
 				<artifactId>maven-release-plugin</artifactId>
-				<version>2.3.2</version><!--$NO-MVN-MAN-VER$ -->
 				<configuration>
 					<suppressCommitBeforeTag>false</suppressCommitBeforeTag>
 					<scmCommentPrefix>MQA-000000: [maven-release-plugin] </scmCommentPrefix>
