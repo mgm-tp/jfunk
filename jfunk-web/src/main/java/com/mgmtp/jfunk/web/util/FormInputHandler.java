@@ -83,7 +83,6 @@ import com.mgmtp.jfunk.web.exception.InvalidValueException;
  * </pre>
  * 
  * @author rnaegele
- * @version $Id: $
  */
 public final class FormInputHandler {
 
@@ -100,7 +99,8 @@ public final class FormInputHandler {
 	private final ElementTrafo checkTrafo;
 
 	private FormInputHandler(final WebElementFinder finder, final String value, final DataSet dataSet, final String dataKey,
-			final Integer dataIndex, final StepMode stepMode, final DefaultsProvider defaultsProvider, final ElementTrafo setTrafo,
+			final Integer dataIndex, final StepMode stepMode, final DefaultsProvider defaultsProvider,
+			final ElementTrafo setTrafo,
 			final ElementTrafo checkTrafo) {
 		this.finder = finder;
 		this.value = value;
@@ -114,7 +114,8 @@ public final class FormInputHandler {
 	}
 
 	private FormInputHandler(final Fields fields) {
-		this(fields.finder, fields.value, fields.dataSet, fields.dataKey, fields.dataIndex, fields.stepMode, fields.defaultsProvider,
+		this(fields.finder, fields.value, fields.dataSet, fields.dataKey, fields.dataIndex, fields.stepMode,
+				fields.defaultsProvider,
 				fields.setTrafo, fields.checkTrafo);
 	}
 
@@ -239,7 +240,8 @@ public final class FormInputHandler {
 	 * @return the new {@link FormInputHandler} instance
 	 */
 	public FormInputHandler value(final String theValue) {
-		checkState(dataSet == null, "Cannot specify value directly because a DataSet is already associated with this FormInputHandler.");
+		checkState(dataSet == null,
+				"Cannot specify value directly because a DataSet is already associated with this FormInputHandler.");
 
 		Fields fields = new Fields(this);
 		fields.value = theValue;
@@ -423,7 +425,8 @@ public final class FormInputHandler {
 					}
 
 					if (!found) {
-						throw new StepException("Could not find a matching option element in " + element + " , By: " + finder.getBy());
+						throw new StepException("Could not find a matching option element in " + element + " , By: "
+								+ finder.getBy());
 					}
 
 				} else if (WebConstants.INPUT.equalsIgnoreCase(element.getTagName())
@@ -469,7 +472,8 @@ public final class FormInputHandler {
 				? new Select(element).getFirstSelectedOption().getAttribute(WebConstants.VALUE)
 				: element.getAttribute(WebConstants.VALUE);
 
-		if (WebConstants.INPUT.equalsIgnoreCase(element.getTagName()) && WebConstants.RADIO.equals(element.getAttribute(WebConstants.TYPE))) {
+		if (WebConstants.INPUT.equalsIgnoreCase(element.getTagName())
+				&& WebConstants.RADIO.equals(element.getAttribute(WebConstants.TYPE))) {
 
 			List<WebElement> elements = finder.findAll();
 			for (WebElement webElement : elements) {
@@ -513,6 +517,8 @@ public final class FormInputHandler {
 		ToStringBuilder tsb = new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE);
 		tsb.append("by", finder.getBy());
 		tsb.append("value", retrieveValue());
+		tsb.append("dataKey", dataKey);
+		tsb.append("dataIndex", dataIndex);
 		tsb.append("stepMode", stepMode);
 		tsb.append("setTrafo", setTrafo);
 		tsb.append("checkTrafo", checkTrafo);
