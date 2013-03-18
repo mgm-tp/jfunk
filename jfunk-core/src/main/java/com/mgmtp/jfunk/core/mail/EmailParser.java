@@ -100,14 +100,16 @@ public class EmailParser {
 			folderName = config.get(MAIL_IMAP_FOLDER, "INBOX");
 			sessionProps.put(MAIL_IMAP_HOST, config.get(MAIL_IMAP_HOST));
 			sessionProps.put(MAIL_IMAP_PORT, config.get(MAIL_IMAP_PORT, "110"));
-			sessionProps.put(MAIL_IMAP_SOCKET_FACTORY_CLASS, config.get(MAIL_IMAP_SOCKET_FACTORY_CLASS, "javax.net.ssl.SSLSocketFactory"));
+			sessionProps.put(MAIL_IMAP_SOCKET_FACTORY_CLASS,
+					config.get(MAIL_IMAP_SOCKET_FACTORY_CLASS, "javax.net.ssl.SSLSocketFactory"));
 			sessionProps.put(MAIL_IMAP_SOCKET_FACTORY_FALLBACK, config.get(MAIL_IMAP_SOCKET_FACTORY_FALLBACK, ""));
 			sessionProps.put(MAIL_IMAP_SOCKET_FACTORY_PORT, config.get(MAIL_IMAP_SOCKET_FACTORY_PORT, "993"));
 		} else if (protocol.equals(MAIL_PROTOCOL_IMAPS)) {
 			folderName = config.get(MAIL_IMAPS_FOLDER, "INBOX");
 			sessionProps.put(MAIL_IMAPS_HOST, config.get(MAIL_IMAPS_HOST));
 			sessionProps.put(MAIL_IMAPS_PORT, config.get(MAIL_IMAPS_PORT, "993"));
-			sessionProps.put(MAIL_IMAPS_SOCKET_FACTORY_CLASS, config.get(MAIL_IMAPS_SOCKET_FACTORY_CLASS, "javax.net.ssl.SSLSocketFactory"));
+			sessionProps.put(MAIL_IMAPS_SOCKET_FACTORY_CLASS,
+					config.get(MAIL_IMAPS_SOCKET_FACTORY_CLASS, "javax.net.ssl.SSLSocketFactory"));
 			sessionProps.put(MAIL_IMAPS_SOCKET_FACTORY_FALLBACK, config.get(MAIL_IMAPS_SOCKET_FACTORY_FALLBACK, ""));
 			sessionProps.put(MAIL_IMAPS_SOCKET_FACTORY_PORT, config.get(MAIL_IMAPS_SOCKET_FACTORY_PORT, "993"));
 		} else if (protocol.equals(MAIL_PROTOCOL_POP3)) {
@@ -224,7 +226,7 @@ public class EmailParser {
 	 * Searches for emails matching the given mail type object. All that are found are deleted.
 	 */
 	public void deleteAllEmails(final BaseMailObject mail) throws MailException {
-		log.info("Trying to delete emails of type {} for account {}" + mail.getClass().getName(), mailAccount);
+		log.info("Trying to delete emails of type {} for account {}", mail.getClass().getName(), mailAccount);
 		try {
 			Folder folder = sessionUtil.getFolder();
 			Message[] messages;
@@ -298,7 +300,7 @@ public class EmailParser {
 			} catch (MessagingException e) {
 				throw new MailException("Error while retrieving mails from folder " + folder.getName(), e);
 			}
-			log.info("Deleted " + messages.length + (messages.length == 1 ? " message" : " messages"));
+			log.info("Deleted {}", messages.length + (messages.length == 1 ? " message" : " messages"));
 			try {
 				folder.setFlags(messages, new Flags(Flags.Flag.DELETED), true);
 			} catch (MessagingException e) {
