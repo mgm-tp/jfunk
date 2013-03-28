@@ -141,8 +141,8 @@ public final class Configuration extends ExtendedProperties {
 	 * corresponding values are taken as property files and loaded here.
 	 */
 	private void loadExtraFiles(final String filterPrefix) {
+		Map<String, String> view = Maps.filterKeys(this, Predicates.startsWith(filterPrefix));
 		while (true) {
-			Map<String, String> view = Maps.filterKeys(this, Predicates.startsWith(filterPrefix));
 			if (view.isEmpty()) {
 				break;
 			}
@@ -178,7 +178,9 @@ public final class Configuration extends ExtendedProperties {
 			if (!Strings.isNullOrEmpty(value)) {
 				// reloads extra files if the contains placeholders and
 				// the properties the placeholders refer to are changed
-				for (String extraFile : extraFileProperties) {
+				// --> temp copy of list in order to avoid ConcurrentModificationException
+				List<String> tmpExtraFileProps = newArrayList(extraFileProperties);
+				for (String extraFile : tmpExtraFileProps) {
 					Matcher matcher = PLACEHOLDER_PATTERN.matcher(extraFile);
 					while (matcher.find()) {
 						if (matcher.group(1).equals(key)) {
