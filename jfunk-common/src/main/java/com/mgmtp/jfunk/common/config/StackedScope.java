@@ -95,6 +95,23 @@ public class StackedScope implements Scope {
 		log.debug("Exited scope.");
 	}
 
+	/**
+	 * Removes the object associated with the given key from the scope if present in the scope's
+	 * cache.
+	 * 
+	 * @param key
+	 *            the key
+	 */
+	public void removeFromScope(final Key<?> key) {
+		Map<Key<?>, Object> map = scopeStackCache.get().peek();
+		Object object = map.remove(key);
+		if (object != null) {
+			log.debug("Removed object from scope cache: [key=, object={}]", key, object);
+		} else {
+			log.warn("Could not remove object with key '{}' from scope cache. No such object in cache.", key);
+		}
+	}
+
 	@Override
 	public String toString() {
 		return "ThreadScope";
