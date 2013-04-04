@@ -1,9 +1,3 @@
-/.settings
-/target
-/.project
-/.classpath
+/lib
 /setenv.bat
 /setenv.sh
-/log
-/testruns
-/lib
