@@ -84,6 +84,7 @@ public final class WebConstants {
 	public static final String HTMLUNIT_CONNECTION_TIMEOUT = "htmlunit.connection.timeout";
 	public static final String HTMLUNIT_CREDENTIALS_PREFIX = "htmlunit.credentials";
 	public static final String HTMLUNIT_ENABLE_JAVASCRIPT = "htmlunit.enable_javascript";
+	public static final String HTMLUNIT_ENABLE_CSS = "htmlunit.enable_css";
 	public static final String HTMLUNIT_IGNORE_RESPONSECODE = "htmlunit.ignore.responsecode";
 	public static final String HTMLUNIT_REDIRECT = "htmlunit.redirect";
 	public static final String HTMLUNIT_REFUSE_COOKIES = "htmlunit.refuse.cookies";

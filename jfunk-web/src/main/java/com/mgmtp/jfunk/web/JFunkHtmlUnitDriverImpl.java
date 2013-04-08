@@ -88,6 +88,7 @@ public class JFunkHtmlUnitDriverImpl extends HtmlUnitDriver implements Incorrect
 		client.setThrowExceptionOnScriptError(webDriverParams.isValidateJavascript());
 		client.setThrowExceptionOnFailingStatusCode(!webDriverParams.isIgnoreResponseCode());
 		client.setAjaxController(ajaxController);
+		client.getOptions().setCssEnabled(webDriverParams.isCssEnabled());
 
 		client.setAlertHandler(this);
 		client.setCredentialsProvider(this);

@@ -16,17 +16,20 @@ public class HtmlUnitWebDriverParams {
 	private final boolean refuseCookies;
 	private final boolean redirect;
 	private final boolean javascriptEnabled;
+	private final boolean cssEnabled;
 	private final boolean validateJavascript;
 	private final boolean ignoreResponseCode;
 	private final boolean autoRefresh;
 	private final boolean logIncorrectCode;
 
 	public HtmlUnitWebDriverParams(final int connectionTimeout, final boolean refuseCookies, final boolean redirect, final boolean javascriptEnabled,
-			final boolean validateJavascript, final boolean ignoreResponseCode, final boolean autoRefresh, final boolean logIncorrectCode) {
+			final boolean cssEnabled, final boolean validateJavascript, final boolean ignoreResponseCode, final boolean autoRefresh,
+			final boolean logIncorrectCode) {
 		this.connectionTimeout = connectionTimeout;
 		this.refuseCookies = refuseCookies;
 		this.redirect = redirect;
 		this.javascriptEnabled = javascriptEnabled;
+		this.cssEnabled = cssEnabled;
 		this.validateJavascript = validateJavascript;
 		this.ignoreResponseCode = ignoreResponseCode;
 		this.autoRefresh = autoRefresh;
@@ -59,6 +62,13 @@ public class HtmlUnitWebDriverParams {
 	 */
 	public boolean isJavascriptEnabled() {
 		return javascriptEnabled;
+	}
+
+	/**
+	 * @return the cssEnabled
+	 */
+	public boolean isCssEnabled() {
+		return cssEnabled;
 	}
 
 	/**

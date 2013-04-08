@@ -10,6 +10,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.Maps.newHashMapWithExpectedSize;
 import static com.google.common.collect.Sets.newTreeSet;
+
 import static org.apache.commons.lang3.StringUtils.trimToNull;
 
 import java.util.Iterator;
@@ -97,6 +98,9 @@ public class WebDriverModule extends BaseWebDriverModule {
 		boolean javascriptEnabled = config.getBoolean(WebConstants.HTMLUNIT_ENABLE_JAVASCRIPT, true);
 		log.info(WebConstants.HTMLUNIT_ENABLE_JAVASCRIPT + "=" + javascriptEnabled);
 
+		boolean cssEnabled = config.getBoolean(WebConstants.HTMLUNIT_ENABLE_CSS, true);
+		log.info(WebConstants.HTMLUNIT_ENABLE_CSS + "=" + cssEnabled);
+
 		boolean validateJavascript = config.getBoolean(WebConstants.HTMLUNIT_VALIDATE_JS, false);
 		log.info(WebConstants.HTMLUNIT_VALIDATE_JS + "=" + validateJavascript);
 
@@ -109,9 +113,8 @@ public class WebDriverModule extends BaseWebDriverModule {
 		boolean logIncorrectCode = config.getBoolean(WebConstants.HTMLUNIT_LOG_INCORRECT_CODE, true);
 		log.info(WebConstants.HTMLUNIT_LOG_INCORRECT_CODE + "=" + logIncorrectCode);
 
-		return new HtmlUnitWebDriverParams(connectionTimeout, refuseCookies, redirect, javascriptEnabled, validateJavascript,
-				ignoreResponseCode,
-				autoRefresh, logIncorrectCode);
+		return new HtmlUnitWebDriverParams(connectionTimeout, refuseCookies, redirect, javascriptEnabled, cssEnabled, validateJavascript,
+				ignoreResponseCode, autoRefresh, logIncorrectCode);
 	}
 
 	@Provides
