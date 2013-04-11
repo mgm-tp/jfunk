@@ -6,6 +6,8 @@
  */
 package com.mgmtp.jfunk.core.data;
 
+import static org.apache.commons.io.IOUtils.closeQuietly;
+
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -14,7 +16,6 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.google.common.base.Charsets;
-import com.google.common.io.Closeables;
 import com.google.inject.util.Providers;
 import com.mgmtp.jfunk.common.util.Configuration;
 import com.mgmtp.jfunk.data.source.DataSource;
@@ -36,7 +37,7 @@ public class DataSetAdapterTest {
 		try {
 			config.load(is);
 		} finally {
-			Closeables.closeQuietly(is);
+			closeQuietly(is);
 		}
 	}
 

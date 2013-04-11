@@ -6,6 +6,8 @@
  */
 package com.mgmtp.jfunk.core.mail;
 
+import static org.apache.commons.io.IOUtils.closeQuietly;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -25,7 +27,6 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.io.Closeables;
 import com.mgmtp.jfunk.core.exception.MailException;
 
 /**
@@ -170,7 +171,8 @@ public class BaseMailObject {
 			msgs[i] = messages[length - i - 1];
 		}
 		if (messages.length > 0 && log.isDebugEnabled()) {
-			log.debug("Scanning list of emails (containing " + messages.length + (messages.length == 1 ? " email" : " emails") + ") for email "
+			log.debug("Scanning list of emails (containing " + messages.length + (messages.length == 1 ? " email" : " emails")
+					+ ") for email "
 					+ this);
 		}
 		for (Message msg : msgs) {
@@ -237,7 +239,8 @@ public class BaseMailObject {
 	 * <li>body</li>
 	 * </ol>
 	 */
-	private void archiveMailMessage(final Message msg, final String subjectString, final String bodyString) throws MessagingException {
+	private void archiveMailMessage(final Message msg, final String subjectString, final String bodyString)
+			throws MessagingException {
 		if (moduleArchiveDir != null) {
 			File dir = new File(moduleArchiveDir, "emails");
 			if (!dir.mkdir() && !dir.exists()) {
@@ -284,7 +287,7 @@ public class BaseMailObject {
 			} catch (IOException e) {
 				throw new MailException("Error while archiving email", e);
 			} finally {
-				Closeables.closeQuietly(out);
+				closeQuietly(out);
 			}
 		}
 	}

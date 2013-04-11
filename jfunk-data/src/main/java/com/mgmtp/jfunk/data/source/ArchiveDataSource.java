@@ -7,6 +7,7 @@
 package com.mgmtp.jfunk.data.source;
 
 import static com.google.common.collect.Maps.newHashMap;
+import static org.apache.commons.io.IOUtils.closeQuietly;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,7 +18,6 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import com.google.common.io.Closeables;
 import com.google.inject.Inject;
 import com.mgmtp.jfunk.common.config.ScriptScoped;
 import com.mgmtp.jfunk.common.exception.JFunkException;
@@ -68,7 +68,7 @@ public class ArchiveDataSource extends BaseDataSource {
 							log.debug("Adding data for key=" + key);
 							dataSets.put(key, new DefaultDataSet(props));
 						} finally {
-							Closeables.closeQuietly(is);
+							closeQuietly(is);
 						}
 					}
 				}

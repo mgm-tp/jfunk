@@ -7,6 +7,7 @@
 package com.mgmtp.jfunk.core.scripting;
 
 import static com.google.common.base.Preconditions.checkState;
+import static org.apache.commons.io.IOUtils.closeQuietly;
 import groovy.lang.MetaProperty;
 
 import java.io.File;
@@ -25,7 +26,6 @@ import javax.script.ScriptException;
 import org.apache.log4j.Logger;
 
 import com.google.common.eventbus.EventBus;
-import com.google.common.io.Closeables;
 import com.google.common.io.Files;
 import com.mgmtp.jfunk.common.JFunkConstants;
 import com.mgmtp.jfunk.common.config.ThreadScope;
@@ -59,7 +59,8 @@ public class ScriptExecutor {
 	 *            the script scope instance
 	 */
 	@Inject
-	public ScriptExecutor(final Provider<ScriptContext> scriptContextProvider, final EventBus eventBus, final ThreadScope scriptScope,
+	public ScriptExecutor(final Provider<ScriptContext> scriptContextProvider, final EventBus eventBus,
+			final ThreadScope scriptScope,
 			final Charset charset) {
 		this.scriptContextProvider = scriptContextProvider;
 		this.eventBus = eventBus;
@@ -122,7 +123,7 @@ public class ScriptExecutor {
 				eventBus.post(new AfterScriptEvent(script, success));
 			} finally {
 				scriptScope.exitScope();
-				Closeables.closeQuietly(reader);
+				closeQuietly(reader);
 			}
 		}
 

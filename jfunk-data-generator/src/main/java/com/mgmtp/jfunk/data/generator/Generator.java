@@ -6,6 +6,8 @@
  */
 package com.mgmtp.jfunk.data.generator;
 
+import static org.apache.commons.io.IOUtils.closeQuietly;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,7 +25,6 @@ import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 
 import com.google.common.collect.Lists;
-import com.google.common.io.Closeables;
 import com.google.inject.Injector;
 import com.mgmtp.jfunk.common.random.MathRandom;
 import com.mgmtp.jfunk.common.util.Configuration;
@@ -67,7 +68,8 @@ public class Generator {
 
 	private IndexedFields indexedFields;
 
-	public Generator(final MathRandom random, final boolean ignoreOptionalConstraints, final Configuration configuration, final Injector injector) {
+	public Generator(final MathRandom random, final boolean ignoreOptionalConstraints, final Configuration configuration,
+			final Injector injector) {
 		this.random = random;
 		this.ignoreOptionalConstraints = ignoreOptionalConstraints;
 		this.constraintFactory = new ConstraintFactory(this, injector);
@@ -137,7 +139,7 @@ public class Generator {
 				constraints.add(constraintFactory.createModel(random, element));
 			}
 		} finally {
-			Closeables.closeQuietly(in);
+			closeQuietly(in);
 		}
 
 		LOGGER.info("Generator was successfully initialized");

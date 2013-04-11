@@ -11,6 +11,8 @@ import static com.google.common.base.Preconditions.checkState;
 import static org.apache.commons.io.FileUtils.copyDirectory;
 import static org.apache.commons.io.FileUtils.copyFileToDirectory;
 import static org.apache.commons.io.FileUtils.deleteQuietly;
+import static org.apache.commons.io.IOUtils.closeQuietly;
+import static org.apache.commons.io.IOUtils.copy;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -28,7 +30,6 @@ import java.util.zip.ZipOutputStream;
 
 import javax.inject.Inject;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.FastDateFormat;
 import org.slf4j.Logger;
@@ -39,7 +40,6 @@ import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.FileAppender;
 
-import com.google.common.io.Closeables;
 import com.google.common.io.Files;
 import com.mgmtp.jfunk.common.JFunkConstants;
 import com.mgmtp.jfunk.common.config.ModuleScoped;
@@ -261,7 +261,7 @@ public class ModuleArchiver {
 		} catch (IOException e) {
 			throw new JFunkException("Could not write testing properties " + f.getName(), e);
 		} finally {
-			Closeables.closeQuietly(out);
+			closeQuietly(out);
 		}
 	}
 
@@ -289,7 +289,7 @@ public class ModuleArchiver {
 				} catch (IOException ex) {
 					throw new JFunkException("Could not write FormData properties " + f.getName(), ex);
 				} finally {
-					Closeables.closeQuietly(out);
+					closeQuietly(out);
 				}
 			}
 		}
@@ -304,7 +304,7 @@ public class ModuleArchiver {
 			} catch (IOException ex) {
 				throw new JFunkException("Error writing stacktrace log to archive.", ex);
 			} finally {
-				Closeables.closeQuietly(pr);
+				closeQuietly(pr);
 			}
 		}
 	}
@@ -328,7 +328,7 @@ public class ModuleArchiver {
 		} catch (IOException ex) {
 			throw new JFunkException("Error creating archive zip: " + zipFile, ex);
 		} finally {
-			Closeables.closeQuietly(zipOut);
+			closeQuietly(zipOut);
 		}
 	}
 
@@ -343,9 +343,9 @@ public class ModuleArchiver {
 			try {
 				in = new FileInputStream(file);
 				zipOut.putNextEntry(new ZipEntry(prefix + file.getName()));
-				IOUtils.copy(in, zipOut);
+				copy(in, zipOut);
 			} finally {
-				Closeables.closeQuietly(in);
+				closeQuietly(in);
 				zipOut.flush();
 				zipOut.closeEntry();
 			}

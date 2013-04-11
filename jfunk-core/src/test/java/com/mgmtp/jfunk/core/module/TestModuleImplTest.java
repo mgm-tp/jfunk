@@ -15,7 +15,6 @@ import org.testng.annotations.Test;
 
 import com.google.common.eventbus.EventBus;
 import com.google.inject.Injector;
-import com.mgmtp.jfunk.core.module.TestModuleImpl;
 import com.mgmtp.jfunk.core.scripting.ExecutionMode;
 import com.mgmtp.jfunk.core.scripting.StepExecutor;
 import com.mgmtp.jfunk.core.step.base.BaseStep;

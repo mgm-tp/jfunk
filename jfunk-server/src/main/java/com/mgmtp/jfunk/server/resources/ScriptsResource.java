@@ -7,6 +7,7 @@
 package com.mgmtp.jfunk.server.resources;
 
 import static java.util.Arrays.asList;
+import static org.apache.commons.io.IOUtils.closeQuietly;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -42,7 +43,6 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.MapMaker;
 import com.google.common.io.ByteStreams;
-import com.google.common.io.Closeables;
 import com.google.common.io.Files;
 import com.mgmtp.jfunk.core.scripting.ScriptExecutor;
 import com.mgmtp.jfunk.server.domain.ActiveScript;
@@ -99,14 +99,15 @@ public class ScriptsResource {
 	@PUT
 	@Path("{file: .*\\.groovy}")
 	@Consumes(MediaType.TEXT_PLAIN)
-	public Response uploadScript(@PathParam("file") final File file, @Context final UriInfo uriInfo, final InputStream is) throws IOException {
+	public Response uploadScript(@PathParam("file") final File file, @Context final UriInfo uriInfo, final InputStream is)
+			throws IOException {
 		boolean exists = file.exists();
 
 		FileOutputStream os = new FileOutputStream(file);
 		try {
 			ByteStreams.copy(is, os);
 		} finally {
-			Closeables.closeQuietly(os);
+			closeQuietly(os);
 		}
 
 		if (exists) {
@@ -124,7 +125,8 @@ public class ScriptsResource {
 	@Path("{file: .*\\.groovy}")
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	public ActiveScript executeScript(@PathParam("file") final File file, @Context final UriInfo uriInfo, final ScriptParams params) {
+	public ActiveScript executeScript(@PathParam("file") final File file, @Context final UriInfo uriInfo,
+			final ScriptParams params) {
 		final Properties properties = new Properties();
 		for (ScriptParam param : params.getScriptParams()) {
 			properties.setProperty(param.getName(), param.getValue());
@@ -132,7 +134,8 @@ public class ScriptsResource {
 
 		// Use a UUID as key because the same script might be run multiple times concurrently
 		final UUID key = UUID.randomUUID();
-		final ActiveScript script = new ActiveScript(key, file.getName(), new Date(file.lastModified()), uriInfo.getAbsolutePathBuilder()
+		final ActiveScript script = new ActiveScript(key, file.getName(), new Date(file.lastModified()), uriInfo
+				.getAbsolutePathBuilder()
 				.path(file.getName()).build(), ActiveState.SCHEDULED);
 
 		activeScripts.put(key, script);
@@ -215,7 +218,8 @@ public class ScriptsResource {
 		}));
 
 		for (File input : files) {
-			FileSystemItem fsi = new FileSystemItem(input.getName(), new Date(input.lastModified()), uriInfo.getAbsolutePathBuilder()
+			FileSystemItem fsi = new FileSystemItem(input.getName(), new Date(input.lastModified()), uriInfo
+					.getAbsolutePathBuilder()
 					.path(input.getName()).build());
 
 			List<FileSystemItem> target = input.isDirectory() ? items.getDirectories() : items.getScripts();
