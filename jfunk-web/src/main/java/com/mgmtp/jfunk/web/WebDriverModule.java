@@ -34,9 +34,8 @@ import com.google.inject.Key;
 import com.google.inject.Provides;
 import com.google.inject.name.Names;
 import com.mgmtp.jfunk.common.JFunkConstants;
-import com.mgmtp.jfunk.common.config.ScriptScoped;
+import com.mgmtp.jfunk.common.config.ModuleScoped;
 import com.mgmtp.jfunk.common.util.Configuration;
-import com.mgmtp.jfunk.web.event.WebDriverScriptEngineEventHandler;
 import com.mgmtp.jfunk.web.util.DumpFileCreator;
 import com.mgmtp.jfunk.web.util.FormInputHandler;
 import com.mgmtp.jfunk.web.util.WebDriverTool;
@@ -66,18 +65,16 @@ public class WebDriverModule extends BaseWebDriverModule {
 		bind(DumpFileCreator.class);
 		bind(WebDriverTool.class);
 
-		bindEventHandler().to(WebDriverScriptEngineEventHandler.class);
-
-		bindWebDriver(WebConstants.WEBDRIVER_HTMLUNIT, HtmlUnitDriverProvider.class, ScriptScoped.class);
-		bindWebDriver(WebConstants.WEBDRIVER_FIREFOX, FirefoxDriverProvider.class, ScriptScoped.class);
-		bindWebDriver(WebConstants.WEBDRIVER_CHROME, ChromeDriverProvider.class, ScriptScoped.class);
-		bindWebDriver(WebConstants.WEBDRIVER_INTERNET_EXPLORER, InternetExplorerDriverProvider.class, ScriptScoped.class);
-		bindWebDriver(WebConstants.WEBDRIVER_REMOTE, RemoteWebDriverProvider.class, ScriptScoped.class);
-		bindScriptScopedDisposable().to(WebDriverDisposable.class);
+		bindWebDriver(WebConstants.WEBDRIVER_HTMLUNIT, HtmlUnitDriverProvider.class, ModuleScoped.class);
+		bindWebDriver(WebConstants.WEBDRIVER_FIREFOX, FirefoxDriverProvider.class, ModuleScoped.class);
+		bindWebDriver(WebConstants.WEBDRIVER_CHROME, ChromeDriverProvider.class, ModuleScoped.class);
+		bindWebDriver(WebConstants.WEBDRIVER_INTERNET_EXPLORER, InternetExplorerDriverProvider.class, ModuleScoped.class);
+		bindWebDriver(WebConstants.WEBDRIVER_REMOTE, RemoteWebDriverProvider.class, ModuleScoped.class);
+		bindModuleScopedDisposable().to(WebDriverDisposable.class);
 	}
 
 	@Provides
-	@ScriptScoped
+	@ModuleScoped
 	protected WebDriver provideWebDriver(final Configuration config, final Injector injector) {
 		String webDriverKey = config.get(WebConstants.WEBDRIVER_KEY);
 		checkNotNull(webDriverKey, "Property '%s' is null. Check your configuration.", WebConstants.WEBDRIVER_KEY);
@@ -173,7 +170,7 @@ public class WebDriverModule extends BaseWebDriverModule {
 	}
 
 	@Provides
-	@ScriptScoped
+	@ModuleScoped
 	protected WebElementFinder provideWebElementFinder(final WebDriver webDriver, final Configuration config) {
 		WebElementFinder wef = WebElementFinder.create().webDriver(webDriver);
 
@@ -199,7 +196,7 @@ public class WebDriverModule extends BaseWebDriverModule {
 	}
 
 	@Provides
-	@ScriptScoped
+	@ModuleScoped
 	protected FormInputHandler provideFormInputHandler(final WebDriver webDriver, final Configuration config) {
 		FormInputHandler fih = FormInputHandler.create().webDriver(webDriver);
 

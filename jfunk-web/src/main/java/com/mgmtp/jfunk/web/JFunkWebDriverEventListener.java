@@ -53,7 +53,8 @@ public class JFunkWebDriverEventListener implements WebDriverEventListener {
 	private final Provider<DumpFileCreator> dumpFileCreatorProvider;
 
 	@Inject
-	public JFunkWebDriverEventListener(final Configuration config, @ModuleArchiveDir final Provider<File> moduleArchiveDirProvider,
+	public JFunkWebDriverEventListener(final Configuration config,
+			@ModuleArchiveDir final Provider<File> moduleArchiveDirProvider,
 			final Provider<DumpFileCreator> dumpFileCreatorProvider) {
 		this.config = config;
 		this.moduleArchiveDirProvider = moduleArchiveDirProvider;
@@ -61,8 +62,8 @@ public class JFunkWebDriverEventListener implements WebDriverEventListener {
 		this.saveOutputMap = new EnumMap<SaveOutput, Boolean>(SaveOutput.class);
 		for (SaveOutput saveOutput : SaveOutput.values()) {
 			// active flag for every output type
-			saveOutputMap.put(saveOutput,
-					config.getBoolean(JFunkConstants.ARCHIVE_INCLUDE + saveOutput.getIdentifier(), saveOutput.isActiveByDefault()));
+			saveOutputMap.put(saveOutput, config.getBoolean(JFunkConstants.ARCHIVE_INCLUDE + saveOutput.getIdentifier(),
+					saveOutput.isActiveByDefault()));
 		}
 	}
 
@@ -80,10 +81,11 @@ public class JFunkWebDriverEventListener implements WebDriverEventListener {
 
 			if (page instanceof HtmlPage && page.getUrl() != WebClient.URL_ABOUT_BLANK) {
 				String urlString = page.getUrl().toString();
-				log.debug("Dumping HTML file with resources: " + urlString);
+				log.trace("Dumping HTML file with resources: " + urlString);
 
 				DumpFileCreator dumpFileCreator = dumpFileCreatorProvider.get();
-				File htmlFile = dumpFileCreator.createDumpFile(new File(moduleArchiveDirProvider.get(), "htmldump"), "html", urlString, null);
+				File htmlFile = dumpFileCreator.createDumpFile(new File(moduleArchiveDirProvider.get(), "htmldump"), "html",
+						urlString, null);
 				try {
 					if (htmlFile.exists()) {
 						htmlFile.delete();
@@ -204,7 +206,7 @@ public class JFunkWebDriverEventListener implements WebDriverEventListener {
 						html.append(driver.getPageSource());
 						writeStringToFile(f, html.toString(), "UTF-8");
 						copyFile(f, new File(moduleArchiveDir, JFunkConstants.LASTPAGE_HTML));
-						log.debug("Saving page: filename={}, action={}, trigger={}, response={}",
+						log.trace("Saving page: filename={}, action={}, trigger={}, response={}",
 								f.getName(), action, triggeredBy, driver.getCurrentUrl());
 						break;
 					case PNG:
@@ -212,7 +214,7 @@ public class JFunkWebDriverEventListener implements WebDriverEventListener {
 							File tmpFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
 							if (tmpFile != null) {
 								copyFile(tmpFile, f);
-								log.debug("Saving page: filename={}, action={}, trigger={}, response={}",
+								log.trace("Saving page: filename={}, action={}, trigger={}, response={}",
 										f.getName(), action, triggeredBy, driver.getCurrentUrl());
 								deleteQuietly(tmpFile);
 							}
@@ -226,7 +228,8 @@ public class JFunkWebDriverEventListener implements WebDriverEventListener {
 						 * HtmlUnitDriver.
 						 */
 						if (WebDriverUtils.isHtmlUnitDriver(driver)) {
-							String content = ((HtmlPage) WebDriverUtils.getHtmlUnitDriverWebClient(driver).getCurrentWindow().getEnclosedPage())
+							String content = ((HtmlPage) WebDriverUtils.getHtmlUnitDriverWebClient(driver).getCurrentWindow()
+									.getEnclosedPage())
 									.getWebResponse().getContentAsString();
 							writeStringToFile(f, content, "UTF-8");
 							HtmlValidatorUtil.validateHtml(f.getParentFile(), config, f);
