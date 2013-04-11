@@ -22,6 +22,7 @@ import org.apache.http.auth.Credentials;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.HttpClient;
 import org.apache.log4j.Logger;
+import org.openqa.selenium.Proxy;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
 import com.gargoylesoftware.htmlunit.AjaxController;
@@ -41,7 +42,8 @@ import com.mgmtp.jfunk.web.util.DumpFileCreator;
  * 
  * @author rnaegele
  */
-public class JFunkHtmlUnitDriverImpl extends HtmlUnitDriver implements IncorrectnessListener, RefreshHandler, CredentialsProvider,
+public class JFunkHtmlUnitDriverImpl extends HtmlUnitDriver implements IncorrectnessListener, RefreshHandler,
+		CredentialsProvider,
 		AlertHandler, JFunkHtmlUnitWebDriver {
 
 	private final Logger log = Logger.getLogger(getClass());
@@ -60,9 +62,10 @@ public class JFunkHtmlUnitDriverImpl extends HtmlUnitDriver implements Incorrect
 	protected final Provider<Set<WebWindowListener>> listenersProvider;
 
 	protected JFunkHtmlUnitDriverImpl(final BrowserVersion browserVersion, final HtmlUnitWebDriverParams webDriverParams,
-			final AjaxController ajaxController, final HtmlUnitSSLParams sslParams, final Map<String, CredentialsProvider> credentialsProviderMap,
+			final AjaxController ajaxController, final HtmlUnitSSLParams sslParams,
+			final Map<String, CredentialsProvider> credentialsProviderMap,
 			final Provider<DumpFileCreator> htmlFileCreatorProvider, final Provider<File> moduleArchiveDirProvider,
-			final Provider<Set<WebWindowListener>> listenersProvider) {
+			final Provider<Set<WebWindowListener>> listenersProvider, final Proxy proxy) {
 
 		super(browserVersion);
 
@@ -74,10 +77,27 @@ public class JFunkHtmlUnitDriverImpl extends HtmlUnitDriver implements Incorrect
 		this.moduleArchiveDirProvider = moduleArchiveDirProvider;
 		this.listenersProvider = listenersProvider;
 
+		setProxy(proxy);
 		setJavascriptEnabled(webDriverParams.isJavascriptEnabled());
 
 		// cannot override modifyWebClient because it is called in the super class' constructor before our params are set
 		configureWebClient(getWebClient());
+	}
+
+	private void setProxy(final Proxy proxy) {
+		if (proxy != null) {
+			String fullProxy = proxy.getHttpProxy();
+			if (fullProxy != null) {
+				int index = fullProxy.indexOf(":");
+				if (index != -1) {
+					String host = fullProxy.substring(0, index);
+					int port = Integer.parseInt(fullProxy.substring(index + 1));
+					setProxy(host, port);
+				} else {
+					setProxy(fullProxy, 0);
+				}
+			}
+		}
 	}
 
 	protected final void configureWebClient(final WebClient client) {

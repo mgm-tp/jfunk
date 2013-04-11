@@ -6,29 +6,20 @@
  */
 package com.mgmtp.jfunk.web;
 
-import static com.google.common.collect.Iterables.getOnlyElement;
-import static org.apache.commons.lang3.StringUtils.substringAfter;
-
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Collection;
-import java.util.Map.Entry;
+import java.util.Map;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.Validate;
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.Augmenter;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.events.WebDriverEventListener;
 
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Multimap;
 import com.mgmtp.jfunk.common.util.Configuration;
 
 /**
@@ -39,11 +30,10 @@ import com.mgmtp.jfunk.common.util.Configuration;
  */
 public class RemoteWebDriverProvider extends BaseWebDriverProvider {
 
-	private static final Pattern INDEX_PATTERN = Pattern.compile("(.+?)\\.\\d+");
-
 	@Inject
-	public RemoteWebDriverProvider(final Configuration config, final Set<WebDriverEventListener> eventListeners) {
-		super(config, eventListeners);
+	public RemoteWebDriverProvider(final Configuration config, final Set<WebDriverEventListener> eventListeners,
+			final Map<String, Capabilities> capabilitiesMap) {
+		super(config, eventListeners, capabilitiesMap);
 	}
 
 	@Override
@@ -58,32 +48,7 @@ public class RemoteWebDriverProvider extends BaseWebDriverProvider {
 			throw new IllegalArgumentException("Illegal remote web driver hub url: " + remoteWebDriverUrl);
 		}
 
-		Multimap<String, String> capabilitiesMultimap = ArrayListMultimap.create();
-		for (Entry<String, String> entry : config.entrySet()) {
-			String key = entry.getKey();
-			String prefix = "webdriver.remote.capability.";
-			if (key.startsWith(prefix)) {
-				String capability = substringAfter(key, prefix);
-				Matcher matcher = INDEX_PATTERN.matcher(capability);
-				if (matcher.matches()) {
-					capability = matcher.group(1);
-				}
-				String value = entry.getValue();
-				capabilitiesMultimap.put(capability, value);
-			}
-		}
-
-		DesiredCapabilities desiredCapabilities = new DesiredCapabilities();
-		for (String capability : capabilitiesMultimap.keySet()) {
-			Collection<String> capabilities = capabilitiesMultimap.get(capability);
-			if (capabilities.size() > 1) {
-				desiredCapabilities.setCapability(capability, ImmutableList.copyOf(capabilities));
-			} else {
-				desiredCapabilities.setCapability(capability, getOnlyElement(capabilities));
-			}
-		}
-
-		log.info("Starting remote web driver with capability: {}", desiredCapabilities);
-		return new Augmenter().augment(new RemoteWebDriver(url, desiredCapabilities));
+		log.info("Starting remote web driver with capabilitiesMap: {}", capabilitiesMap);
+		return new Augmenter().augment(new RemoteWebDriver(url, capabilitiesMap.get(WebConstants.WEBDRIVER_REMOTE)));
 	}
 }

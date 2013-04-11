@@ -20,6 +20,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.http.client.CredentialsProvider;
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.events.WebDriverEventListener;
 
@@ -32,6 +33,7 @@ import com.google.common.collect.Maps;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Provides;
+import com.google.inject.TypeLiteral;
 import com.google.inject.name.Names;
 import com.mgmtp.jfunk.common.JFunkConstants;
 import com.mgmtp.jfunk.common.config.ModuleScoped;
@@ -70,6 +72,10 @@ public class WebDriverModule extends BaseWebDriverModule {
 		bindWebDriver(WebConstants.WEBDRIVER_INTERNET_EXPLORER, InternetExplorerDriverProvider.class, ModuleScoped.class);
 		bindWebDriver(WebConstants.WEBDRIVER_REMOTE, RemoteWebDriverProvider.class, ModuleScoped.class);
 		bindModuleScopedDisposable().to(WebDriverDisposable.class);
+		
+		bind(new TypeLiteral<Map<String, Capabilities>>() {
+			//
+		}).toProvider(CapabilitiesProvider.class);
 	}
 
 	@Provides

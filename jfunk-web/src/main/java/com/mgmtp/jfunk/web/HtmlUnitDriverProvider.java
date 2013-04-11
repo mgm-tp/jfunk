@@ -14,7 +14,10 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 
 import org.apache.http.client.CredentialsProvider;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.support.events.WebDriverEventListener;
 
 import com.gargoylesoftware.htmlunit.AjaxController;
@@ -39,11 +42,13 @@ public class HtmlUnitDriverProvider extends BaseWebDriverProvider {
 
 	@Inject
 	protected HtmlUnitDriverProvider(final Configuration config, final Set<WebDriverEventListener> eventListeners,
-			final HtmlUnitWebDriverParams webDriverParams, final HtmlUnitSSLParams sslParams, final BrowserVersion browserVersion,
-			final AjaxController ajaxController, final Map<String, CredentialsProvider> credentialsProviderMap,
-			final Provider<DumpFileCreator> htmlFileCreatorProvider, @ModuleArchiveDir final Provider<File> moduleArchiveDirProvider,
-			final Provider<Set<WebWindowListener>> listenersProvider) {
-		super(config, eventListeners);
+			final HtmlUnitWebDriverParams webDriverParams, final HtmlUnitSSLParams sslParams,
+			final BrowserVersion browserVersion, final AjaxController ajaxController,
+			final Map<String, CredentialsProvider> credentialsProviderMap,
+			final Provider<DumpFileCreator> htmlFileCreatorProvider,
+			@ModuleArchiveDir final Provider<File> moduleArchiveDirProvider,
+			final Provider<Set<WebWindowListener>> listenersProvider, final Map<String, Capabilities> capabilitiesMap) {
+		super(config, eventListeners, capabilitiesMap);
 		this.webDriverParams = webDriverParams;
 		this.sslParams = sslParams;
 		this.browserVersion = browserVersion;
@@ -56,7 +61,9 @@ public class HtmlUnitDriverProvider extends BaseWebDriverProvider {
 
 	@Override
 	protected WebDriver createWebDriver() {
+		Capabilities capabilities = capabilitiesMap.get(WebConstants.WEBDRIVER_HTMLUNIT);
+		Proxy proxy = capabilities != null ? (Proxy) capabilities.getCapability(CapabilityType.PROXY) : null;
 		return new JFunkHtmlUnitDriverImpl(browserVersion, webDriverParams, ajaxController, sslParams,
-				credentialsProviderMap, htmlFileCreatorProvider, moduleArchiveDirProvider, listenersProvider);
+				credentialsProviderMap, htmlFileCreatorProvider, moduleArchiveDirProvider, listenersProvider, proxy);
 	}
 }

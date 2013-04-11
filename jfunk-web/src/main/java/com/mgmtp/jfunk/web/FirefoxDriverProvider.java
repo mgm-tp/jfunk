@@ -6,10 +6,12 @@
  */
 package com.mgmtp.jfunk.web;
 
+import java.util.Map;
 import java.util.Set;
 
 import javax.inject.Inject;
 
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.events.WebDriverEventListener;
@@ -22,12 +24,13 @@ import com.mgmtp.jfunk.common.util.Configuration;
 public class FirefoxDriverProvider extends BaseWebDriverProvider {
 
 	@Inject
-	protected FirefoxDriverProvider(final Configuration config, final Set<WebDriverEventListener> eventListeners) {
-		super(config, eventListeners);
+	protected FirefoxDriverProvider(final Configuration config, final Set<WebDriverEventListener> eventListeners,
+			final Map<String, Capabilities> capabilitiesMap) {
+		super(config, eventListeners, capabilitiesMap);
 	}
 
 	@Override
 	protected WebDriver createWebDriver() {
-		return new FirefoxDriver();
+		return new FirefoxDriver(capabilitiesMap.get(WebConstants.WEBDRIVER_FIREFOX));
 	}
 }

@@ -8,11 +8,13 @@ package com.mgmtp.jfunk.web;
 
 import static com.google.common.base.Preconditions.checkState;
 
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Provider;
 
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
 import org.openqa.selenium.support.events.WebDriverEventListener;
@@ -29,10 +31,13 @@ public abstract class BaseWebDriverProvider implements Provider<WebDriver> {
 
 	protected final Configuration config;
 	private final Set<WebDriverEventListener> eventListeners;
+	protected final Map<String, Capabilities> capabilitiesMap;
 
-	public BaseWebDriverProvider(final Configuration config, final Set<WebDriverEventListener> eventListeners) {
+	public BaseWebDriverProvider(final Configuration config, final Set<WebDriverEventListener> eventListeners,
+			final Map<String, Capabilities> capabilitiesMap) {
 		this.config = config;
 		this.eventListeners = eventListeners;
+		this.capabilitiesMap = capabilitiesMap;
 	}
 
 	@Override
