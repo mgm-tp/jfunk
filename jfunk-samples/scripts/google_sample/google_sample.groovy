@@ -32,14 +32,13 @@ generate 'google'
 
 module ('GoogleScriptModule', [dataSetKey: 'google']) {
 
-	webDriver.get(url)
+	step new LoadPage(url)
 
 	// Enter form value (form name=f, form field=q)
 	searchTerm = get('${google searchTerm}')
 
-	wdt.processField(By.name('q'), searchTerm)
-
-	wdt.sendKeys(By.name('q'), Keys.ENTER)
+	step new JFunkWebElement(By.name('q'), searchTerm)
+	step new SendKeysStep(By.name('q'), Keys.ENTER)
 
 	// Search for text on page
 	step new CheckHtml4Pattern("(?s).*$searchTerm.*")
