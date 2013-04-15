@@ -1,12 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-
-	Copyright (C) 2013 mgm technology partners GmbH, Munich.
-
-	See the LICENSE file distributed with this work for additional
-	information regarding copyright ownership and intellectual property rights.
-
--->
+<!-- Copyright (C) 2013 mgm technology partners GmbH, Munich. See the LICENSE file distributed with this work for additional information regarding copyright ownership and intellectual property rights. -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
@@ -98,30 +91,9 @@
 										<ignore />
 									</action>
 								</pluginExecution>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>org.codehaus.gmaven</groupId>
-										<artifactId>gmaven-plugin</artifactId>
-										<versionRange>[1.5,)</versionRange>
-										<goals>
-											<goal>generateStubs</goal>
-											<goal>compile</goal>
-											<goal>generateTestStubs</goal>
-											<goal>testCompile</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore />
-									</action>
-								</pluginExecution>
 							</pluginExecutions>
 						</lifecycleMappingMetadata>
 					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.codehaus.gmaven</groupId>
-					<artifactId>gmaven-plugin</artifactId>
-					<version>1.5</version>
 				</plugin>
 				<plugin>
 					<artifactId>maven-archetype-plugin</artifactId>
@@ -141,11 +113,7 @@
 			</plugin>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<encoding>UTF-8</encoding>
-					<source>1.6</source>
-					<target>1.6</target>
-				</configuration>
+				<version>3.1</version><!--$NO-MVN-MAN-VER$-->
 			</plugin>
 			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>
@@ -498,6 +466,8 @@
 		<slf4j.version>1.7.5</slf4j.version>
 		<poi.version>3.9</poi.version>
 		<sonar.skippedModules>jfunk-samples</sonar.skippedModules>
-		<groovy.version>1.8.4</groovy.version>
+		<groovy.version>2.1.2</groovy.version>
+		<groovy-eclipse-compiler.version>2.7.0-01</groovy-eclipse-compiler.version>
+		<groovy-eclipse-batch.version>2.1.1-01</groovy-eclipse-batch.version>
 	</properties>
 </project>
