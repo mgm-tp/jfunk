@@ -17,7 +17,6 @@ import com.mgmtp.jfunk.data.generator.util.CharacterSet;
 /**
  * Unit test for {@link CharacterSet}
  * 
- * @version $Id$
  */
 public class CharacterSetTest {
 

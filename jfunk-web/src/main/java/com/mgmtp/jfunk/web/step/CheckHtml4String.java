@@ -14,7 +14,6 @@ import com.mgmtp.jfunk.core.module.TestModule;
 /**
  * Searches for a string on the current HTML page.
  * 
- * @version $Id$
  */
 public class CheckHtml4String extends WebDriverStep {
 	private final String string;

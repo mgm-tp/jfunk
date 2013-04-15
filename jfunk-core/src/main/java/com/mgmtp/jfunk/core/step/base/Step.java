@@ -24,7 +24,6 @@ import com.mgmtp.jfunk.core.scripting.StepExecutor;
  * should probably think about using a {@link ComplexStep} instead.
  * </p>
  * 
- * @version $Id$
  */
 public interface Step extends NamedObject {
 

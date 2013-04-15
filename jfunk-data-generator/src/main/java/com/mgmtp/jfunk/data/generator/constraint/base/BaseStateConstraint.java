@@ -17,7 +17,6 @@ import com.mgmtp.jfunk.data.generator.control.FieldCase;
  * generated once is retained until the next reset and is not recalculated every time
  * {@link #getValue(String, FieldCase)} is called.
  * 
- * @version $Id$
  */
 public abstract class BaseStateConstraint extends BaseConstraint {
 

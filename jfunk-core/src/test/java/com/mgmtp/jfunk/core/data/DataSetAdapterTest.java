@@ -21,7 +21,6 @@ import com.mgmtp.jfunk.common.util.Configuration;
 import com.mgmtp.jfunk.data.source.DataSource;
 
 /**
- * @version $Id$
  */
 public class DataSetAdapterTest {
 

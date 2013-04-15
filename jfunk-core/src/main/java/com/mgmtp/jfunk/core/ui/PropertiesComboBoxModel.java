@@ -26,7 +26,6 @@ import com.google.common.collect.Lists;
 /**
  * Model class for the properties selector list.
  * 
- * @version $Id$
  */
 public class PropertiesComboBoxModel extends AbstractListModel implements ComboBoxModel {
 

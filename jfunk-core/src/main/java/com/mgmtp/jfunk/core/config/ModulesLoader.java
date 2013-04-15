@@ -30,7 +30,6 @@ import com.mgmtp.jfunk.common.util.ResourceLoader;
  * module.2=com.foo.bar.config.MyVerySpecialGuiceModule
  * </pre>
  * 
- * @version $Id$
  */
 public final class ModulesLoader {
 	private static final Logger LOG = Logger.getLogger(ModulesLoader.class);

@@ -20,7 +20,6 @@ import org.testng.annotations.Test;
 
 /**
  * @author rnaegele
- * @version $Id$
  */
 public class ScriptParamsTest {
 

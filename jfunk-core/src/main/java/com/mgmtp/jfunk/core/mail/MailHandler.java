@@ -11,7 +11,6 @@ import com.mgmtp.jfunk.common.util.Configuration;
 /**
  * Interface for handling e-mail accounts.
  * 
- * @version $Id$
  */
 public interface MailHandler {
 

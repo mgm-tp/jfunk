@@ -20,7 +20,6 @@ import com.mgmtp.jfunk.data.generator.control.FieldCase;
  * it shall for example be achieved that only the selected constraint is reset and not all, this
  * constraint offers an option. The reset is stored and will be effectively executed with a delay.
  * 
- * @version $Id$
  */
 public class OnDemandReset extends SourceConstraint {
 

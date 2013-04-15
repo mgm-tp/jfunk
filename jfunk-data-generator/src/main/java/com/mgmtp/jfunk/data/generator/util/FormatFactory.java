@@ -19,7 +19,6 @@ import org.jdom.Element;
  * Helper class that takes care of the generation of NumberFormat and DateFormat objects from given
  * element objects
  * 
- * @version $Id$
  */
 public final class FormatFactory {
 

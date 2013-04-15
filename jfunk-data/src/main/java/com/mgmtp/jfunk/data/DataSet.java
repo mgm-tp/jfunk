@@ -14,7 +14,6 @@ import com.mgmtp.jfunk.data.source.DataSource;
  * Interface for a data set encapsulating entries for HTML forms. Data sets are provided by a
  * {@link DataSource}.
  * 
- * @version $Id$
  */
 public interface DataSet {
 

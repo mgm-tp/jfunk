@@ -11,7 +11,6 @@ package com.mgmtp.jfunk.data.generator.data;
  * generation must implement this interface and are then called with the so far generated
  * {@link FormData}.
  * 
- * @version $Id$
  */
 public interface FieldGenerator {
 	/**

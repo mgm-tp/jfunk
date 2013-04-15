@@ -19,7 +19,6 @@ import com.mgmtp.jfunk.data.generator.util.XmlElementFinder;
 /**
  * Factory class to generate a field element from an XML element.
  * 
- * @version $Id$
  */
 public class FieldFactory {
 

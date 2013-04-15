@@ -21,7 +21,6 @@ import com.mgmtp.jfunk.core.step.base.BaseStep;
 
 /**
  * @author rnaegele
- * @version $Id$
  */
 public class TestModuleImplTest {
 

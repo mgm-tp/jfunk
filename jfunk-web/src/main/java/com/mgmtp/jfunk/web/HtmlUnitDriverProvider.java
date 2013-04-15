@@ -26,7 +26,6 @@ import com.mgmtp.jfunk.web.util.DumpFileCreator;
 
 /**
  * @author rnaegele
- * @version $Id$
  */
 public class HtmlUnitDriverProvider extends BaseWebDriverProvider {
 	protected final HtmlUnitWebDriverParams webDriverParams;

@@ -21,7 +21,6 @@ import com.mgmtp.jfunk.data.generator.GeneratorConstants;
  * Represents a {@code field-set} element in the "indexed-fields" configuration file (defined by
  * {@link GeneratorConstants#INDEXED_FIELDS_FILE}).
  * 
- * @version $Id$
  */
 class FieldSet implements Iterable<Field> {
 	private final String id;

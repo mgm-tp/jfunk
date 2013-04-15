@@ -10,7 +10,6 @@ package com.mgmtp.jfunk.common.util;
  * Utility class for transforming var args into object arrays.
  * 
  * @author rnaegele
- * @version $Id$
  */
 public final class Varargs {
 

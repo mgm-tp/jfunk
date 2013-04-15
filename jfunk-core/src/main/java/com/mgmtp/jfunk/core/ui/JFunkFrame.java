@@ -58,7 +58,6 @@ import org.apache.log4j.Logger;
 /**
  * GUI for starting test scripts
  * 
- * @version $Id$
  */
 public final class JFunkFrame extends JFrame {
 	private static final String PATH_TO_MAIL_CONFIG_FILES = "config/email_accounts";

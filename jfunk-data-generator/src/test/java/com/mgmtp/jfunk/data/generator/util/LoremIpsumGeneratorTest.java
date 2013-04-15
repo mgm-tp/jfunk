@@ -18,7 +18,6 @@ import com.google.common.io.Resources;
 
 /**
  * @author rnaegele
- * @version $Id: $
  */
 public class LoremIpsumGeneratorTest {
 

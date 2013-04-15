@@ -13,7 +13,6 @@ import com.mgmtp.jfunk.core.module.TestModule;
 /**
  * Checks if the URL of the current HTML page matches a given regular expression.
  * 
- * @version $Id$
  */
 public class CheckUrl extends WebDriverStep {
 

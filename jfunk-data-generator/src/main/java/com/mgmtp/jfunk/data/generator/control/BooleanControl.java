@@ -12,7 +12,6 @@ import com.mgmtp.jfunk.common.random.MathRandom;
 /**
  * This class controlls a boolean field. There are the cases true or false
  * 
- * @version $Id$
  */
 public class BooleanControl {
 

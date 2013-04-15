@@ -15,7 +15,6 @@ import com.mgmtp.jfunk.core.step.base.StepMode;
  * This exception is thrown when running in {@link StepMode#CHECK_VALUE} and a checked value does
  * not match the expected one.
  * 
- * @version $Id$
  */
 public class InvalidValueException extends ValidationException {
 

@@ -9,7 +9,6 @@ package com.mgmtp.jfunk.common.util;
 /**
  * Simple helper class to log JVM runtime memory information.
  * 
- * @version $Id$
  */
 public final class MemoryInfo {
 

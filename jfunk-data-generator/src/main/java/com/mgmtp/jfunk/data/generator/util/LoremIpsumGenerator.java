@@ -15,7 +15,6 @@ import com.mgmtp.jfunk.data.generator.config.LoremIpsum;
 
 /**
  * @author rnaegele
- * @version $Id: $
  */
 @Singleton
 public class LoremIpsumGenerator {

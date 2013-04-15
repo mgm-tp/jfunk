@@ -16,7 +16,6 @@ import com.mgmtp.jfunk.data.source.DataSource;
  * Base class for guice modules for data source bindings.
  * 
  * @author rnaegele
- * @version $Id$
  */
 public abstract class BaseDataSourceModule extends AbstractModule {
 

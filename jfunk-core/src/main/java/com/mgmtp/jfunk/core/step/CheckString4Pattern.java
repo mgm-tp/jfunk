@@ -23,7 +23,6 @@ import com.mgmtp.jfunk.core.step.base.BaseStep;
  * regular expression matches or does not match. The content of the first capturing group (if
  * present) can be stored in the configuration.
  * 
- * @version $Id$
  */
 public class CheckString4Pattern extends BaseStep {
 	private final Pattern pattern;

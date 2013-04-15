@@ -10,7 +10,6 @@ import java.io.File;
 
 /**
  * @author rnaegele
- * @version $Id$
  */
 public class AfterScriptEvent extends ScriptEvent {
 

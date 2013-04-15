@@ -17,7 +17,6 @@ import javax.xml.bind.annotation.XmlRootElement;
  * Container class for {@link FileSystemItem} instances which facilitates JAXB handling.
  * 
  * @author rnaegele
- * @version $Id$
  */
 @XmlRootElement
 public class FileSystemItems {

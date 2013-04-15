@@ -18,7 +18,6 @@ import com.mgmtp.jfunk.data.generator.constraint.base.SourceConstraint;
  * method are simply passed to the source constraint with the exception of the reset methods - those
  * have to be called directly on the source constraint.
  * 
- * @version $Id$
  */
 public class Forward extends SourceConstraint {
 

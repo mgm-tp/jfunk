@@ -23,7 +23,6 @@ import com.mgmtp.jfunk.data.source.DataSource;
 /**
  * Adapter class so {@link DataSet DataSets} may be accessed via {@link Configuration}.
  * 
- * @version $Id$
  */
 public class DataSetAdapter extends ForwardingMap<String, String> {
 

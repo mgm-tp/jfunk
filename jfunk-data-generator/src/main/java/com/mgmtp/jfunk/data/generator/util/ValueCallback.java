@@ -14,7 +14,6 @@ import com.mgmtp.jfunk.data.generator.constraint.Constraint;
  * {@link Constraint#setValueCallback(ValueCallback)} is set to {@code null}. A fixed value survives
  * {@link Constraint#resetValues()}.
  * 
- * @version $Id$
  */
 public interface ValueCallback {
 

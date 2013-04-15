@@ -45,7 +45,6 @@ import com.mgmtp.jfunk.data.source.DataSource;
  * {@link DataSource} implementation for reading test data from Excel files.
  * 
  * @author rnaegele
- * @version $Id: $
  */
 @ScriptScoped
 public class ExcelDataSource extends BaseDataSource {

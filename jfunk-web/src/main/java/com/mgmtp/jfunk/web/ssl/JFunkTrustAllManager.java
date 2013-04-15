@@ -13,7 +13,6 @@ import javax.net.ssl.X509TrustManager;
 
 /**
  * @author rnaegele
- * @version $Id: $
  */
 public final class JFunkTrustAllManager implements X509TrustManager {
 

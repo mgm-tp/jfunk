@@ -49,7 +49,6 @@ import com.google.common.collect.Sets;
  * This in turn, however, means that removal operations also affect defaults (e. g. {@link #clear()}
  * ).
  *
- * @version $Id$
  */
 @NotThreadSafe
 public class ExtendedProperties implements Map<String, String>, Serializable, Cloneable {

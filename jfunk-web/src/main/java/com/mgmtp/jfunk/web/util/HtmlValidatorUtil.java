@@ -28,7 +28,6 @@ import com.mgmtp.jfunk.web.WebConstants;
 /**
  * Utility class for validating HTML markup against the W3C markup validation service.
  * 
- * @version $Id$
  */
 public class HtmlValidatorUtil {
 	private static final Logger LOG = Logger.getLogger(HtmlValidatorUtil.class);

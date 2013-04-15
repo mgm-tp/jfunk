@@ -31,7 +31,6 @@ import com.google.common.collect.Lists;
  * classpath.
  * </p>
  * 
- * @version $Id$
  */
 public final class ResourceLoader {
 

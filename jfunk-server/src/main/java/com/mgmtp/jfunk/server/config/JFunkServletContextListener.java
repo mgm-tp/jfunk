@@ -17,7 +17,6 @@ import com.google.inject.servlet.GuiceServletContextListener;
  * the {@link Injector}.
  * 
  * @author rnaegele
- * @version $Id$
  */
 public class JFunkServletContextListener extends GuiceServletContextListener {
 

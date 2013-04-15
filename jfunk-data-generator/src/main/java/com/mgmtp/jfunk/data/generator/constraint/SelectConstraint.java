@@ -40,7 +40,6 @@ import com.mgmtp.jfunk.data.generator.util.XMLTags;
  * 
  * In this example c1 would contain the numeric part from c2.
  * 
- * @version $Id$
  */
 public class SelectConstraint extends SourceConstraint {
 

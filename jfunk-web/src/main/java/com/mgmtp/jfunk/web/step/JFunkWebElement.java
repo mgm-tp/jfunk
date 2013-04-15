@@ -47,7 +47,6 @@ import com.mgmtp.jfunk.web.exception.InvalidValueException;
  * {@link StepMode#CHECK_VALUE} ) or checked for its default value ( {@link StepMode#CHECK_DEFAULT}
  * ).
  * 
- * @version $Id$
  */
 public class JFunkWebElement extends WebDriverStep {
 	protected final By by;

@@ -37,7 +37,6 @@ import com.mgmtp.jfunk.data.generator.util.XMLTags;
  * {@link #setValueCallback(ValueCallback)}</li>
  * </ul>
  * 
- * @version $Id$
  */
 public abstract class BaseConstraint implements Constraint {
 	protected Logger log;

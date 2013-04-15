@@ -12,7 +12,6 @@ import java.util.Properties;
 
 /**
  * @author rnaegele
- * @version $Id$
  */
 public interface JFunkFactory {
 

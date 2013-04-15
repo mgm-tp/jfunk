@@ -10,7 +10,6 @@ import com.mgmtp.jfunk.common.util.NamedObject;
 
 /**
  * @author rnaegele
- * @version $Id$
  */
 public class ReportData {
 

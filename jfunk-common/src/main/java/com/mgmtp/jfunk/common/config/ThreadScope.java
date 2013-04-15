@@ -25,7 +25,6 @@ import com.mgmtp.jfunk.common.util.Disposable;
  * be explicitly entered ({@link #enterScope()}) and exited ({@link #exitScope()}).
  * 
  * @author rnaegele
- * @version $Id$
  */
 public class ThreadScope implements Scope {
 	private final Logger log = LoggerFactory.getLogger(getClass());

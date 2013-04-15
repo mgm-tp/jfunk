@@ -24,7 +24,6 @@ import com.google.common.collect.Lists;
  * {@link ExecutorService} implementation that executes a fixed number of tasks at a time. Each task
  * is executed in a new {@link Thread thread}. Threads are not reused.
  * 
- * @version $Id$
  */
 public class FixedSizeThreadExecutor extends AbstractExecutorService {
 

@@ -29,7 +29,6 @@ import com.mgmtp.jfunk.common.util.Disposable;
  * stack.
  * 
  * @author rnaegele
- * @version $Id$
  */
 public class StackedScope implements Scope {
 	private final Logger log = LoggerFactory.getLogger(getClass());

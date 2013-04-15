@@ -38,7 +38,6 @@ import com.mgmtp.jfunk.web.step.LoadPage;
  * <li>Check the input fields if they still contain the previously entered values</li>
  * </ol>
  * 
- * @version $Id$
  */
 public class ForminputModule extends TestModuleImpl {
 

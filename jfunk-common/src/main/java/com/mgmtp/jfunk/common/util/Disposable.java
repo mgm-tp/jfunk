@@ -11,7 +11,6 @@ package com.mgmtp.jfunk.common.util;
  * either after module or after script execution.
  * 
  * @author rnaegele
- * @version $Id$
  */
 public interface Disposable {
 

@@ -21,7 +21,6 @@ import com.mgmtp.jfunk.data.DataSet;
 /**
  * Unit test for {@link ArchiveDataSource}.
  * 
- * @version $Id$
  */
 public class ArchiveDataSourceTest {
 

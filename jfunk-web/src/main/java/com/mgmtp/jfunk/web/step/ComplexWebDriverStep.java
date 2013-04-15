@@ -21,7 +21,6 @@ import com.mgmtp.jfunk.web.util.WebElementFinder;
  * injected.
  * 
  * @author rnaegele
- * @version $Id: $
  */
 public class ComplexWebDriverStep extends ComplexStep {
 

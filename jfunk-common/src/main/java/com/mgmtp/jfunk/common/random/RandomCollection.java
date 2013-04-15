@@ -19,7 +19,6 @@ import com.google.common.collect.Lists;
  * elements in the list which weren't returned yet. When all elements were returned at least once,
  * this class switches to "normal" operation i.e. all elements are returned uniformly distributed.
  * 
- * @version $Id$
  */
 public class RandomCollection<E> implements Randomizable<E>, Iterable<E> {
 

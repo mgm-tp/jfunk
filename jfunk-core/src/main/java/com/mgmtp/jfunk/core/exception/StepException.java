@@ -11,7 +11,6 @@ import com.mgmtp.jfunk.core.step.base.Step;
 /**
  * This exception is thrown when the execution of a {@link Step} produces an error.
  * 
- * @version $Id$
  */
 public class StepException extends RuntimeException {
 	public StepException(final String message) {

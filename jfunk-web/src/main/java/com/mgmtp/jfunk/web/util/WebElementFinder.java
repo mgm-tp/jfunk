@@ -52,7 +52,6 @@ import com.google.common.collect.ImmutableList;
  * 
  * @see FormInputHandler
  * @author rnaegele
- * @version $Id$
  */
 public final class WebElementFinder {
 

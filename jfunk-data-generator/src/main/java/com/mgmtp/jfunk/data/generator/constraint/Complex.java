@@ -55,7 +55,6 @@ import com.mgmtp.jfunk.data.generator.util.XMLTags;
  * may make sense to set {@code dependent} to {@code false} as otherwise it may take a lot of runs
  * to generate all necessary cases, a purely random strategy may be more effective.
  * 
- * @version $Id$
  */
 public class Complex extends BaseConstraint {
 

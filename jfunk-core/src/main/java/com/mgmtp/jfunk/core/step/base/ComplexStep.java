@@ -16,7 +16,6 @@ import com.mgmtp.jfunk.core.scripting.StepExecutor;
 /**
  * Base class that allows for grouping a number of related steps.
  * 
- * @version $Id$
  */
 public abstract class ComplexStep extends DataSetsStep {
 

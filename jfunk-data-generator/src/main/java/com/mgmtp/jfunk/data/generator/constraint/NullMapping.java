@@ -33,7 +33,6 @@ import com.mgmtp.jfunk.data.generator.util.XMLTags;
  * If the embedded constraint returns {@code null}, c1 will be set to 0,00. Otherwise the value of
  * the embedded constraint is used as the value for c1.
  * 
- * @version $Id$
  */
 public class NullMapping extends SourceConstraint {
 

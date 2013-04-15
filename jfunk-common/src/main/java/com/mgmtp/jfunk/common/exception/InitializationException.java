@@ -9,7 +9,6 @@ package com.mgmtp.jfunk.common.exception;
 /**
  * Thrown when any initialisation process failed
  * 
- * @version $Id$
  */
 @Deprecated
 public class InitializationException extends RuntimeException {

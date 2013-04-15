@@ -20,7 +20,6 @@ import com.mgmtp.jfunk.web.JFunkHtmlUnitWebDriver;
  * Provides {@link WebDriver} utility methods.
  * 
  * @author rnaegele
- * @version $Id$
  */
 public final class WebDriverUtils {
 

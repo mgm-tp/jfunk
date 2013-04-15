@@ -56,7 +56,6 @@ import com.mgmtp.jfunk.data.DataSourceModule;
  * {@link ModulesLoader}. Additional modules need to be configured in a properties file (see
  * {@link ModulesLoader}.
  * 
- * @version $Id$
  */
 public final class JFunkBaseModule extends BaseJFunkGuiceModule {
 

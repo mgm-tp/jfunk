@@ -17,7 +17,6 @@ import com.mgmtp.jfunk.data.DataSet;
  * Base class for steps that need {@link DataSet}s. Gets the current data sets injected.
  * 
  * @author rnaegele
- * @version $Id$
  */
 public abstract class DataSetsStep extends BaseStep {
 

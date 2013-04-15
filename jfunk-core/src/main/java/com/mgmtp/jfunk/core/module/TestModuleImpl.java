@@ -63,7 +63,6 @@ import com.mgmtp.jfunk.data.DataSet;
  * 
  * @see ExecutionMode
  * @author rnaegele
- * @version $Id$
  */
 @NotThreadSafe
 public class TestModuleImpl implements TestModule {

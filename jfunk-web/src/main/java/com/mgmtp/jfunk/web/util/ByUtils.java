@@ -13,7 +13,6 @@ import org.openqa.selenium.By;
 /**
  * Utility method to provide commonly used Xpath expressions for use with {@link By#xpath(String)}.
  * 
- * @version $Id$
  */
 @Deprecated
 public class ByUtils {

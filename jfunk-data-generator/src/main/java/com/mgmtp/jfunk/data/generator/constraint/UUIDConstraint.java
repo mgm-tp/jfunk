@@ -21,7 +21,6 @@ import com.mgmtp.jfunk.data.generator.control.FieldControl;
  * A constraint that represents an immutable universally unique identifier (UUID). A UUID represents
  * a 128-bit value. Uses {@link UUID}.
  * 
- * @version $Id$
  */
 public class UUIDConstraint extends BaseStateConstraint {
 

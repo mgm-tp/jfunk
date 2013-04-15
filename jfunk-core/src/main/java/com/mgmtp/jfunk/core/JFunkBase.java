@@ -20,7 +20,6 @@ import com.mgmtp.jfunk.core.event.BeforeRunEvent;
 /**
  * Base class for JFunk.
  * 
- * @version $Id$
  */
 public abstract class JFunkBase {
 

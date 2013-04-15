@@ -17,7 +17,6 @@ import javax.xml.bind.annotation.XmlRootElement;
  * Container class for script parameters.
  * 
  * @author rnaegele
- * @version $Id$
  */
 @XmlRootElement
 public class ScriptParams {

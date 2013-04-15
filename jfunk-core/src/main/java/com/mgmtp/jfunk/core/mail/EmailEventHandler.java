@@ -22,7 +22,6 @@ import com.mgmtp.jfunk.core.exception.MailException;
  * Event handler for deleting e-mails before a module is executed.
  * 
  * @author rnaegele
- * @version $Id$
  */
 @Singleton
 public class EmailEventHandler {

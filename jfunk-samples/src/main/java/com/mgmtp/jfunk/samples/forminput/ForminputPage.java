@@ -29,7 +29,6 @@ import com.mgmtp.jfunk.web.step.JFunkWebElement;
  * This {@link ComplexStep} represents the whole Wicket forminput example page. It is used for
  * reading from and writing to all input fields on the page.
  * 
- * @version $Id$
  */
 @Reported
 public class ForminputPage extends ComplexStep {

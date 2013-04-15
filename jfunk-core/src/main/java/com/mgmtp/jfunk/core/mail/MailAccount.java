@@ -14,7 +14,6 @@ import com.google.common.base.Preconditions;
 /**
  * Represents an e-mail account.
  * 
- * @version $Id$
  */
 public class MailAccount {
 

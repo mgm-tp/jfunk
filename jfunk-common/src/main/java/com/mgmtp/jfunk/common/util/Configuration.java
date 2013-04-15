@@ -38,7 +38,6 @@ import com.mgmtp.jfunk.common.exception.JFunkException;
 /**
  * {@link ExtendedProperties} subclass adding zip file handling.
  * 
- * @version $Id$
  */
 @NotThreadSafe
 public final class Configuration extends ExtendedProperties {

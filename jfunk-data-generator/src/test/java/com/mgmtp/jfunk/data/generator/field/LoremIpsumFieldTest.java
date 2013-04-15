@@ -26,7 +26,6 @@ import com.mgmtp.jfunk.data.generator.util.XMLTags;
 /**
  * 
  * @author rnaegele
- * @version $Id: $
  */
 public class LoremIpsumFieldTest {
 

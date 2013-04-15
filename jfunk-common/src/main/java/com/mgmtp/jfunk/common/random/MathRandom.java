@@ -19,7 +19,6 @@ import org.apache.commons.lang3.time.DateUtils;
 /**
  * Utility class for generating random numbers
  * 
- * @version $Id$
  */
 public class MathRandom {
 

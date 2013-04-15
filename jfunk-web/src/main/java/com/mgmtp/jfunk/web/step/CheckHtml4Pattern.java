@@ -19,7 +19,6 @@ import com.mgmtp.jfunk.core.module.TestModule;
  * This steps searches the current HTML page for a given regex pattern. If the pattern contains a
  * grouping expression it is possible to store the corresponding value in a property key.
  * 
- * @version $Id$
  */
 public class CheckHtml4Pattern extends WebDriverStep {
 	private final Pattern pattern;

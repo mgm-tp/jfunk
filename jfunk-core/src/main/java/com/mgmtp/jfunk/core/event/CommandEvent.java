@@ -13,7 +13,6 @@ import java.util.List;
 
 /**
  * @author rnaegele
- * @version $Id$
  */
 public abstract class CommandEvent extends AbstractBaseEvent {
 

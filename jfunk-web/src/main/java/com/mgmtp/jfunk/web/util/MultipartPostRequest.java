@@ -16,7 +16,6 @@ import java.util.Random;
  * This class helps to send POST HTTP requests with files.
  * 
  * @author Vlad Patryshev
- * @version 1.0
  * @deprecated no longer necessary when HTML validation is change. See MQA-820
  */
 @Deprecated

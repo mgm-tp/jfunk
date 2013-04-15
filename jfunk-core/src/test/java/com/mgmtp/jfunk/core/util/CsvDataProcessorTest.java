@@ -23,7 +23,6 @@ import com.mgmtp.jfunk.data.source.DataSource;
 
 /**
  * @author rnaegele
- * @version $Id$
  */
 public class CsvDataProcessorTest {
 

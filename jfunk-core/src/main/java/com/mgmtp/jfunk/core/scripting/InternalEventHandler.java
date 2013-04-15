@@ -29,7 +29,6 @@ import com.mgmtp.jfunk.core.step.base.Step;
 
 /**
  * @author rnaegele
- * @version $Id$
  */
 @Singleton
 class InternalEventHandler {

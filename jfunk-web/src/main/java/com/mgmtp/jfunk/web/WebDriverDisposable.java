@@ -19,7 +19,6 @@ import com.mgmtp.jfunk.common.util.Disposable;
  * {@link Disposable} for quitting a {@link WebDriver} instance.
  * 
  * @author rnaegele
- * @version $Id$
  */
 @Singleton
 public class WebDriverDisposable implements Disposable {

@@ -16,7 +16,6 @@ import com.google.common.base.Predicate;
 
 /**
  * @author rnaegele
- * @version $Id: Predicates.java 28330 2012-10-09 13:16:34Z reinhard.naegele $
  */
 public class WebElementPredicates {
 

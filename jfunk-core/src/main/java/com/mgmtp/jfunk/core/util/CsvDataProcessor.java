@@ -59,7 +59,6 @@ import com.mgmtp.jfunk.data.source.DataSource;
  * </p>
  * 
  * @author rnaegele
- * @version $Id$
  */
 @Singleton
 @ThreadSafe

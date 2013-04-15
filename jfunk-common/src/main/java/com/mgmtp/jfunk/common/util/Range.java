@@ -14,7 +14,6 @@ import org.w3c.dom.ranges.RangeException;
 /**
  * Helper Class that encapsulates a range of lengths or values, respectively.
  * 
- * @version $Id$
  */
 public class Range {
 

@@ -24,7 +24,6 @@ import com.mgmtp.jfunk.common.util.Configuration;
 /**
  * Unit test for the DefaultMailHandler.
  * 
- * @version $Id$
  */
 public class DefaultMailHandlerTest {
 

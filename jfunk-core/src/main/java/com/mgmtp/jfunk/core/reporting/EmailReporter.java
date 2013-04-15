@@ -46,7 +46,6 @@ import com.mgmtp.jfunk.core.mail.EmailParserFactory;
  * </p>
  * <p>
  * 
- * @version $Id$
  */
 @ThreadSafe
 public final class EmailReporter implements Reporter {

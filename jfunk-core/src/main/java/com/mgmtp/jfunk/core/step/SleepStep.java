@@ -13,7 +13,6 @@ import com.mgmtp.jfunk.core.step.base.BaseStep;
 /**
  * This step causes the current thread to sleep for a given number of seconds.
  * 
- * @version $Id$
  */
 public class SleepStep extends BaseStep {
 

@@ -29,7 +29,6 @@ import com.mgmtp.jfunk.data.DataSet;
 /**
  * Abstract {@link DataSource} implementation with functionality for handling fixed values.
  * 
- * @version $Id$
  */
 public abstract class BaseDataSource implements DataSource {
 	protected final Logger log = LoggerFactory.getLogger(getClass());

@@ -14,7 +14,6 @@ import javax.xml.bind.annotation.XmlValue;
  * Pojo representing a script parameter ({@code -S<param>=<value>} in non-server mode).
  * 
  * @author rnaegele
- * @version $Id$
  */
 @XmlRootElement
 public class ScriptParam {

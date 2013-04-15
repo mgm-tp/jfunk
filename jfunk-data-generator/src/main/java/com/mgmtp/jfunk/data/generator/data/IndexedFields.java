@@ -22,7 +22,6 @@ import com.mgmtp.jfunk.data.generator.GeneratorConstants;
  * Represents the {@code indexed fields} element in the "indexed-fields" configuration file (defined
  * by {@link GeneratorConstants#INDEXED_FIELDS_FILE}).
  * 
- * @version $Id$
  */
 public class IndexedFields {
 

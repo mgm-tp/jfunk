@@ -13,7 +13,6 @@ import com.mgmtp.jfunk.core.step.base.Step;
  * {@link InternalAfterStepEvent}.
  * 
  * @author rnaegele
- * @version $Id$
  */
 class InternalAfterStepEvent extends InternalStepEvent {
 

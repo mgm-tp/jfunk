@@ -19,7 +19,6 @@ import com.mgmtp.jfunk.data.generator.control.FieldCase;
  * the rules for the field or a collection of some fields. A field only generates a value subject to
  * the specified parameters.
  * 
- * @version $Id$
  */
 public abstract class Field {
 

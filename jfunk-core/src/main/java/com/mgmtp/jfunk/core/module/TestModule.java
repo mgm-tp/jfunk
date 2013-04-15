@@ -13,7 +13,6 @@ import com.mgmtp.jfunk.common.util.NamedObject;
  * is run in its {@link #execute()} method.
  * 
  * @author rnaegele
- * @version $Id$
  */
 public interface TestModule extends NamedObject {
 

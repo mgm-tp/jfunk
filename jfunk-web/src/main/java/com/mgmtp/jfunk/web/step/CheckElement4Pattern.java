@@ -21,7 +21,6 @@ import com.mgmtp.jfunk.core.module.TestModule;
 /**
  * Checks a WebElement for a given pattern.
  * 
- * @version $Id$
  */
 public class CheckElement4Pattern extends WebDriverStep {
 	private final By by;

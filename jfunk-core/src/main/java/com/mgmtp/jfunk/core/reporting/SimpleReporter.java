@@ -40,7 +40,6 @@ import com.mgmtp.jfunk.core.step.base.Step;
  * </p>
  * 
  * @author rnaegele
- * @version $Id$
  */
 @ThreadSafe
 public class SimpleReporter extends AbstractFileReporter {

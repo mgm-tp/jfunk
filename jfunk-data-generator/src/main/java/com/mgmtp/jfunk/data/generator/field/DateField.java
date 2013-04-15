@@ -67,7 +67,6 @@ import com.mgmtp.jfunk.data.generator.util.XMLTags;
  * 
  * This example uses a different format to generate only year dates.
  * 
- * @version $Id$
  */
 public final class DateField extends Field {
 

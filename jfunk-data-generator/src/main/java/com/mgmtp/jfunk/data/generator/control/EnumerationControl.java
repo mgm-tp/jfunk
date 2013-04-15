@@ -29,7 +29,6 @@ import com.mgmtp.jfunk.data.generator.util.XMLTags;
  * <li>"gt_max": Value bigger than allowed</li>
  * </ul>
  * 
- * @version $Id$
  */
 public class EnumerationControl extends BaseFieldControl {
 

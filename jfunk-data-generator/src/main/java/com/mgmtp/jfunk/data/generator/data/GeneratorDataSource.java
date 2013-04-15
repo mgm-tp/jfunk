@@ -38,7 +38,6 @@ import com.mgmtp.jfunk.data.source.DataSource;
 /**
  * {@link DataSource} implementation for the online generator (= classic generator).
  * 
- * @version $Id$
  */
 @ScriptScoped
 public final class GeneratorDataSource extends BaseDataSource {

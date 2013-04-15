@@ -15,7 +15,6 @@ import com.mgmtp.jfunk.data.DefaultDataSet;
 import com.mgmtp.jfunk.data.source.BaseDataSource;
 
 /**
- * @version $Id$
  */
 @Singleton
 public class TestDataSource extends BaseDataSource {

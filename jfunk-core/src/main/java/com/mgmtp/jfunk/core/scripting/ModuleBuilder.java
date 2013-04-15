@@ -32,7 +32,6 @@ import com.mgmtp.jfunk.core.step.base.Step;
 /**
  * Enables script modules in Groovy scripts.
  * 
- * @version $Id$
  */
 @ScriptScoped
 final class ModuleBuilder extends BuilderSupport {

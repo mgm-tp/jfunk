@@ -15,7 +15,6 @@ package com.mgmtp.jfunk.common.util;
  * <li>HTML validation result (text file)</li>
  * </ol>
  * 
- * @version $Id$
  */
 public enum SaveOutput {
 	/**

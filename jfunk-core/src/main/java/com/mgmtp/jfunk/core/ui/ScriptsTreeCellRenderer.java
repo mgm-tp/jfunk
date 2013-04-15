@@ -13,7 +13,6 @@ import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeCellRenderer;
 
 /**
- * @version $Id$
  */
 public class ScriptsTreeCellRenderer extends DefaultTreeCellRenderer {
 

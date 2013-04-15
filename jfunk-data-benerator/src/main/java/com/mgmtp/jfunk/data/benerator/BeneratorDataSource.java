@@ -34,7 +34,6 @@ import com.mgmtp.jfunk.data.source.DataSource;
 /**
  * {@link DataSource} implementation for Benerator.
  * 
- * @version $Id$
  */
 @ScriptScoped
 public class BeneratorDataSource extends BaseDataSource {

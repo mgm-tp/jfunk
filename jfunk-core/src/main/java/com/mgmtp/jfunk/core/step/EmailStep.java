@@ -33,7 +33,6 @@ import com.mgmtp.jfunk.core.step.base.BaseStep;
  * and so on.
  * </p>
  * 
- * @version $Id$
  */
 public class EmailStep extends BaseStep {
 

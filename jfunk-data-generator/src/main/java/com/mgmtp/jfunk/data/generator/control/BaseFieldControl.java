@@ -19,7 +19,6 @@ import com.mgmtp.jfunk.common.util.Range;
  * implemented here and the configuration for shuffle (all cases are mixed before execution) or bad
  * (if true, forbidden characters are generated in the field values) are built in already as well.
  * 
- * @version $Id$
  */
 public abstract class BaseFieldControl implements FieldControl {
 

@@ -24,7 +24,6 @@ import com.mgmtp.jfunk.data.DataSet;
  * DataSource implementation that includes several data sources for {@link DataSet} lookup. If one
  * DataSource cannot deliver a {@link DataSet}, the next one is queried and so on.
  * 
- * @version $Id$
  */
 @ScriptScoped
 public class ContainerDataSource implements DataSource {

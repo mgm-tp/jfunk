@@ -26,7 +26,6 @@ import com.mgmtp.jfunk.web.WebConstants;
 /**
  * This step should be used when you want to check if some column in HTML table contains some text.
  * 
- * @version $Id$
  */
 public class CheckHtmlColumnValue extends WebDriverStep {
 

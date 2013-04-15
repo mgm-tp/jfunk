@@ -25,7 +25,6 @@ import org.jdom.Element;
  * This class represents all characters supported by a given encoding. It can be limited further
  * using a regular expression, so only characters matching the expression will be retained.
  * 
- * @version $Id$
  */
 public class CharacterSet {
 

@@ -37,7 +37,6 @@ import com.mgmtp.jfunk.data.generator.util.XMLTags;
  * 
  * If the current calender year is 2011, so the years 2008 to 2013 are generated.
  * 
- * @version $Id$
  */
 public final class DynamicYearField extends Field {
 

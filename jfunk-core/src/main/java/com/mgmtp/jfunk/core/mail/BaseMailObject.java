@@ -33,7 +33,6 @@ import com.mgmtp.jfunk.core.exception.MailException;
  * Objects of this class represent a certain email type, characterized by a given subject and body
  * pattern.
  * 
- * @version $Id$
  */
 public class BaseMailObject {
 

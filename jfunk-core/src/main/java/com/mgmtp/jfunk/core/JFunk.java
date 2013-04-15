@@ -52,7 +52,6 @@ import com.mgmtp.jfunk.core.util.ConfigLoader;
  * Class for running a jFunk test. See {@link #main(String[])} for a description of all command line
  * arguments.
  * 
- * @version $Id$
  */
 public final class JFunk extends JFunkBase {
 

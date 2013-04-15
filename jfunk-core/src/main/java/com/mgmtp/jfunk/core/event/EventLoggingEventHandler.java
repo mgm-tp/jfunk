@@ -18,7 +18,6 @@ import com.google.common.eventbus.Subscribe;
  * Event handler for logging all {@code before} and {@code after} events at debug level.
  * 
  * @author rnaegele
- * @version $Id$
  */
 @Singleton
 public class EventLoggingEventHandler {

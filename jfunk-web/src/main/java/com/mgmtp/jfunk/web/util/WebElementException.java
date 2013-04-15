@@ -12,7 +12,6 @@ import org.openqa.selenium.WebElement;
  * {@link RuntimeException} related to exceptions with {@link WebElement}s.
  * 
  * @author rnaegele
- * @version $Id$
  */
 public class WebElementException extends RuntimeException {
 

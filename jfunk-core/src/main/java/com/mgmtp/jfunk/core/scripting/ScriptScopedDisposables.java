@@ -19,7 +19,6 @@ import com.mgmtp.jfunk.common.util.Disposable;
  * Qualifier annotation for the script-scoped set of {@link Disposable}s.
  * 
  * @author rnaegele
- * @version $Id$
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER })

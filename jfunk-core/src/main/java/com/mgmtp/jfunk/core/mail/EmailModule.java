@@ -14,7 +14,6 @@ import com.mgmtp.jfunk.core.config.BaseJFunkGuiceModule;
  * Guice module for e-mail handling. This module must be installed when e-mail support is necessary.
  * 
  * @author rnaegele
- * @version $Id$
  */
 public class EmailModule extends BaseJFunkGuiceModule {
 

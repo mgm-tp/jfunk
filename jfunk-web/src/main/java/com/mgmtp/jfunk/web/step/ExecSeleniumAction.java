@@ -17,7 +17,6 @@ import com.mgmtp.jfunk.core.step.base.BaseStep;
  * Step for executing Selenium actions.
  * 
  * @author rnaegele
- * @version $Id$
  */
 public class ExecSeleniumAction extends BaseStep {
 

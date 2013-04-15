@@ -31,7 +31,6 @@ import com.mgmtp.jfunk.server.config.JFunkServerModule;
  * Runs jFunk in server-mode providing a REST interface for running scripts etc.
  * 
  * @author rnaegele
- * @version $Id$
  */
 public class JFunkServer extends JFunkBase {
 

@@ -35,7 +35,6 @@ import com.mgmtp.jfunk.data.generator.util.XMLTags;
  * 
  * This would generate upper case letters.
  * 
- * @version $Id$
  */
 public final class InverseExpression extends Field {
 

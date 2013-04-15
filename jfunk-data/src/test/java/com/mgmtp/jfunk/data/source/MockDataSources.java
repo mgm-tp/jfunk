@@ -13,7 +13,6 @@ import com.mgmtp.jfunk.data.DataSet;
 import com.mgmtp.jfunk.data.DefaultDataSet;
 
 /**
- * @version $Id$
  */
 class MockDataSources {
 

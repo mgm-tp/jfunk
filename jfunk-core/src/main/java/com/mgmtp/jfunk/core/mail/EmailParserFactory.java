@@ -16,7 +16,6 @@ import com.mgmtp.jfunk.common.util.Configuration;
  * Factory for creating additional unscoped e-mail parsers.
  * 
  * @author rnaegele
- * @version $Id$
  */
 @Singleton
 public class EmailParserFactory {

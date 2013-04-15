@@ -45,7 +45,6 @@ import com.mgmtp.jfunk.common.exception.JFunkException;
  * HttpClient seems to have a problem when connecting to SSL sites which require a client
  * certificate we are using this SocketFactory implementation.
  * 
- * @version $Id$
  */
 public class JFunkSSLSocketFactory implements LayeredSchemeSocketFactory {
 

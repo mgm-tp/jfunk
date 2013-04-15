@@ -28,7 +28,6 @@ import com.mgmtp.jfunk.common.exception.JFunkException;
  * <li>Can zip itself to a zip file</li>
  * </ul>
  * 
- * @version $Id$
  */
 public class ExtendedFile extends File {
 	private static final long serialVersionUID = 1L;

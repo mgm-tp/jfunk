@@ -13,7 +13,6 @@ import com.google.common.base.Predicate;
 
 /**
  * @author rnaegele
- * @version $Id: $
  */
 public abstract class LocatorPredicate implements Predicate<WebDriver> {
 

@@ -34,7 +34,6 @@ import com.mgmtp.jfunk.data.generator.util.XMLTags;
  * }
  * </pre>
  * 
- * @version $Id$
  */
 public class Multiplier extends SourceConstraint {
 

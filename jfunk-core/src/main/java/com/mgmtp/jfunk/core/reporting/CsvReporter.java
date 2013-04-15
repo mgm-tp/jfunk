@@ -35,7 +35,6 @@ import com.mgmtp.jfunk.data.DataSet;
  * {@code ERROR}.
  * 
  * @author rnaegele
- * @version $Id$
  */
 @ThreadSafe
 public class CsvReporter extends AbstractFileReporter {

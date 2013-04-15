@@ -17,7 +17,6 @@ import com.mgmtp.jfunk.data.generator.control.FieldCase;
 import com.mgmtp.jfunk.data.generator.util.XMLTags;
 
 /**
- * @version $Id$
  */
 public abstract class SourceConstraint extends BaseConstraint {
 

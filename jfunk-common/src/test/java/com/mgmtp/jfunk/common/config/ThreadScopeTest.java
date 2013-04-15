@@ -28,7 +28,6 @@ import com.google.inject.Provider;
 /**
  * Unit test for {@link ThreadScope}.
  * 
- * @version $Id$
  */
 public class ThreadScopeTest {
 

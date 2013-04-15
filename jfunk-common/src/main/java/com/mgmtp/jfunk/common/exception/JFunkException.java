@@ -9,7 +9,6 @@ package com.mgmtp.jfunk.common.exception;
 /**
  * JFunk's custom {@link RuntimeException}.
  * 
- * @version $Id$
  */
 public class JFunkException extends RuntimeException {
 

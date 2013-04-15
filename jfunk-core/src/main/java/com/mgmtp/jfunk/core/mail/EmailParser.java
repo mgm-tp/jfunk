@@ -66,7 +66,6 @@ import com.mgmtp.jfunk.core.exception.MailException;
 /**
  * Class for e-mail handling. IMAP and POP3 are supported.
  * 
- * @version $Id$
  */
 @ModuleScoped
 public class EmailParser {

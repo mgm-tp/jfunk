@@ -26,7 +26,6 @@ import com.mgmtp.jfunk.data.DataSet;
 /**
  * Unit test for {@link BeneratorDataSource}.
  * 
- * @version $Id$
  */
 public class BeneratorDataSourceTest {
 

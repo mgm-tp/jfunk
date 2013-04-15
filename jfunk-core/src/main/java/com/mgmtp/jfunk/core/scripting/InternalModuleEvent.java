@@ -14,7 +14,6 @@ import com.mgmtp.jfunk.core.module.TestModule;
 /**
  * 
  * @author rnaegele
- * @version $Id$
  */
 abstract class InternalModuleEvent {
 

@@ -15,7 +15,6 @@ import javax.inject.Qualifier;
 
 /**
  * @author rnaegele
- * @version $Id$
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER })

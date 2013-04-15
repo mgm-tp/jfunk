@@ -40,7 +40,6 @@ import com.mgmtp.jfunk.web.util.DumpFileCreator;
 /**
  * 
  * @author rnaegele
- * @version $Id$
  */
 public class JFunkHtmlUnitDriverImpl extends HtmlUnitDriver implements IncorrectnessListener, RefreshHandler, CredentialsProvider,
 		AlertHandler, JFunkHtmlUnitWebDriver {

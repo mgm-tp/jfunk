@@ -29,7 +29,6 @@ import java.lang.annotation.Target;
  * </p>
  * 
  * @author rnaegele
- * @version $Id$
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)

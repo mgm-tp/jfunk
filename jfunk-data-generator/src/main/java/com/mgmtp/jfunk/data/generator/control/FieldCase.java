@@ -17,7 +17,6 @@ import com.mgmtp.jfunk.data.generator.data.GeneratorState;
  * type this value can also show the field length or - for fields with fixed values - the index of
  * the value to be chosen.
  * 
- * @version $Id$
  */
 public class FieldCase {
 

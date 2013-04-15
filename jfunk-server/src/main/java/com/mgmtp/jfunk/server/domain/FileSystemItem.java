@@ -15,7 +15,6 @@ import javax.xml.bind.annotation.XmlRootElement;
  * Pojo representing a file system item, which can be a Grovvy script or a directory.
  * 
  * @author rnaegele
- * @version $Id$
  */
 @XmlRootElement
 public class FileSystemItem {

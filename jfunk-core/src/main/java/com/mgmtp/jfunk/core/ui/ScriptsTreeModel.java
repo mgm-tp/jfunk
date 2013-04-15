@@ -18,7 +18,6 @@ import javax.swing.tree.TreePath;
 import org.apache.commons.io.FilenameUtils;
 
 /**
- * @version $Id$
  */
 public class ScriptsTreeModel implements Serializable, TreeModel {
 

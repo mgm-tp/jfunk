@@ -17,7 +17,6 @@ import com.mgmtp.jfunk.common.util.Range;
 /**
  * Extends {@link BaseFieldControl}. Returns a minimal case, an average and a maximal case.
  * 
- * @version $Id$
  */
 public class BoundaryControl extends BaseFieldControl {
 

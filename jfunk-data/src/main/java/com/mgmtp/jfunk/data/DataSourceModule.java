@@ -27,7 +27,6 @@ import com.mgmtp.jfunk.data.source.DataSource;
  * Guice module for the standard data sources.
  * 
  * @author rnaegele
- * @version $Id$
  */
 public class DataSourceModule extends BaseDataSourceModule {
 

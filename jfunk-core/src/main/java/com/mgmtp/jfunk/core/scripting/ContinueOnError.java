@@ -18,7 +18,6 @@ import com.mgmtp.jfunk.core.step.base.ComplexStep;
  * annotation, exceptions on any single child step are caught.
  * 
  * @author rnaegele
- * @version $Id$
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE })

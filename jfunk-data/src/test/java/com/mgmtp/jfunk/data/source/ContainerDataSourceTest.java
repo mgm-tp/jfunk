@@ -23,7 +23,6 @@ import com.mgmtp.jfunk.data.source.MockDataSources.Mock1DataSource;
 import com.mgmtp.jfunk.data.source.MockDataSources.Mock2DataSource;
 
 /**
- * @version $Id$
  */
 public class ContainerDataSourceTest {
 

@@ -40,7 +40,6 @@ import com.mgmtp.jfunk.data.generator.util.ValueCallback;
  * 
  * This would result in either {@code A1}, {@code B1}, {@code A2} or {@code B2}.
  * 
- * @version $Id$
  */
 public class Combination extends Complex {
 

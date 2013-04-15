@@ -12,7 +12,6 @@ import java.util.Map;
 /**
  * {@link DataSet} implementation which is empty and immutable.
  * 
- * @version $Id$
  */
 public final class EmptyDataSet implements DataSet {
 

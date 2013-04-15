@@ -21,7 +21,6 @@ import com.mgmtp.jfunk.data.generator.util.XmlElementFinder;
  * Returns the {@link FieldControl} instances for the {@link Constraint} objects or field instances,
  * respectively.
  * 
- * @version $Id$
  */
 public final class ControlFactory {
 

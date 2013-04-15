@@ -18,7 +18,6 @@ import com.mgmtp.jfunk.data.generator.field.Field;
 /**
  * Simple constraint containting a {@link Field}
  * 
- * @version $Id$
  */
 public class FieldContainer extends BaseStateConstraint {
 

@@ -42,7 +42,6 @@ import org.junit.runners.model.Statement;
  * </pre>
  * 
  * @author rnaegele
- * @version $Id$
  */
 public final class JFunkJUnitSupport extends BlockJUnit4ClassRunner {
 

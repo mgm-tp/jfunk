@@ -20,7 +20,6 @@ import org.slf4j.LoggerFactory;
  * {@link X509TrustManager} implementation for SSL and client authentication. Acts as a decorator to
  * the {@link X509TrustManager} passed in by the constructor in order to add logging.
  * 
- * @version $Id$
  */
 public final class JFunkX509TrustManager implements X509TrustManager {
 	private final Logger log = LoggerFactory.getLogger(getClass());

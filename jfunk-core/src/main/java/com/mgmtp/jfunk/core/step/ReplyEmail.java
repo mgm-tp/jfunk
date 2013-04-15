@@ -24,7 +24,6 @@ import com.mgmtp.jfunk.core.step.base.BaseStep;
 /**
  * Waits for an e-mail matching subject and body patterns and replies to it.
  * 
- * @version $Id$
  */
 public class ReplyEmail extends BaseStep {
 

@@ -13,7 +13,6 @@ import com.mgmtp.jfunk.core.mail.EmailConstants;
 
 /**
  * @author rnaegele
- * @version $Id$
  */
 public class GlobalReportMailModule extends BaseJFunkGuiceModule {
 

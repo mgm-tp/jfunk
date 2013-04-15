@@ -37,7 +37,6 @@ import com.mgmtp.jfunk.core.scripting.groovy.Commands;
 /**
  * Executes Groovy scripts.
  * 
- * @version $Id$
  */
 @Singleton
 public class ScriptExecutor {

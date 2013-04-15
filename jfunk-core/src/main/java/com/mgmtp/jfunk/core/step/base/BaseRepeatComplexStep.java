@@ -12,7 +12,6 @@ import com.mgmtp.jfunk.core.module.TestModule;
  * Base class for repeated execution of a list of steps.
  * 
  * @see ComplexStep
- * @version $Id$
  */
 public abstract class BaseRepeatComplexStep extends ComplexStep {
 

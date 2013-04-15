@@ -12,7 +12,6 @@ import com.mgmtp.jfunk.core.module.TestModuleImpl;
  * Execution mode for {@link TestModuleImpl}.
  * 
  * @author rnaegele
- * @version $Id$
  */
 public enum ExecutionMode {
 	/**

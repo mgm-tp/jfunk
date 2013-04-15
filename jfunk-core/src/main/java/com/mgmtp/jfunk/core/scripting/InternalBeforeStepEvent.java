@@ -13,7 +13,6 @@ import com.mgmtp.jfunk.core.step.base.Step;
  * {@link InternalBeforeStepEvent}.
  * 
  * @author rnaegele
- * @version $Id$
  */
 class InternalBeforeStepEvent extends InternalStepEvent {
 

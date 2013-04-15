@@ -16,7 +16,6 @@ import java.lang.annotation.Target;
  * The file must be relative to jFunk's {@code config} directory.
  * 
  * @author rnaegele
- * @version $Id$
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE })

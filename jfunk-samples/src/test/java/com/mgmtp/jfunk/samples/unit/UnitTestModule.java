@@ -17,7 +17,6 @@ import com.mgmtp.jfunk.web.step.SendKeysStep;
 
 /**
  * @author rnaegele
- * @version $Id$
  */
 public class UnitTestModule extends TestModuleImpl {
 

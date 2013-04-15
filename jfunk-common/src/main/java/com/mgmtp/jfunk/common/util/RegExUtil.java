@@ -11,7 +11,6 @@ import java.util.regex.Matcher;
 /**
  * This class contains helper methods for reg ex handling.
  * 
- * @version $Id$
  */
 public final class RegExUtil {
 

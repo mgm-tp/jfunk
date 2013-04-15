@@ -31,7 +31,6 @@ import com.mgmtp.jfunk.data.generator.util.XMLTags;
 /**
  * Factory to generate constraint objects from the associated xml element objects.
  * 
- * @version $Id$
  */
 public final class ConstraintFactory {
 

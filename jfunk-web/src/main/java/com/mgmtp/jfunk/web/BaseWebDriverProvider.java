@@ -23,7 +23,6 @@ import com.mgmtp.jfunk.common.util.Configuration;
 
 /**
  * @author rnaegele
- * @version $Id$
  */
 public abstract class BaseWebDriverProvider implements Provider<WebDriver> {
 	protected final Logger log = LoggerFactory.getLogger(getClass());

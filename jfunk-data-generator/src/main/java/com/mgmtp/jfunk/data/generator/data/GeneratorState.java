@@ -9,7 +9,6 @@ package com.mgmtp.jfunk.data.generator.data;
 import com.mgmtp.jfunk.common.random.MathRandom;
 
 /**
- * @version $Id$
  */
 public class GeneratorState {
 	private MathRandom mathRandom;

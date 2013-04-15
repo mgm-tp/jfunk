@@ -23,7 +23,6 @@ import com.mgmtp.jfunk.web.WebConstants;
  * Finds the table whose id-attribute value equals the given name and checks if the table entry of
  * the given line and column matches the pattern.
  * 
- * @version $Id$
  */
 public class CheckTableCell extends WebDriverStep {
 	private final String idName;

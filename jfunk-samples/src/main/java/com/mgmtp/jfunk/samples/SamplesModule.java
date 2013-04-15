@@ -11,7 +11,6 @@ import com.mgmtp.jfunk.core.reporting.EmailReporter;
 
 /**
  * @author rnaegele
- * @version $Id$
  */
 public class SamplesModule extends BaseJFunkGuiceModule {
 

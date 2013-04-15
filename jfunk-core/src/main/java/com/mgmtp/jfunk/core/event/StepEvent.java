@@ -10,7 +10,6 @@ import com.mgmtp.jfunk.core.step.base.Step;
 
 /**
  * @author rnaegele
- * @version $Id$
  */
 public abstract class StepEvent extends AbstractBaseEvent {
 	private final Step step;

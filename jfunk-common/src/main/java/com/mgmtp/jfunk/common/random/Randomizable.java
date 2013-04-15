@@ -9,7 +9,6 @@ package com.mgmtp.jfunk.common.random;
 /**
  * Interface for accessing a list of arbitrary elements randomly.
  * 
- * @version $Id$
  */
 public interface Randomizable<E> {
 

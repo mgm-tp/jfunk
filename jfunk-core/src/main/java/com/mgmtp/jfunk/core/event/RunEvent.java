@@ -12,7 +12,6 @@ import java.util.Map;
 
 /**
  * @author rnaegele
- * @version $Id$
  */
 public class RunEvent extends AbstractBaseEvent {
 

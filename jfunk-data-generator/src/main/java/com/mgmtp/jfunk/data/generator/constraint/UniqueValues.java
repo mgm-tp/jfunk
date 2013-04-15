@@ -33,7 +33,6 @@ import com.mgmtp.jfunk.data.generator.control.FieldCase;
  * There can be 26 different values for c1, more runs would result in an exception being thrown as
  * the values would not be unique anymore.
  * 
- * @version $Id$
  */
 public class UniqueValues extends FieldContainer {
 

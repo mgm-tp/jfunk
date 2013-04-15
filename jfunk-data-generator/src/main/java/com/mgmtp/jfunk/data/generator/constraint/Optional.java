@@ -55,7 +55,6 @@ import com.mgmtp.jfunk.data.generator.control.FieldCase;
  * However, in this case the option to globally deactivate and to treat mandatory cases preferred
  * would be missing - so generally the first variant is recommended.
  * 
- * @version $Id$
  */
 public class Optional extends BaseStateConstraint {
 

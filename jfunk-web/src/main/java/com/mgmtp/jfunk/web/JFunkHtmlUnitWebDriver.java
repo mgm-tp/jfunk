@@ -12,7 +12,6 @@ import com.gargoylesoftware.htmlunit.WebClient;
 
 /**
  * @author rnaegele
- * @version $Id$
  */
 public interface JFunkHtmlUnitWebDriver {
 

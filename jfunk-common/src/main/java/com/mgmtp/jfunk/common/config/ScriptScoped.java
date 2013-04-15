@@ -18,7 +18,6 @@ import javax.inject.Scope;
  * 
  * @see com.google.inject.Scope
  * @author rnaegele
- * @version $Id$
  */
 @Target({ ElementType.TYPE, ElementType.METHOD, ElementType.FIELD })
 @Retention(RetentionPolicy.RUNTIME)

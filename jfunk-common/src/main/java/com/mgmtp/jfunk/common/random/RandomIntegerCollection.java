@@ -11,7 +11,6 @@ import com.mgmtp.jfunk.common.util.Range;
 /**
  * Extension of {@link RandomCollection}. The collection contains integer numbers without gaps.
  * 
- * @version $Id$
  */
 public class RandomIntegerCollection extends RandomCollection<Integer> {
 

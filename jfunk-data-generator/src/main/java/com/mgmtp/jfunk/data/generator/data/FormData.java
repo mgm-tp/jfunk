@@ -32,7 +32,6 @@ import com.mgmtp.jfunk.data.generator.exception.IdNotFoundException;
  * Encapsulates the form data for a certain form. This data can be generated either partially or
  * completely.
  * 
- * @version $Id$
  */
 public class FormData {
 

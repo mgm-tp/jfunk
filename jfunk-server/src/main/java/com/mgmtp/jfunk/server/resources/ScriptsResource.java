@@ -56,7 +56,6 @@ import com.mgmtp.jfunk.server.domain.ScriptParams;
  * Resource for Groovy scripts.
  * 
  * @author rnaegele
- * @version $Id$
  */
 @Singleton
 @Path("scripts")

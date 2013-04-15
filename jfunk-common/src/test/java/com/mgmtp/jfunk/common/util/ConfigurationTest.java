@@ -14,7 +14,6 @@ import org.testng.annotations.Test;
 import com.google.common.base.Charsets;
 
 /**
- * @version $Id$
  */
 public class ConfigurationTest {
 

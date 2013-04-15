@@ -63,7 +63,6 @@ import com.mgmtp.jfunk.data.source.DataSource;
  * </ul>
  * 
  * @author rnaegele
- * @version $Id$
  */
 @ModuleScoped
 public class ModuleArchiver {

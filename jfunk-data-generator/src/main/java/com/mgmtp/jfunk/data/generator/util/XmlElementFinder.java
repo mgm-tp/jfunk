@@ -20,7 +20,6 @@ import org.slf4j.LoggerFactory;
 /**
  * Helper class to identify XML elements using their id within a Jdom element tree.
  * 
- * @version $Id$
  */
 public class XmlElementFinder {
 

@@ -27,7 +27,6 @@ import com.mgmtp.jfunk.common.util.ExtendedProperties.SimpleEntry;
 /**
  * Unit test for {@link ExtendedProperties}.
  * 
- * @version $Id$
  */
 public class ExtendedPropertiesTest {
 

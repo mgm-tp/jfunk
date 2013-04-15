@@ -41,7 +41,6 @@ import com.mgmtp.jfunk.data.generator.util.XMLTags;
  * 
  * This would generate numbers from -5 to 5 skipping zero.
  * 
- * @version $Id$
  */
 public final class NumberField extends Field {
 

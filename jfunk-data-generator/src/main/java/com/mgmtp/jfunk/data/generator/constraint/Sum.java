@@ -49,7 +49,6 @@ import com.mgmtp.jfunk.data.generator.util.XMLTags;
  * 
  * Given the example above, c0 would be calculated as c1 - c2.
  * 
- * @version $Id$
  */
 public class Sum extends BaseConstraint {
 

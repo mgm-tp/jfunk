@@ -10,7 +10,6 @@ import com.mgmtp.jfunk.core.module.TestModule;
 
 /**
  * @author rnaegele
- * @version $Id$
  */
 public class ModuleInitializedEvent extends ModuleEvent {
 

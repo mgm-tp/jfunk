@@ -7,7 +7,6 @@
 package com.mgmtp.jfunk.common.util;
 
 /**
- * @version $Id$
  * @deprecated no longer needed, relates to deprecated step modes
  */
 @Deprecated

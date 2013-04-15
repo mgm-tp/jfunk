@@ -8,7 +8,6 @@ package com.mgmtp.jfunk.web;
 
 /**
  * @author rnaegele
- * @version $Id$
  */
 public class HtmlUnitWebDriverParams {
 

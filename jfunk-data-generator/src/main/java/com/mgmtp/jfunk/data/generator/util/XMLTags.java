@@ -9,7 +9,6 @@ package com.mgmtp.jfunk.data.generator.util;
 /**
  * Constants for accessing data stored in XML files.
  * 
- * @version $Id$
  */
 public final class XMLTags {
 	public static final String BAD = "bad";

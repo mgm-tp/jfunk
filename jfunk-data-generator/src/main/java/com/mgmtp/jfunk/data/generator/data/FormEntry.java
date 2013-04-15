@@ -20,7 +20,6 @@ import com.mgmtp.jfunk.data.generator.util.ValueCallback;
  * always the same, even after calling {@link #resetValue()} or a regular value which is generated
  * using the underlying constraint.
  * 
- * @version $Id$
  */
 public final class FormEntry implements ValueCallback {
 

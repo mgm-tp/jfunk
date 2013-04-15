@@ -38,7 +38,6 @@ import com.mgmtp.jfunk.core.util.ConfigLoader;
  * Provides support for integrating jFunk into a unit test framework.
  * 
  * @author rnaegele
- * @version $Id$
  */
 class UnitSupport {
 

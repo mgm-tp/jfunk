@@ -11,7 +11,6 @@ import com.mgmtp.jfunk.data.generator.data.IndexedFields;
 /**
  * jFunk data generator specific constants.
  * 
- * @version $Id$
  */
 public class GeneratorConstants {
 	/**

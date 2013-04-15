@@ -16,7 +16,6 @@ import java.io.StringReader;
  * characters are read the stream is ready and once all characters have been read the method ready
  * will return false.
  * 
- * @version $Id$
  */
 public class CharacterPushbackReader extends PushbackReader {
 	private final int length;

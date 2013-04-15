@@ -19,7 +19,6 @@ import com.mgmtp.jfunk.core.module.TestModule;
 /**
  * Checks if a single HTML element is present on the current page.
  * 
- * @version $Id$
  */
 public class Check4Element extends WebDriverStep {
 	protected final By by;

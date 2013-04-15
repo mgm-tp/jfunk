@@ -24,7 +24,6 @@ import org.apache.http.protocol.HttpContext;
  * allowing for it to be changed.
  * 
  * @author rnaegele
- * @version $Id$
  */
 public class ImmutableHttpClient implements HttpClient {
 

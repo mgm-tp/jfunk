@@ -22,7 +22,6 @@ import com.mgmtp.jfunk.data.generator.util.ValueCallback;
  * explanation of their functionality. If the offered functionality is not sufficient for your needs
  * you can create your own constraints and use them in the generator configuration.
  * 
- * @version $Id$
  */
 public interface Constraint {
 

@@ -17,7 +17,6 @@ import com.mgmtp.jfunk.unit.JFunkTestNGSupport;
 
 /**
  * @author rnaegele
- * @version $Id$
  */
 @Listeners(JFunkTestNGSupport.class)
 public class TestNGGoogleTest {

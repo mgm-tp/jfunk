@@ -16,7 +16,6 @@ import com.mgmtp.jfunk.unit.JFunkRunner;
 
 /**
  * @author rnaegele
- * @version $Id$
  */
 @RunWith(JFunkJUnitSupport.class)
 public class JUnitGoogleTest {

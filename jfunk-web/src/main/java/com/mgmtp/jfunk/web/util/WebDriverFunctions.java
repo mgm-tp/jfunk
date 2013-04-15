@@ -19,7 +19,6 @@ import com.google.common.collect.ImmutableList;
 
 /**
  * @author rnaegele
- * @version $Id: Functions.java 28330 2012-10-09 13:16:34Z reinhard.naegele $
  */
 public class WebDriverFunctions {
 

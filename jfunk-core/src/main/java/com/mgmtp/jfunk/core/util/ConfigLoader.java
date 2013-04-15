@@ -20,7 +20,6 @@ import com.mgmtp.jfunk.common.util.Configuration;
  * Utility class for loading the configuration.
  * 
  * @author rnaegele
- * @version $Id$
  */
 public final class ConfigLoader {
 	private static final Logger LOG = LoggerFactory.getLogger(ConfigLoader.class);

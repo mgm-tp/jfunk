@@ -68,7 +68,6 @@ import com.mgmtp.jfunk.data.generator.control.FieldCase;
  * Please note that constraint c0 does not have a value, {@link #initValues(FieldCase)} always
  * returns {@code null}.
  * 
- * @version $Id$
  */
 public class FromTo extends Complex {
 	public FromTo(final MathRandom random, final Element el, final Generator generator) {

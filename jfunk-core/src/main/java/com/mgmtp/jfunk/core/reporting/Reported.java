@@ -19,7 +19,6 @@ import com.mgmtp.jfunk.core.module.TestModule;
  * annotation.
  * 
  * @author rnaegele
- * @version $Id$
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE })

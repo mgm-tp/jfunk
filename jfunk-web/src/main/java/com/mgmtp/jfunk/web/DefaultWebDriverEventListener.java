@@ -19,7 +19,6 @@ import org.openqa.selenium.support.events.WebDriverEventListener;
  * Qualifier annotation for jFunks default {@link WebDriverEventListener}.
  * 
  * @author rnaegele
- * @version $Id$
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER, ElementType.TYPE })

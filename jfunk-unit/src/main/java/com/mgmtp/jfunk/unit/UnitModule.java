@@ -13,7 +13,6 @@ import com.mgmtp.jfunk.core.config.JFunkBaseModule;
  * Guice module for unit test support.
  * 
  * @author rnaegele
- * @version $Id$
  */
 class UnitModule extends BaseJFunkGuiceModule {
 

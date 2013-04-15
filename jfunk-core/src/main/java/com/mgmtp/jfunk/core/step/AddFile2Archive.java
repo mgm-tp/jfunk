@@ -21,7 +21,6 @@ import com.mgmtp.jfunk.core.step.base.BaseStep;
 /**
  * Adds a file to the test archive.
  * 
- * @version $Id$
  */
 public class AddFile2Archive extends BaseStep {
 

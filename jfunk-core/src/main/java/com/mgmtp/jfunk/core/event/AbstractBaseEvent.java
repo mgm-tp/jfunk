@@ -13,7 +13,6 @@ import org.apache.commons.lang3.builder.ToStringStyle;
  * Base class for events.
  * 
  * @author rnaegele
- * @version $Id$
  */
 abstract class AbstractBaseEvent {
 

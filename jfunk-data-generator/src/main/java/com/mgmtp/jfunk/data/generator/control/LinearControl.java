@@ -18,7 +18,6 @@ import com.mgmtp.jfunk.common.util.Range;
  * Returns a case for every allowed value. Also if the range at generation is [0,5] then this
  * control object returns the cases {0,1,2,3,4,5}.
  * 
- * @version $Id$
  */
 public class LinearControl extends BaseFieldControl {
 

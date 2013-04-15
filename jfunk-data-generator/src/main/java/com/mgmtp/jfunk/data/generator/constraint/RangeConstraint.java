@@ -17,7 +17,6 @@ import com.mgmtp.jfunk.data.generator.util.XMLTags;
 /**
  * A special {@link FieldContainer} with a minimal and a maximal length.
  * 
- * @version $Id$
  */
 public class RangeConstraint extends FieldContainer {
 	public RangeConstraint(final MathRandom random, final Element element, final Generator generator) {

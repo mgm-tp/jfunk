@@ -18,7 +18,6 @@ import com.mgmtp.jfunk.common.util.Configuration;
 
 /**
  * @author rnaegele
- * @version $Id$
  */
 public class ChromeDriverProvider extends BaseWebDriverProvider {
 

@@ -10,7 +10,6 @@
  * to the {@link com.google.common.eventbus.EventBus}.
  *
  * @author rnaegele
- * @version $Id$
  */
 package com.mgmtp.jfunk.core.event;
 

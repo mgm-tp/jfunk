@@ -26,7 +26,6 @@ import com.mgmtp.jfunk.common.util.Range;
  * operators. An expression with the form [A-Z]{3,5}-?[0-9]{3,} generates character string with the
  * form ABC-123, DEFZL123456789 etc.
  * 
- * @version $Id$
  */
 public class GeneratingExpression {
 

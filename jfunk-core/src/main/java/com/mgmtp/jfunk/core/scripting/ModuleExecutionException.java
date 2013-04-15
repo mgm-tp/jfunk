@@ -13,7 +13,6 @@ import com.mgmtp.jfunk.core.module.TestModule;
  * {@link ModuleExecutionException}.
  * 
  * @author rnaegele
- * @version $Id$
  */
 public class ModuleExecutionException extends RuntimeException {
 

@@ -34,7 +34,6 @@ import org.testng.annotations.Listeners;
  * </pre>
  * 
  * @author rnaegele
- * @version $Id$
  */
 public final class JFunkTestNGSupport extends UnitSupport implements IInvokedMethodListener, ITestListener {
 

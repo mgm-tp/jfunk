@@ -35,7 +35,6 @@ import com.mgmtp.jfunk.data.generator.util.XMLTags;
  * The attribute {@code class} is optional. A field without class attribute is a Enumeration by
  * default.
  * 
- * @version $Id$
  */
 public final class Enumeration extends Field {
 

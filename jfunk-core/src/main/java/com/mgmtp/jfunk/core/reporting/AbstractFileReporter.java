@@ -38,7 +38,6 @@ import com.mgmtp.jfunk.core.config.ArchiveDir;
  * </p>
  * 
  * @author rnaegele
- * @version $Id$
  */
 @ThreadSafe
 public abstract class AbstractFileReporter implements Reporter {

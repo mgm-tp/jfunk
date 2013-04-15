@@ -14,7 +14,6 @@ import com.mgmtp.jfunk.core.module.TestModule;
  * regular {@link InternalBeforeModuleEvent}.
  * 
  * @author rnaegele
- * @version $Id$
  */
 class InternalBeforeModuleEvent extends InternalModuleEvent {
 

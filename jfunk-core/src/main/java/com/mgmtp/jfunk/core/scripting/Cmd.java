@@ -17,7 +17,6 @@ import javax.inject.Qualifier;
  * Qualifier annotation for command methods.
  * 
  * @author rnaegele
- * @version $Id$
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)

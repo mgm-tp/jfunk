@@ -39,7 +39,6 @@ import com.mgmtp.jfunk.data.DefaultDataSet;
  * ignored.</li>
  * </ul>
  * 
- * @version $Id$
  */
 @ScriptScoped
 public class CsvDataSource extends BaseDataSource {

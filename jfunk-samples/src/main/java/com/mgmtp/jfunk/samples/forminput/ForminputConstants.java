@@ -9,7 +9,6 @@ package com.mgmtp.jfunk.samples.forminput;
 /**
  * Constants for accessing the Wicket forminput example running on localhost.
  * 
- * @version $Id$
  */
 public class ForminputConstants {
 

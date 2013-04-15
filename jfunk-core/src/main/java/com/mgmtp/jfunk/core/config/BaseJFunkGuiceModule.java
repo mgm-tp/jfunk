@@ -19,7 +19,6 @@ import com.mgmtp.jfunk.core.scripting.ScriptScopedDisposables;
 /**
  * Base class for Guice modules in jFunk.
  * 
- * @version $Id$
  */
 public abstract class BaseJFunkGuiceModule extends AbstractModule {
 

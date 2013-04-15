@@ -25,7 +25,6 @@ import com.mgmtp.jfunk.common.util.Configuration;
  * {@link MembersInjector} for injecting configuration values.
  * 
  * @author rnaegele
- * @version $Id$
  * @param <T>
  *            the type of the instance subject to injection
  * @see InjectConfig

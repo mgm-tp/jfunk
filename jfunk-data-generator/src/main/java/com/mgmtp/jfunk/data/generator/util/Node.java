@@ -21,7 +21,6 @@ import com.mgmtp.jfunk.common.util.Range;
  * class and an allowed range of length that indicates how many characters of the class can be
  * generated.
  * 
- * @version $Id$
  */
 public class Node {
 

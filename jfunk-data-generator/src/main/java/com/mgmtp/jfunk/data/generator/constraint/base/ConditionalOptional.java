@@ -23,7 +23,6 @@ import com.mgmtp.jfunk.data.generator.control.FieldCase;
  * returns {@code false} the field value is generated for half of the cases, and not generated for
  * the other half.
  * 
- * @version $Id$
  */
 public abstract class ConditionalOptional extends BaseStateConstraint {
 

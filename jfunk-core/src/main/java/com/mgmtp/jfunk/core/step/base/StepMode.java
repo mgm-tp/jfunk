@@ -10,7 +10,6 @@ package com.mgmtp.jfunk.core.step.base;
  * Enum for step modes. {@link Step}s may use this in order to determine whether e. g. to set or to
  * check values.
  * 
- * @version $Id$
  */
 public enum StepMode {
 

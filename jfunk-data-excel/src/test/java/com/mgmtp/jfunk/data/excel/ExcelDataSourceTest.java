@@ -29,7 +29,6 @@ import com.mgmtp.jfunk.data.excel.ExcelDataSource.ExcelFile.DataOrientation;
 
 /**
  * @author rnaegele
- * @version $Id: $
  */
 public class ExcelDataSourceTest {
 

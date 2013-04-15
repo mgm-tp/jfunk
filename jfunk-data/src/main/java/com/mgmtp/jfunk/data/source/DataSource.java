@@ -13,7 +13,6 @@ import com.mgmtp.jfunk.data.DataSet;
 /**
  * Interface for a data source. A DataSource provides test data for jFunk tests.
  * 
- * @version $Id$
  */
 public interface DataSource {
 

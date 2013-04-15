@@ -43,7 +43,6 @@ import com.mgmtp.jfunk.web.util.WebElementFinder;
 
 /**
  * @author rnaegele
- * @version $Id$
  */
 public class WebDriverModule extends BaseWebDriverModule {
 

@@ -30,7 +30,6 @@ import com.mgmtp.jfunk.data.generator.control.FieldCase;
  * }
  * </pre>
  * 
- * @version $Id$
  */
 public class Exists extends SourceConstraint {
 

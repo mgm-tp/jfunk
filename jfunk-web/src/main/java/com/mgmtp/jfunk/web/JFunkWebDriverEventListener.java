@@ -41,7 +41,6 @@ import com.mgmtp.jfunk.web.util.WebDriverUtils;
 /**
  * Default implementation for WebDriverEventListener.
  * 
- * @version $Id$
  */
 @ScriptScoped
 public class JFunkWebDriverEventListener implements WebDriverEventListener {

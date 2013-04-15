@@ -47,7 +47,6 @@ import com.mgmtp.jfunk.data.generator.util.XMLTags;
  * After ten tries this constraint gives up and returns the last generated value - it does not fail
  * in this case!
  * 
- * @version $Id$
  */
 public class ExcludeConstraint extends BaseConstraint {
 

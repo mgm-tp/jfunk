@@ -12,7 +12,6 @@ import com.mgmtp.jfunk.common.util.Range;
  * Interface for different control types used by the constraints to control the generation of
  * fields.
  * 
- * @version $Id$
  */
 public interface FieldControl {
 

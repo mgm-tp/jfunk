@@ -23,7 +23,6 @@ import com.mgmtp.jfunk.common.random.Randomizable;
  * others are forbidden. The method getAllowedCharacter then provides an allowed, the method
  * getForbiddenCharacter a forbidden character.
  * 
- * @version $Id$
  */
 class CharacterField {
 

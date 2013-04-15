@@ -14,7 +14,6 @@ import com.mgmtp.jfunk.core.module.TestModule;
 /**
  * Abstract base implementation for steps.
  * 
- * @version $Id$
  */
 public abstract class BaseStep implements Step {
 	protected final Logger log = LoggerFactory.getLogger(getClass());

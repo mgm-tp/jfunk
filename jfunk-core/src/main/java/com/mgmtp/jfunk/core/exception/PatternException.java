@@ -13,7 +13,6 @@ import java.util.regex.Pattern;
  * This exception is thrown when an error occurred during pattern matching e.g. searching for
  * strings in HTML pages.
  * 
- * @version $Id$
  */
 public class PatternException extends ValidationException {
 	public PatternException(final String location, final Pattern pattern, final boolean mustExist) {

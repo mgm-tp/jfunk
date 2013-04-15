@@ -21,7 +21,6 @@ import com.mgmtp.jfunk.core.scripting.ScriptContext;
  * test class.
  * 
  * @author rnaegele
- * @version $Id$
  */
 @Singleton
 @ThreadSafe

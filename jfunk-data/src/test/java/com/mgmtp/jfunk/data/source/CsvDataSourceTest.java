@@ -22,7 +22,6 @@ import com.mgmtp.jfunk.data.DataSet;
 /**
  * Unit test for {@link CsvDataSource}.
  * 
- * @version $Id$
  */
 public class CsvDataSourceTest {
 

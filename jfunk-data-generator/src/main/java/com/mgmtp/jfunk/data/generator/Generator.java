@@ -46,7 +46,6 @@ import com.mgmtp.jfunk.data.generator.util.XMLTags;
  * obtained using {@link #getConstraint(String)}. All available constraints can be found in the
  * subpackage {@code constraint}.
  * 
- * @version $Id$
  */
 public class Generator {
 

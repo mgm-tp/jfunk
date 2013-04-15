@@ -15,7 +15,6 @@ import com.mgmtp.jfunk.core.step.base.Step;
  * also possible for steps annotation with {@link Reported} and if the reporter implementation
  * supports step-evel reporting.
  * 
- * @version $Id$
  */
 public interface Reporter {
 

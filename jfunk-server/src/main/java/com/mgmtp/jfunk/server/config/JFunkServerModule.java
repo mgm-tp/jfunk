@@ -39,7 +39,6 @@ import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
  * Guice module for the jFunk Server.
  * 
  * @author rnaegele
- * @version $Id$
  */
 public class JFunkServerModule extends AbstractModule {
 

@@ -21,7 +21,6 @@ import com.mgmtp.jfunk.core.step.base.BaseStep;
 /**
  * Sends an e-mail.
  * 
- * @version $Id$
  */
 public class SendEmail extends BaseStep {
 

@@ -10,7 +10,6 @@ import org.openqa.selenium.By;
 
 /**
  * @author rnaegele
- * @version $Id$
  */
 public class SendKeysStep extends WebDriverStep {
 

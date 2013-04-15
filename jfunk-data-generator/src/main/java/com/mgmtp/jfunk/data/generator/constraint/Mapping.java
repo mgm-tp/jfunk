@@ -52,7 +52,6 @@ import com.mgmtp.jfunk.data.generator.util.XMLTags;
  * Depending on the value of c2 the value of c1 is set: if c2 == 0, c1 is set to A. In all other
  * cases c1 is set to B.
  * 
- * @version $Id$
  */
 public class Mapping extends BaseConstraint {
 

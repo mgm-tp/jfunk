@@ -30,7 +30,6 @@ import com.mgmtp.jfunk.data.source.DataSource;
 /**
  * Guice module for the classic jFunk generator.
  * 
- * @version $Id$
  */
 public class GeneratorModule extends AbstractModule {
 

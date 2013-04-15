@@ -8,9 +8,6 @@ package com.mgmtp.jfunk.common;
 
 import com.mgmtp.jfunk.common.util.SaveOutput;
 
-/**
- * @version $Id$
- */
 public final class JFunkConstants {
 	public static final String JFUNK_PROPERTIES = "jfunk.properties";
 	public static final String SCRIPT_PROPERTIES = "script.properties";

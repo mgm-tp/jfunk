@@ -16,7 +16,6 @@ import com.mgmtp.jfunk.core.JFunkFactory;
 /**
  * Guice module for jFunk in non-server mode.
  * 
- * @version $Id$
  */
 public class JFunkDefaultModule extends AbstractModule {
 

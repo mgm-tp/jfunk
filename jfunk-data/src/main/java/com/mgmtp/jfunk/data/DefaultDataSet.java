@@ -23,7 +23,6 @@ import com.mgmtp.jfunk.common.JFunkConstants;
  * Default {@link DataSet} implementation including functionality for storing fixed values.
  * Null-values are trimmed to the empty {@link String}.
  * 
- * @version $Id$
  */
 public class DefaultDataSet implements DataSet {
 

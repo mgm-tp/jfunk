@@ -16,7 +16,6 @@ import com.mgmtp.jfunk.core.module.TestModule;
  * type parameter are supported.
  * 
  * @author rnaegele
- * @version $Id$
  */
 public class ExecSeleneseCmd extends WebDriverStep {
 

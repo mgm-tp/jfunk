@@ -10,7 +10,6 @@ import com.mgmtp.jfunk.core.config.BaseJFunkGuiceModule;
 
 /**
  * @author rnaegele
- * @version $Id$
  */
 public class ScriptingModule extends BaseJFunkGuiceModule {
 

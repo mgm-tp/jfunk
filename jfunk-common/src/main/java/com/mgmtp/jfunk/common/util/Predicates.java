@@ -13,7 +13,6 @@ import com.google.common.base.Predicate;
 /**
  * A {@link Predicate} factory class.
  * 
- * @version $Id$
  */
 public class Predicates {
 

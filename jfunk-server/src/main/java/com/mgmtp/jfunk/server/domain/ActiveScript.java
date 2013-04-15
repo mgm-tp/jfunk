@@ -19,7 +19,6 @@ import javax.xml.bind.annotation.XmlRootElement;
  * availability of free worker threads in the thread pool executing scripts.
  * 
  * @author rnaegele
- * @version $Id$
  */
 @XmlRootElement(name = "script")
 public class ActiveScript extends FileSystemItem {

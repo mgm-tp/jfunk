@@ -29,7 +29,6 @@ import com.mgmtp.jfunk.data.DefaultDataSet;
 /**
  * {@link DataSource} implementation which takes properties from an existing test archive.
  * 
- * @version $Id$
  */
 @ScriptScoped
 public class ArchiveDataSource extends BaseDataSource {

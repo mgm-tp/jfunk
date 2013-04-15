@@ -20,7 +20,6 @@ import javax.inject.Qualifier;
  * Qualifier annotation for event handler.
  * 
  * @author rnaegele
- * @version $Id$
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ FIELD, PARAMETER, METHOD })

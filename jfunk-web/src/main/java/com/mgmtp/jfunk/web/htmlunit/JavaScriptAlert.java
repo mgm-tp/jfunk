@@ -11,7 +11,6 @@ import com.gargoylesoftware.htmlunit.Page;
 /**
  * Container object for JavaScript alerts.
  * 
- * @version $Id$
  */
 public class JavaScriptAlert {
 	private final Page page;

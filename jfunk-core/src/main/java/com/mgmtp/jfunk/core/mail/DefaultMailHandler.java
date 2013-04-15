@@ -32,7 +32,6 @@ import com.mgmtp.jfunk.common.util.ExtendedProperties;
 /**
  * Default-{@link MailHandler}-Implementation for retrieving mail accounts from the configuration.
  * 
- * @version $Id$
  */
 @Singleton
 public class DefaultMailHandler implements MailHandler, Disposable {

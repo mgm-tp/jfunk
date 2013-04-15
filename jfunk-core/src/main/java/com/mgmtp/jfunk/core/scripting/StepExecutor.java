@@ -25,7 +25,6 @@ import com.mgmtp.jfunk.core.step.base.Step;
  * {@link StepEvent}s to the {@link EventBus}. Member injection is perform on the {@link Step}
  * instance before execution.
  * 
- * @version $Id$
  */
 @Singleton
 public class StepExecutor {

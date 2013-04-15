@@ -23,7 +23,6 @@ import com.mgmtp.jfunk.core.config.BaseJFunkGuiceModule;
 
 /**
  * @author rnaegele
- * @version $Id$
  */
 public abstract class BaseWebDriverModule extends BaseJFunkGuiceModule {
 	protected final Logger log = LoggerFactory.getLogger(getClass());

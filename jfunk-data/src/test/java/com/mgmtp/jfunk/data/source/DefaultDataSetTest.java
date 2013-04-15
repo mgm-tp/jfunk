@@ -17,7 +17,6 @@ import com.google.common.collect.Maps;
 import com.mgmtp.jfunk.data.DefaultDataSet;
 
 /**
- * @version $Id$
  */
 public class DefaultDataSetTest {
 

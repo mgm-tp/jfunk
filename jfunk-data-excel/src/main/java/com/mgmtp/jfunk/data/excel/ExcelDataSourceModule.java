@@ -14,7 +14,6 @@ import com.mgmtp.jfunk.data.BaseDataSourceModule;
  * Guice module for the standard data sources.
  * 
  * @author rnaegele
- * @version $Id$
  */
 public class ExcelDataSourceModule extends BaseDataSourceModule {
 

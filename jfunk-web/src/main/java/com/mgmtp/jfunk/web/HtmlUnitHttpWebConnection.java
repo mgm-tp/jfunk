@@ -27,7 +27,6 @@ import com.mgmtp.jfunk.web.ssl.JFunkSSLSocketFactory;
  * This {@link WebConnection} uses its own {@link LayeredSchemeSocketFactory} as the default
  * HttpClient implementation does not work with sites which require a client certificate.
  * 
- * @version $Id$
  */
 public class HtmlUnitHttpWebConnection extends HttpWebConnection {
 

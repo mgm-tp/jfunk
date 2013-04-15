@@ -8,7 +8,6 @@ package com.mgmtp.jfunk.core.mail;
 
 /**
  * @author rnaegele
- * @version $Id$
  */
 public final class EmailConstants {
 

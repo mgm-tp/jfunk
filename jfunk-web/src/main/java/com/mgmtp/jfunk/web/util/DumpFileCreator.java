@@ -21,7 +21,6 @@ import com.mgmtp.jfunk.common.config.ModuleScoped;
 
 /**
  * @author rnaegele
- * @version $Id$
  */
 @ModuleScoped
 public class DumpFileCreator {

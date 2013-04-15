@@ -11,7 +11,6 @@ import com.mgmtp.jfunk.core.module.TestModule;
 /**
  * Load a new web page in the current browser window.
  * 
- * @version $Id$
  */
 public class LoadPage extends WebDriverStep {
 

@@ -9,7 +9,6 @@ package com.mgmtp.jfunk.common.util;
 /**
  * Transforms a given value and returns the transformed result.
  * 
- * @version $Id$
  */
 public interface ElementTrafo {
 	/**

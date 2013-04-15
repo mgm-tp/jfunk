@@ -29,7 +29,6 @@ import com.mgmtp.jfunk.data.generator.util.XMLTags;
  * }
  * </pre>
  * 
- * @version $Id$
  */
 public class ConfigValue extends BaseConstraint {
 
