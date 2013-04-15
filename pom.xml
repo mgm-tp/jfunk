@@ -476,8 +476,8 @@
 		<slf4j.version>1.7.5</slf4j.version>
 		<poi.version>3.9</poi.version>
 		<sonar.skippedModules>jfunk-samples</sonar.skippedModules>
-		<groovy.version>2.1.2</groovy.version>
+		<groovy.version>1.8.4</groovy.version>
 		<groovy-eclipse-compiler.version>2.7.0-01</groovy-eclipse-compiler.version>
-		<groovy-eclipse-batch.version>2.1.1-01</groovy-eclipse-batch.version>
+		<groovy-eclipse-batch.version>1.8.4-01</groovy-eclipse-batch.version>
 	</properties>
 </project>
