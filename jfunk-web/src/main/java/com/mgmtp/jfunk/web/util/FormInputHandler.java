@@ -125,7 +125,7 @@ public final class FormInputHandler {
 	 * @return the new {@link FormInputHandler} instance
 	 */
 	public static FormInputHandler create() {
-		return new FormInputHandler(WebElementFinder.create(), null, null, null, null, null, null, null, null);
+		return new FormInputHandler(WebElementFinder.create().noLogging(true), null, null, null, null, null, null, null, null);
 	}
 
 	/**

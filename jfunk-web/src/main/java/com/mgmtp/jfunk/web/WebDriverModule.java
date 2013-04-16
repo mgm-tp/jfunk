@@ -10,7 +10,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.Maps.newHashMapWithExpectedSize;
 import static com.google.common.collect.Sets.newTreeSet;
-
 import static org.apache.commons.lang3.StringUtils.trimToNull;
 
 import java.util.Iterator;
@@ -72,7 +71,7 @@ public class WebDriverModule extends BaseWebDriverModule {
 		bindWebDriver(WebConstants.WEBDRIVER_INTERNET_EXPLORER, InternetExplorerDriverProvider.class, ModuleScoped.class);
 		bindWebDriver(WebConstants.WEBDRIVER_REMOTE, RemoteWebDriverProvider.class, ModuleScoped.class);
 		bindModuleScopedDisposable().to(WebDriverDisposable.class);
-		
+
 		bind(new TypeLiteral<Map<String, Capabilities>>() {
 			//
 		}).toProvider(CapabilitiesProvider.class);
@@ -115,7 +114,8 @@ public class WebDriverModule extends BaseWebDriverModule {
 		boolean logIncorrectCode = config.getBoolean(WebConstants.HTMLUNIT_LOG_INCORRECT_CODE, true);
 		log.info(WebConstants.HTMLUNIT_LOG_INCORRECT_CODE + "=" + logIncorrectCode);
 
-		return new HtmlUnitWebDriverParams(connectionTimeout, refuseCookies, redirect, javascriptEnabled, cssEnabled, validateJavascript,
+		return new HtmlUnitWebDriverParams(connectionTimeout, refuseCookies, redirect, javascriptEnabled, cssEnabled,
+				validateJavascript,
 				ignoreResponseCode, autoRefresh, logIncorrectCode);
 	}
 

@@ -10,11 +10,14 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.Lists.newArrayList;
 
+import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.List;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.apache.commons.lang3.text.StrBuilder;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NotFoundException;
 import org.openqa.selenium.StaleElementReferenceException;
@@ -68,11 +71,11 @@ public final class WebElementFinder {
 	private final Boolean displayed;
 	private final Boolean selected;
 	private final Predicate<WebElement> condition;
-	private final boolean inverted;
+	private final boolean noLogging;
 
 	private WebElementFinder(final WebDriver webDriver, final By by, final long timeoutSeconds, final long sleepMillis,
 			final Boolean enabled, final Boolean displayed, final Boolean selected, final Predicate<WebElement> condition,
-			final boolean inverted) {
+			final boolean noLogging) {
 		this.webDriver = webDriver;
 		this.by = by;
 		this.timeoutSeconds = timeoutSeconds;
@@ -81,12 +84,12 @@ public final class WebElementFinder {
 		this.displayed = displayed;
 		this.selected = selected;
 		this.condition = condition;
-		this.inverted = inverted;
+		this.noLogging = noLogging;
 	}
 
 	private WebElementFinder(final Fields fields) {
 		this(fields.webDriver, fields.by, fields.timeoutSeconds, fields.sleepMillis, fields.enabled, fields.displayed,
-				fields.selected, fields.condition, fields.inverted);
+				fields.selected, fields.condition, fields.noLogging);
 	}
 
 	/**
@@ -225,6 +228,21 @@ public final class WebElementFinder {
 	}
 
 	/**
+	 * Creates a new {@link WebElementFinder} based on this {@link WebElementFinder} with logging
+	 * disabled. This is useful when a {@link WebElementFinder} is using by a
+	 * {@link FormInputHandler} which logs on its own.
+	 * 
+	 * @param theNoLogging
+	 *            the {@link WebDriver} to use
+	 * @return the new {@link FormInputHandler} instance
+	 */
+	public WebElementFinder noLogging(final boolean theNoLogging) {
+		Fields fields = new Fields(this);
+		fields.noLogging = theNoLogging;
+		return new WebElementFinder(fields);
+	}
+
+	/**
 	 * Finds the first element.
 	 * 
 	 * @return the element
@@ -233,7 +251,9 @@ public final class WebElementFinder {
 		checkState(webDriver != null, "No WebDriver specified.");
 		checkState(by != null, "No By instance for locating elements specified.");
 
-		log.info(toString());
+		if (!noLogging) {
+			log.info(toString());
+		}
 
 		WebElement element;
 
@@ -263,7 +283,7 @@ public final class WebElementFinder {
 			}
 		}
 
-		return element;
+		return newLoggingProxy(element);
 	}
 
 	/**
@@ -293,7 +313,7 @@ public final class WebElementFinder {
 							if (condition != null && !condition.apply(element)) {
 								continue;
 							}
-							result.add(element);
+							result.add(newLoggingProxy(element));
 						}
 						if (result.isEmpty()) {
 							// this means, we try again until the timeout occurs
@@ -316,7 +336,7 @@ public final class WebElementFinder {
 					if (condition != null && !condition.apply(element)) {
 						continue;
 					}
-					result.add(element);
+					result.add(newLoggingProxy(element));
 				}
 			}
 			return result;
@@ -452,6 +472,36 @@ public final class WebElementFinder {
 		return condition;
 	}
 
+	private WebElement newLoggingProxy(final WebElement webElement) {
+		return (WebElement) Proxy.newProxyInstance(webElement.getClass().getClassLoader(), new Class<?>[] { WebElement.class },
+				new InvocationHandler() {
+					@Override
+					public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
+						StrBuilder sb = new StrBuilder(100);
+						sb.append(method.getName());
+						sb.append('(');
+
+						if (args != null) {
+							boolean firstArg = true;
+							for (Object arg : args) {
+								if (!firstArg) {
+									sb.append(", ");
+								}
+								sb.append(arg);
+							}
+						}
+
+						sb.append(") [");
+						sb.append(by);
+						sb.append("]");
+
+						log.info(sb.toString());
+
+						return method.invoke(webElement, args);
+					}
+				});
+	}
+
 	@Override
 	public String toString() {
 		ToStringBuilder tsb = new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE);
@@ -483,7 +533,7 @@ public final class WebElementFinder {
 		private Boolean displayed;
 		private Boolean selected;
 		private Predicate<WebElement> condition;
-		private final boolean inverted;
+		private boolean noLogging;
 
 		private Fields(final WebElementFinder finder) {
 			this.webDriver = finder.webDriver;
@@ -494,7 +544,7 @@ public final class WebElementFinder {
 			this.displayed = finder.displayed;
 			this.selected = finder.selected;
 			this.condition = finder.condition;
-			this.inverted = finder.inverted;
+			this.noLogging = finder.noLogging;
 		}
 	}
 }
