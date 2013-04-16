@@ -22,8 +22,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Objects;
+import com.mgmtp.jfunk.common.exception.JFunkException;
 import com.mgmtp.jfunk.common.util.ElementTrafo;
-import com.mgmtp.jfunk.core.exception.StepException;
 import com.mgmtp.jfunk.core.step.base.StepMode;
 import com.mgmtp.jfunk.data.DataSet;
 import com.mgmtp.jfunk.web.WebConstants;
@@ -425,7 +425,7 @@ public final class FormInputHandler {
 					}
 
 					if (!found) {
-						throw new StepException("Could not find a matching option element in " + element + " , By: "
+						throw new JFunkException("Could not find a matching option element in " + element + " , By: "
 								+ finder.getBy());
 					}
 
