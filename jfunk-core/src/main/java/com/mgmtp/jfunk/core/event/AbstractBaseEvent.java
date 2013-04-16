@@ -14,7 +14,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
  * 
  * @author rnaegele
  */
-abstract class AbstractBaseEvent {
+public abstract class AbstractBaseEvent {
 
 	@Override
 	public String toString() {
