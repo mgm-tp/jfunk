@@ -10,14 +10,11 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.Lists.newArrayList;
 
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import java.util.List;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-import org.apache.commons.lang3.text.StrBuilder;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NotFoundException;
 import org.openqa.selenium.StaleElementReferenceException;
@@ -283,7 +280,7 @@ public final class WebElementFinder {
 			}
 		}
 
-		return newLoggingProxy(element);
+		return element;
 	}
 
 	/**
@@ -313,7 +310,7 @@ public final class WebElementFinder {
 							if (condition != null && !condition.apply(element)) {
 								continue;
 							}
-							result.add(newLoggingProxy(element));
+							result.add(element);
 						}
 						if (result.isEmpty()) {
 							// this means, we try again until the timeout occurs
@@ -336,7 +333,7 @@ public final class WebElementFinder {
 					if (condition != null && !condition.apply(element)) {
 						continue;
 					}
-					result.add(newLoggingProxy(element));
+					result.add(element);
 				}
 			}
 			return result;
@@ -470,36 +467,6 @@ public final class WebElementFinder {
 	 */
 	public Predicate<WebElement> getCondition() {
 		return condition;
-	}
-
-	private WebElement newLoggingProxy(final WebElement webElement) {
-		return (WebElement) Proxy.newProxyInstance(webElement.getClass().getClassLoader(), new Class<?>[] { WebElement.class },
-				new InvocationHandler() {
-					@Override
-					public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
-						StrBuilder sb = new StrBuilder(100);
-						sb.append(method.getName());
-						sb.append('(');
-
-						if (args != null) {
-							boolean firstArg = true;
-							for (Object arg : args) {
-								if (!firstArg) {
-									sb.append(", ");
-								}
-								sb.append(arg);
-							}
-						}
-
-						sb.append(") [");
-						sb.append(by);
-						sb.append("]");
-
-						log.info(sb.toString());
-
-						return method.invoke(webElement, args);
-					}
-				});
 	}
 
 	@Override
