@@ -8,9 +8,7 @@ package com.mgmtp.jfunk.data.excel;
 
 import static com.google.common.collect.Lists.newArrayListWithCapacity;
 import static com.google.common.collect.Maps.newHashMapWithExpectedSize;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
+import static org.fest.assertions.api.Assertions.assertThat;
 
 import java.io.File;
 import java.io.IOException;
@@ -55,11 +53,12 @@ public class ExcelDataSourceTest {
 		}
 	}
 
-	private void testExcelFile(final String path, final DataOrientation dataOrientation) throws InvalidFormatException, IOException {
+	private void testExcelFile(final String path, final DataOrientation dataOrientation) throws InvalidFormatException,
+			IOException {
 		ExcelFile excelFile = new ExcelFile(new File(path), dataOrientation, new DataFormatter());
 		excelFile.load();
 		Map<String, List<Map<String, String>>> actualData = excelFile.getData();
-		assertThat("data does not match expected data", actualData, equalTo(expectedData));
+		assertThat(actualData).isEqualTo(expectedData);
 	}
 
 	private void testGetNextDataSet(final String path, final DataOrientation dataOrientation) {
@@ -78,7 +77,7 @@ public class ExcelDataSourceTest {
 			}
 		}
 
-		assertThat("data does not match expected data", actualData, equalTo(expectedData));
+		assertThat(actualData).isEqualTo(expectedData);
 	}
 
 	private ExcelDataSource createDataSource(final String path, final DataOrientation dataOrientation) {
@@ -120,6 +119,6 @@ public class ExcelDataSourceTest {
 			}
 		}
 
-		assertThat("no more data should be available", dataSource.hasMoreData(dataSetKey), is(false));
+		assertThat(dataSource.hasMoreData(dataSetKey)).describedAs("no more data should be available").isFalse();
 	}
 }
