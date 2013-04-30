@@ -21,6 +21,7 @@ import javax.inject.Provider;
 import javax.inject.Singleton;
 
 import com.mgmtp.jfunk.common.JFunkConstants;
+import com.mgmtp.jfunk.core.mail.MailAccount;
 import com.mgmtp.jfunk.core.module.TestModule;
 import com.mgmtp.jfunk.core.reporting.Reporter;
 import com.mgmtp.jfunk.core.scripting.ScriptContext;
@@ -161,5 +162,49 @@ public final class JFunkRunner {
 	 */
 	public void setNow(final String key, final String value) {
 		scriptContextProvider.get().setNow(key, value);
+	}
+
+	/**
+	 * @see com.mgmtp.jfunk.core.scripting.ScriptContext#reserveMailAccount()
+	 */
+	public MailAccount reserveMailAccount() {
+		return scriptContextProvider.get().reserveMailAccount();
+	}
+
+	/**
+	 * @see com.mgmtp.jfunk.core.scripting.ScriptContext#reserveMailAccount(java.lang.String)
+	 */
+	public MailAccount reserveMailAccount(final String accountReservationKey) {
+		return scriptContextProvider.get().reserveMailAccount(accountReservationKey);
+	}
+
+	/**
+	 * @see com.mgmtp.jfunk.core.scripting.ScriptContext#reserveMailAccount(java.lang.String,
+	 *      java.lang.String)
+	 */
+	public MailAccount reserveMailAccount(final String accountReservationKey, final String pool) {
+		return scriptContextProvider.get().reserveMailAccount(accountReservationKey, pool);
+	}
+
+	/**
+	 * 
+	 * @see com.mgmtp.jfunk.core.scripting.ScriptContext#releaseAllMailAccountsForThread()
+	 */
+	public void releaseAllMailAccountsForThread() {
+		scriptContextProvider.get().releaseAllMailAccountsForThread();
+	}
+
+	/**
+	 * @see com.mgmtp.jfunk.core.scripting.ScriptContext#releaseMailAccountForThread(com.mgmtp.jfunk.core.mail.MailAccount)
+	 */
+	public void releaseMailAccountForThread(final MailAccount account) {
+		scriptContextProvider.get().releaseMailAccountForThread(account);
+	}
+
+	/**
+	 * @see com.mgmtp.jfunk.core.scripting.ScriptContext#releaseMailAccountForThread(java.lang.String)
+	 */
+	public void releaseMailAccountForThread(final String accountReservationKey) {
+		scriptContextProvider.get().releaseMailAccountForThread(accountReservationKey);
 	}
 }

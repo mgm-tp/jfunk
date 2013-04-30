@@ -15,7 +15,10 @@
  */
 package com.mgmtp.jfunk.core.scripting.groovy
 
+import static com.mgmtp.jfunk.core.mail.MailAccountManager.DEFAULT_ACCOUNT_RESERVATION_KEY
+
 import com.mgmtp.jfunk.common.JFunkConstants
+import com.mgmtp.jfunk.core.mail.MailAccount
 import com.mgmtp.jfunk.core.reporting.Reporter
 import com.mgmtp.jfunk.core.scripting.ScriptContext
 
@@ -91,6 +94,28 @@ public class Commands {
 	Closure<Void> resetFixedData = { dataSetKey = null, entryKey = null ->
 		scriptContext.resetFixedData(dataSetKey, entryKey)
 	}
+
+	Closure<MailAccount> reserveFixedMailAccount = { accountReservationKey = null, accountId ->
+		if (accountReservationKey == null) {
+			scriptContext.reserveFixedMailAccount(accountId)
+		} else {
+			scriptContext.reserveFixedMailAccount(accountReservationKey, accountId)
+		}
+	}
+
+	Closure<MailAccount> reserveMailAccount = { accountReservationKey = null, pool = null ->
+		if (accountReservationKey == null) {
+			scriptContext.reserveMailAccount()
+		} else if (pool == null) {
+			scriptContext.reserveMailAccount(accountReservationKey)
+		} else {
+			scriptContext.reserveMailAccount(accountReservationKey, pool)
+		}
+	}
+
+	Closure<Void> releaseAllMailAccountsForThread = { scriptContext.releaseAllMailAccountsForThread() }
+
+	Closure<Void> releaseMailAccountForThread = { it -> scriptContext.releaseMailAccountForThread(it) }
 
 	Closure<Void> run = { scriptContext.run(it) }
 

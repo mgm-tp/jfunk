@@ -23,7 +23,7 @@ public final class EmailConstants {
 	/*
 	 * Mail properties
 	 */
-	public static final String MAIL_PROTOCOL = "mail.protocol";
+	public static final String MAIL_STORE_PROTOCOL = "mail.store.protocol";
 	public static final String MAIL_PROTOCOL_IMAP = "imap";
 	public static final String MAIL_PROTOCOL_IMAPS = "imaps";
 	public static final String MAIL_PROTOCOL_POP3 = "pop3";
@@ -31,7 +31,10 @@ public final class EmailConstants {
 	public static final String MAIL_USER = "mail.user";
 	public static final String MAIL_PASSWORD = "mail.password";
 	public static final String MAIL_ADDRESS = "mail.address";
+
+	@Deprecated
 	public static final String MAIL_ACCOUNT = "mail.account";
+
 	public static final String MAIL_TRANSPORT_PROTOCOL = "mail.transport.protocol";
 	public static final String MAIL_SMTP_HOST = "mail.smtp.host";
 	public static final String MAIL_SMTP_PORT = "mail.smtp.port";
@@ -61,15 +64,18 @@ public final class EmailConstants {
 	public static final String MAIL_POP3_SOCKET_FACTORY_FALLBACK = "mail.pop3.socketFactory.fallback";
 	public static final String MAIL_POP3_SOCKET_FACTORY_PORT = "mail.pop3.socketFactory.port";
 
+	@Deprecated
 	public static final String MAIL_STARTUP_DELETE_ALL = "mail.startup.deleteAll";
+	public static final String MAIL_DELETE_ALL_ON_RESERVATION = "mail.deleteAllOnReservation";
 	public static final String MAIL_SUBJECT_REGEX = "mail.subject.regex";
 	public static final String MAIL_BODY_REGEX = "mail.body.regex";
-	public static final String MAIL_SLEEP = "mail.sleep";
-	public static final String MAIL_TIMEOUT = "mail.timeout";
+	public static final String MAIL_SLEEP_MILLIS = "mail.sleep.millis";
+	public static final String MAIL_TIMEOUT_SECONDS = "mail.timeout.seconds";
 	public static final String MAIL_CHECK_MAXIMAL = "mail.check.maximal";
 
 	public static final String REPORT_MAIL_RECIPIENTS = "report_email.recipients";
 
+	@Deprecated
 	public static final String TESTING_EMAIL_ID = "testing.email.id";
 
 	private EmailConstants() {

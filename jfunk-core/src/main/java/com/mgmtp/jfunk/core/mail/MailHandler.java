@@ -21,6 +21,7 @@ import com.mgmtp.jfunk.common.util.Configuration;
  * Interface for handling e-mail accounts.
  * 
  */
+@Deprecated
 public interface MailHandler {
 
 	/**

@@ -34,6 +34,7 @@ import javax.inject.Inject;
 import javax.mail.BodyPart;
 import javax.mail.Message;
 import javax.mail.MessagingException;
+import javax.mail.Session;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
@@ -46,8 +47,8 @@ import org.apache.log4j.Logger;
 import com.google.common.base.Strings;
 import com.google.common.io.Resources;
 import com.mgmtp.jfunk.core.exception.MailException;
-import com.mgmtp.jfunk.core.mail.EmailParser;
-import com.mgmtp.jfunk.core.mail.EmailParserFactory;
+import com.mgmtp.jfunk.core.mail.SmtpClient;
+import com.mgmtp.jfunk.core.mail.TransportSession;
 
 /**
  * <p>
@@ -66,12 +67,15 @@ public final class EmailReporter implements Reporter {
 
 	private final List<ReportData> reportDataList = newArrayList();
 	private final String recipients;
-	private final EmailParserFactory emailParserFactory;
+	private final SmtpClient smtpClient;
+	private final Session session;
 
 	@Inject
-	public EmailReporter(final EmailParserFactory emailParserFactory, @Nullable @ReportMailRecipients final String recipients) {
-		this.emailParserFactory = emailParserFactory;
+	public EmailReporter(final SmtpClient smtpClient, @Nullable @ReportMailRecipients final String recipients,
+			@TransportSession final Session session) {
+		this.smtpClient = smtpClient;
 		this.recipients = recipients;
+		this.session = session;
 	}
 
 	@Override
@@ -100,8 +104,7 @@ public final class EmailReporter implements Reporter {
 
 	private void sendMessage(final String content) {
 		try {
-			EmailParser emailParser = emailParserFactory.createEmailParser();
-			MimeMessage msg = new MimeMessage(emailParser.getSession());
+			MimeMessage msg = new MimeMessage(session);
 			msg.setSubject("jFunk E-mail Report");
 			msg.addRecipients(Message.RecipientType.TO, recipients);
 
@@ -123,7 +126,7 @@ public final class EmailReporter implements Reporter {
 
 			msg.setContent(multipart);
 
-			emailParser.send(msg);
+			smtpClient.send(msg);
 
 			int anzahlRecipients = msg.getAllRecipients().length;
 			log.info("Report e-mail was sent to " + anzahlRecipients + " recipient(s): " + recipients);
@@ -138,7 +141,8 @@ public final class EmailReporter implements Reporter {
 		int size = reportDataList.size();
 		List<String> rowData = newArrayListWithCapacity(size);
 
-		String reportRowTemplate = Resources.toString(getClass().getResource("email-report-row-template.html"), Charset.forName("UTF-8"));
+		String reportRowTemplate = Resources.toString(getClass().getResource("email-report-row-template.html"),
+				Charset.forName("UTF-8"));
 		for (int i = 0; i < size; ++i) {
 			ReportData data = reportDataList.get(i);
 
@@ -181,7 +185,8 @@ public final class EmailReporter implements Reporter {
 			rowData.add(rowContent);
 		}
 
-		String reportTemplate = Resources.toString(getClass().getResource("email-report-template.html"), Charset.forName("UTF-8"));
+		String reportTemplate = Resources
+				.toString(getClass().getResource("email-report-template.html"), Charset.forName("UTF-8"));
 		reportTemplate = replacePlaceholderToken(reportTemplate, "timestamp", TIMESTAMP_FORMAT.format(new Date()), false);
 
 		String reportData = on(LINE_SEPARATOR).join(rowData);

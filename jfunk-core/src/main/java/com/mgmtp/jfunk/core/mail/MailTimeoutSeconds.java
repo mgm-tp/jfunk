@@ -15,30 +15,22 @@
  */
 package com.mgmtp.jfunk.core.mail;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
-import javax.inject.Singleton;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import com.mgmtp.jfunk.common.util.Configuration;
+import javax.inject.Qualifier;
 
 /**
- * Factory for creating additional unscoped e-mail parsers.
+ * Qualifier annotation for the timeout for mail fetching.
  * 
  * @author rnaegele
+ * @since 3.1.0
  */
-@Singleton
-public class EmailParserFactory {
-
-	private final Provider<MailAccount> mailAccoutProvider;
-	private final Configuration config;
-
-	@Inject
-	public EmailParserFactory(final Configuration config, final Provider<MailAccount> mailAccoutProvider) {
-		this.config = config;
-		this.mailAccoutProvider = mailAccoutProvider;
-	}
-
-	public EmailParser createEmailParser() {
-		return new EmailParser(config, mailAccoutProvider.get());
-	}
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER })
+@Qualifier
+public @interface MailTimeoutSeconds {
+	//
 }

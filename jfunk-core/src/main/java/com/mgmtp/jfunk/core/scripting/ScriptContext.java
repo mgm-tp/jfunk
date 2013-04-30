@@ -59,6 +59,8 @@ import com.mgmtp.jfunk.core.event.AfterModuleEvent;
 import com.mgmtp.jfunk.core.event.BeforeCommandEvent;
 import com.mgmtp.jfunk.core.event.BeforeModuleEvent;
 import com.mgmtp.jfunk.core.event.ModuleInitializedEvent;
+import com.mgmtp.jfunk.core.mail.MailAccount;
+import com.mgmtp.jfunk.core.mail.MailAccountManager;
 import com.mgmtp.jfunk.core.module.TestModule;
 import com.mgmtp.jfunk.core.reporting.Reporter;
 import com.mgmtp.jfunk.core.util.CsvDataProcessor;
@@ -95,14 +97,15 @@ public class ScriptContext {
 	private final StackedScope moduleScope;
 	private final CsvDataProcessor csvDataProcessor;
 	private final Charset defaultCharset;
+	private final Provider<MailAccountManager> mailAccountManagerProvider;
 
 	private File script;
 
 	@Inject
 	ScriptContext(final Provider<DataSource> dataSourceProvider, final Configuration config, final MathRandom random,
 			final EventBus eventBus, final Injector injector, final Provider<ModuleBuilder> moduleBuilderProvider,
-			final StackedScope moduleScope,
-			final CsvDataProcessor csvDataProcessor, final Charset charset) {
+			final StackedScope moduleScope, final CsvDataProcessor csvDataProcessor, final Charset charset,
+			final Provider<MailAccountManager> mailAccountManagerProvider) {
 		this.dataSourceProvider = dataSourceProvider;
 		this.config = config;
 		this.random = random;
@@ -111,7 +114,8 @@ public class ScriptContext {
 		this.moduleBuilderProvider = moduleBuilderProvider;
 		this.moduleScope = moduleScope;
 		this.csvDataProcessor = csvDataProcessor;
-		defaultCharset = charset;
+		this.defaultCharset = charset;
+		this.mailAccountManagerProvider = mailAccountManagerProvider;
 	}
 
 	/**
@@ -864,5 +868,54 @@ public class ScriptContext {
 
 	private String resolveProperty(final String configProperty) {
 		return config.processPropertyValue(configProperty);
+	}
+
+	/**
+	 * @see MailAccountManager#reserveMailAccount()
+	 */
+	@Cmd
+	public MailAccount reserveMailAccount() {
+		return mailAccountManagerProvider.get().reserveMailAccount();
+	}
+
+	/**
+	 * @see MailAccountManager#reserveMailAccount(java.lang.String)
+	 */
+	@Cmd
+	public MailAccount reserveMailAccount(final String accountReservationKey) {
+		return mailAccountManagerProvider.get().reserveMailAccount(accountReservationKey);
+	}
+
+	/**
+	 * @see MailAccountManager#reserveMailAccount(java.lang.String, java.lang.String)
+	 */
+	@Cmd
+	public MailAccount reserveMailAccount(final String accountReservationKey, final String pool) {
+		return mailAccountManagerProvider.get().reserveMailAccount(accountReservationKey, pool);
+	}
+
+	/**
+	 * 
+	 * @see MailAccountManager#releaseAllMailAccountsForThread()
+	 */
+	@Cmd
+	public void releaseAllMailAccountsForThread() {
+		mailAccountManagerProvider.get().releaseAllMailAccountsForThread();
+	}
+
+	/**
+	 * @see MailAccountManager#releaseMailAccountForThread(MailAccount)
+	 */
+	@Cmd
+	public void releaseMailAccountForThread(final MailAccount account) {
+		mailAccountManagerProvider.get().releaseMailAccountForThread(account);
+	}
+
+	/**
+	 * @see MailAccountManager#releaseMailAccountForThread(java.lang.String)
+	 */
+	@Cmd
+	public void releaseMailAccountForThread(final String accountReservationKey) {
+		mailAccountManagerProvider.get().releaseMailAccountForThread(accountReservationKey);
 	}
 }

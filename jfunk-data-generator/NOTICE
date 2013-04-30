@@ -16,6 +16,10 @@ From: 'an unknown organization'
   - javax.inject (http://code.google.com/p/atinject/) javax.inject:javax.inject:jar:1
     License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
   - JDOM (http://www.jdom.org/) org.jdom:jdom:jar:1.1
+  - Mockito (http://www.mockito.org) org.mockito:mockito-core:jar:1.9.5
+    License: The MIT License  (http://code.google.com/p/mockito/wiki/License)
+  - Objenesis (http://objenesis.googlecode.com/svn/docs/index.html) org.objenesis:objenesis:jar:1.0
+    License: MIT License  (http://objenesis.googlecode.com/svn/docs/license.html)
 
 From: 'Google, Inc.' (http://www.google.com)
   - Google Guice - Core Library (http://code.google.com/p/google-guice/guice/) com.google.inject:guice:jar:3.0
@@ -24,6 +28,10 @@ From: 'Google, Inc.' (http://www.google.com)
     License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
   - Google Guice - Extensions - MultiBindings (http://code.google.com/p/google-guice/extensions-parent/guice-multibindings/) com.google.inject.extensions:guice-multibindings:jar:3.0
     License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+From: 'Hamcrest' (http://code.google.com/p/hamcrest)
+  - Hamcrest Core  org.hamcrest:hamcrest-core:jar:1.1
+    License: BSD style  (http://www.opensource.org/licenses/bsd-license.php)
 
 
 From: 'QOS.ch' (http://www.qos.ch)

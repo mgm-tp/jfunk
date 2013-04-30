@@ -15,10 +15,9 @@
  */
 package com.mgmtp.jfunk.core.mail;
 
-import javax.mail.Authenticator;
-import javax.mail.PasswordAuthentication;
+import static com.google.common.base.Preconditions.checkArgument;
 
-import com.google.common.base.Preconditions;
+import javax.mail.Authenticator;
 
 /**
  * Represents an e-mail account.
@@ -30,8 +29,6 @@ public class MailAccount {
 	private final String address;
 	private final MailAuthenticator authenticator;
 
-	public static final String MAIL_ACCOUNT_PREFIX = "mail.account.";
-
 	/**
 	 * Creates a new {@link MailAccount} instance.
 	 * 
@@ -41,9 +38,12 @@ public class MailAccount {
 	 *            The user
 	 * @param password
 	 *            The password
+	 * @param address
+	 *            the e-mail address
 	 */
-	public MailAccount(final String accountId, final String user, final String password, final String address) {
-		Preconditions.checkNotNull(accountId, "AccountId must not be null.");
+	public MailAccount(final String accountId, final String address, final String user, final String password) {
+		checkArgument(accountId != null, "'accountId' must not be null.");
+		checkArgument(address != null, "'address' must not be null.");
 
 		this.accountId = accountId;
 		this.address = address;
@@ -99,21 +99,5 @@ public class MailAccount {
 	 */
 	public String getAddress() {
 		return address;
-	}
-
-	public static class MailAuthenticator extends Authenticator {
-
-		private final String user;
-		private final String password;
-
-		MailAuthenticator(final String user, final String password) {
-			this.user = user;
-			this.password = password;
-		}
-
-		@Override
-		public PasswordAuthentication getPasswordAuthentication() {
-			return new PasswordAuthentication(user, password);
-		}
 	}
 }

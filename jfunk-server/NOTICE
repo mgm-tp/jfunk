@@ -36,6 +36,10 @@ From: 'an unknown organization'
     License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
   - Jettison  org.codehaus.jettison:jettison:bundle:1.1
   - JDOM (http://www.jdom.org/) org.jdom:jdom:jar:1.1
+  - Mockito (http://www.mockito.org) org.mockito:mockito-core:jar:1.9.5
+    License: The MIT License  (http://code.google.com/p/mockito/wiki/License)
+  - Objenesis (http://objenesis.googlecode.com/svn/docs/index.html) org.objenesis:objenesis:jar:1.0
+    License: MIT License  (http://objenesis.googlecode.com/svn/docs/license.html)
   - selenium-api (http://selenium.googlecode.com/selenium-api/) org.seleniumhq.selenium:selenium-api:jar:2.31.0
     License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
   - selenium-chrome-driver (http://selenium.googlecode.com/selenium-chrome-driver/) org.seleniumhq.selenium:selenium-chrome-driver:jar:2.31.0
@@ -86,6 +90,10 @@ From: 'Google, Inc.' (http://www.google.com)
     License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
   - Google Guice - Extensions - Servlet (http://code.google.com/p/google-guice/extensions-parent/guice-servlet/) com.google.inject.extensions:guice-servlet:jar:3.0
     License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+From: 'Hamcrest' (http://code.google.com/p/hamcrest)
+  - Hamcrest Core  org.hamcrest:hamcrest-core:jar:1.1
+    License: BSD style  (http://www.opensource.org/licenses/bsd-license.php)
 
 From: 'JSON' (http://json.org/)
   - JSON (JavaScript Object Notation) (http://www.json.org/java/index.html) org.json:json:jar:20090211
