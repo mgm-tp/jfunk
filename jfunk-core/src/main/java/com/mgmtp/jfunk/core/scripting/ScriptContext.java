@@ -279,11 +279,26 @@ public class ScriptContext {
 	 * 
 	 * @param dataSetKey
 	 *            the key of the {@link DataSet}
+	 * @deprecated use {@link #prepareNextDataSet(String)} instead
 	 */
 	@Cmd
+	@Deprecated
 	public void generate(final String dataSetKey) {
-		checkArgument(dataSetKey != null, "Global generate is not allowed. Please specify a data set key.");
-		log.info("Generating new data for dataSetKey={}", dataSetKey);
+		prepareNextDataSet(dataSetKey);
+	}
+
+	/**
+	 * Prepares the next {@link DataSet} with the specified key for use. Depending on the type of
+	 * {@link DataSource}, this may trigger data generation.
+	 * 
+	 * @param dataSetKey
+	 *            the key of the {@link DataSet}
+	 * @since 3.1.0
+	 */
+	@Cmd
+	public void prepareNextDataSet(final String dataSetKey) {
+		checkArgument(dataSetKey != null, "Global 'prepareNextDataSet' is not allowed. Please specify a data set key.");
+		log.info("Preparing new data for dataSetKey={}", dataSetKey);
 		dataSourceProvider.get().getNextDataSet(resolveProperty(dataSetKey));
 	}
 

@@ -40,7 +40,10 @@ public class Commands {
 		scriptContext.exceptional(exceptions, closure)
 	}
 
+	@Deprecated
 	Closure<Void> generate = { scriptContext.generate(it) }
+
+	Closure<Void> prepareNextDataSet = { scriptContext.prepareNextDataSet(it) }
 
 	Closure<String> get = {	scriptContext.get(it) }
 
