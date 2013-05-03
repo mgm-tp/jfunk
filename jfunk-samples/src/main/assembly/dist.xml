@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-     Copyright (C) 2013 mgm technology partners GmbH, Munich.
+	 Copyright (C) 2013 mgm technology partners GmbH, Munich.
 
-     See the LICENSE file distributed with this work for additional
-     information regarding copyright ownership and intellectual property rights.
+	 See the LICENSE file distributed with this work for additional
+	 information regarding copyright ownership and intellectual property rights.
 
 -->
-<assembly>
+<assembly xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd" xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2">
 	<id>dist</id>
 	<formats>
 		<format>zip</format>
