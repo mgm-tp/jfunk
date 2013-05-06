@@ -168,6 +168,27 @@
 											<type>jar</type>
 											<classifier>sources</classifier>
 										</artifactItem>
+										<artifactItem>
+											<groupId>${project.groupId}</groupId>
+											<artifactId>jfunk-data-benerator</artifactId>
+											<version>${project.version}</version>
+											<type>jar</type>
+											<classifier>sources</classifier>
+										</artifactItem>
+										<artifactItem>
+											<groupId>${project.groupId}</groupId>
+											<artifactId>jfunk-data-excel</artifactId>
+											<version>${project.version}</version>
+											<type>jar</type>
+											<classifier>sources</classifier>
+										</artifactItem>
+										<artifactItem>
+											<groupId>${project.groupId}</groupId>
+											<artifactId>jfunk-web</artifactId>
+											<version>${project.version}</version>
+											<type>jar</type>
+											<classifier>sources</classifier>
+										</artifactItem>
 									</artifactItems>
 									<outputDirectory>${project.build.directory/src}</outputDirectory>
 									<overWriteReleases>true</overWriteReleases>
