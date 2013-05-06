@@ -186,14 +186,14 @@ public class ScriptContext {
 
 	/**
 	 * Randomly selects an item from a list of Strings. List items may contain placeholder tokens.
-	 * the result is stored in the configuration under the specified key and also return by this
+	 * The result is stored in the configuration under the specified key and also returned by this
 	 * method.
 	 * 
 	 * @param propertyKey
 	 *            the property key under which to store the result
 	 * @param randomValues
-	 *            the list of String
-	 * @return a randomly chosen String from the list
+	 *            the list of strings
+	 * @return a randomly chosen string from the list
 	 */
 	@Cmd
 	public String chooseRandom(final String propertyKey, final List<String> randomValues) {

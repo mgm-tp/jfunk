@@ -134,16 +134,6 @@ public class Commands {
 
 		def to(def value) {
 			scriptContext.setFormEntry(dataSetKey, entryKey, value)
-			new GenerateForwarder(dataSetKey: dataSetKey)
-		}
-	}
-
-	class GenerateForwarder {
-		String dataSetKey
-
-		def andGenerateDataSet() {
-			scriptContext.generate(dataSetKey)
 		}
 	}
 }
-
