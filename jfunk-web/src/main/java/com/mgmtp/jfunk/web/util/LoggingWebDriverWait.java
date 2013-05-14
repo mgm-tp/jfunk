@@ -44,15 +44,4 @@ public class LoggingWebDriverWait extends WebDriverWait {
 			throw ex;
 		}
 	}
-
-	@Override
-	public void until(final Predicate<WebDriver> predicate) {
-		try {
-			super.until(predicate);
-			log.info("Successfully waited for: {}", predicate);
-		} catch (TimeoutException ex) {
-			log.error("Error waiting for: {}", predicate);
-			throw ex;
-		}
-	}
 }
