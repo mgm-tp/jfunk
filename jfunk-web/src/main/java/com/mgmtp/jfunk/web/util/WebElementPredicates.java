@@ -97,7 +97,7 @@ public class WebElementPredicates {
 		public boolean apply(final WebElement input) {
 			currentText = input.getText();
 			if (normalizeSpace) {
-				currentText = normalizeSpace(text);
+				currentText = normalizeSpace(currentText);
 			}
 			return currentText.contains(text);
 		}
@@ -113,24 +113,38 @@ public class WebElementPredicates {
 
 		private final Pattern pattern;
 		private String currentText;
+		private final boolean normalizeSpace;
+
+		public TextMatchesPatternPredicate(final Pattern pattern, final boolean normalizeSpace) {
+			this.pattern = pattern;
+			this.normalizeSpace = normalizeSpace;
+		}
 
 		public TextMatchesPatternPredicate(final Pattern pattern) {
-			this.pattern = pattern;
+			this(pattern, true);
 		}
 
 		public TextMatchesPatternPredicate(final String regex) {
-			this(Pattern.compile(regex));
+			this(regex, true);
+		}
+
+		public TextMatchesPatternPredicate(final String regex, final boolean normalizeSpace) {
+			this(Pattern.compile(regex), normalizeSpace);
 		}
 
 		@Override
 		public boolean apply(final WebElement input) {
 			currentText = input.getText();
+			if (normalizeSpace) {
+				currentText = normalizeSpace(currentText);
+			}
 			return pattern.matcher(currentText).matches();
 		}
 
 		@Override
 		public String toString() {
-			return String.format("element text to match pattern '%s'. Current text: '%s'", pattern, currentText);
+			return String.format("%selement text to match pattern '%s'. Current text: '%s'",
+					normalizeSpace ? "normalized " : "", pattern, currentText);
 		}
 	}
 
