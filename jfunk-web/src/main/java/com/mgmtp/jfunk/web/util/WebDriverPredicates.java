@@ -12,6 +12,7 @@ import static org.apache.commons.lang3.StringUtils.normalizeSpace;
 import java.util.regex.Pattern;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 
 import com.google.common.base.Predicate;
@@ -77,6 +78,10 @@ public class WebDriverPredicates {
 
 	public static Predicate<WebDriver> attributeValueMatchesPattern(final By locator, final String regex, final String attribute) {
 		return new AttributeValueMatchesPatternPredicate(locator, regex, attribute);
+	}
+
+	public static Predicate<WebDriver> pageToBeLoaded() {
+		return new PageToBeLoadedPredicate();
 	}
 
 	private static class TextEqualsPredicate extends LocatorPredicate {
@@ -236,6 +241,19 @@ public class WebDriverPredicates {
 		public String toString() {
 			return String.format("page source %sto contain '%s' (%scase-sensitive)",
 					mustExist ? "" : "not ", searchString, caseSensitive ? "" : "not ");
+		}
+	}
+
+	private static class PageToBeLoadedPredicate implements Predicate<WebDriver> {
+
+		@Override
+		public boolean apply(final WebDriver input) {
+			return ((JavascriptExecutor) input).executeScript("return document.readyState").equals("complete");
+		}
+
+		@Override
+		public String toString() {
+			return "page to be loaded";
 		}
 	}
 }
