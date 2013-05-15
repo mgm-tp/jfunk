@@ -427,6 +427,21 @@ public class WebDriverTool {
 	}
 
 	/**
+	 * Delegates to {@link #find(By)} and then calls {@link WebElement#getCssValue(String)
+	 * getAttribute(String)} on the returned element.
+	 * 
+	 * @param by
+	 *            the {@link By} used to locate the element
+	 * @param propertyName
+	 *            the name of the CSS property
+	 * @return The current, computed value of the property.
+	 */
+	public String getCssValue(final By by, final String propertyName) {
+		WebElement element = find(by);
+		return element.getCssValue(propertyName);
+	}
+
+	/**
 	 * Delegates to {@link #find(By)} and then calls {@link WebElement#getText() getText()} on the
 	 * returned element. The element's text is passed to {@link StringUtils#normalizeSpace(String)}.
 	 * 
