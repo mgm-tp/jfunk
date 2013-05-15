@@ -15,16 +15,21 @@
  */
 package com.mgmtp.jfunk.unit;
 
+import static com.google.common.collect.Sets.newHashSet;
+
+import java.util.Set;
+
 import org.testng.IInvokedMethod;
 import org.testng.IInvokedMethodListener;
 import org.testng.ITestContext;
 import org.testng.ITestListener;
+import org.testng.ITestNGMethod;
 import org.testng.ITestResult;
 import org.testng.annotations.Listeners;
 
 /**
- * Provides integration of jFunk into TestNG. Must be used with the {@link Listeners} annotation. An
- * instance of {@link JFunkRunner} can then be injected into the test class.
+ * Provides integration of jFunk into TestNG. Must be used with the {@link Listeners} annotation. An instance of
+ * {@link JFunkRunner} can then be injected into the test class.
  * 
  * <pre>
  * 
@@ -44,32 +49,40 @@ import org.testng.annotations.Listeners;
  * 
  * @author rnaegele
  */
-public final class JFunkTestNGSupport extends UnitSupport implements IInvokedMethodListener, ITestListener {
+public final class JFunkTestNGSupport implements IInvokedMethodListener, ITestListener {
 
 	@Override
 	public void onStart(final ITestContext context) {
-		Object testClassInstance = context.getAllTestMethods()[0].getInstance();
-		init(testClassInstance);
-		beforeTest(testClassInstance);
+		ITestNGMethod[] methods = context.getAllTestMethods();
+		Set<Object> instanceCache = newHashSet();
+
+		for (ITestNGMethod method : methods) {
+			Object instance = method.getInstance();
+			if (!instanceCache.contains(instance)) {
+				UnitSupport.getInstance().beforeTest(instance);
+				instanceCache.add(instance);
+			}
+		}
 	}
 
 	@Override
 	public void beforeInvocation(final IInvokedMethod method, final ITestResult testResult) {
 		if (method.isTestMethod()) {
-			beforeScript(method.getTestMethod().getMethodName());
+			UnitSupport.getInstance().beforeScript(method.getTestMethod().getMethodName());
 		}
 	}
 
 	@Override
 	public void afterInvocation(final IInvokedMethod method, final ITestResult testResult) {
 		if (method.isTestMethod()) {
-			afterScript(method.getTestMethod().getMethodName(), testResult.isSuccess(), testResult.getThrowable());
+			UnitSupport.getInstance().afterScript(method.getTestMethod().getMethodName(), testResult.isSuccess(),
+					testResult.getThrowable());
 		}
 	}
 
 	@Override
 	public void onFinish(final ITestContext context) {
-		afterTest();
+		// no op
 	}
 
 	@Override

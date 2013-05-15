@@ -18,7 +18,6 @@ package com.mgmtp.jfunk.unit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.inject.Inject;
-import javax.inject.Provider;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -39,7 +38,6 @@ import com.mgmtp.jfunk.core.event.BeforeRunEvent;
 import com.mgmtp.jfunk.core.event.BeforeScriptEvent;
 import com.mgmtp.jfunk.core.reporting.SimpleReporter;
 import com.mgmtp.jfunk.core.scripting.ModuleExecutionException;
-import com.mgmtp.jfunk.core.scripting.ScriptContext;
 
 /**
  * Provides support for integrating jFunk into a unit test framework.
@@ -48,47 +46,60 @@ import com.mgmtp.jfunk.core.scripting.ScriptContext;
  */
 class UnitSupport {
 
-	private final Logger log = LoggerFactory.getLogger(getClass());
+	private static final Logger LOGGER = LoggerFactory.getLogger(UnitSupport.class);
 
 	static {
 		SLF4JBridgeHandler.install();
 	}
 
-	static final AtomicInteger THREAD_COUNTER = new AtomicInteger();
+	private static volatile UnitSupport instance;
 
-	@Inject
-	EventBus eventBus;
+	private static final AtomicInteger THREAD_COUNTER = new AtomicInteger();
 
-	@Inject
-	JFunkRunner jFunkRunner;
+	private final JFunkRunner jFunkRunner;
+	private final EventBus eventBus;
+	private final ThreadScope scriptScope;
+	private final Injector injector;
 
-	@Inject
-	Provider<ScriptContext> scriptContextProvider;
+	public static UnitSupport getInstance() {
+		if (instance == null) {
+			synchronized (UnitSupport.class) {
+				if (instance == null) {
+					try {
+						String propsFileName = System.getProperty("jfunk.props.file", "jfunk.properties");
+						Module module = ModulesLoader.loadModulesFromProperties(new UnitModule(), propsFileName);
+						Injector injector = Guice.createInjector(module);
 
-	@Inject
-	ThreadScope scriptScope;
+						instance = injector.getInstance(UnitSupport.class);
 
-	private Injector injector;
+						// load config only in order to set global properties as system properties
+						// specifying "true" as the last parameter
+						injector.getInstance(Configuration.class).load(JFunkConstants.SCRIPT_PROPERTIES, false);
 
-	void init(final Object testClassInstance) {
-		try {
-			Class<? extends Object> testClass = testClassInstance.getClass();
-			JFunkProps props = testClass.getAnnotation(JFunkProps.class);
+						instance.eventBus.post(new BeforeRunEvent());
 
-			String propsFileName = props != null ? props.value() : JFunkConstants.JFUNK_PROPERTIES;
-			Module module = ModulesLoader.loadModulesFromProperties(new UnitModule(), propsFileName);
-			injector = Guice.createInjector(module);
-
-			// load config only in order to set global properties as system properties
-			// specifying "true" as the last parameter
-			injector.getInstance(Configuration.class).load(JFunkConstants.SCRIPT_PROPERTIES, false);
-
-			injector.injectMembers(this);
-
-			eventBus.post(new BeforeRunEvent());
-		} catch (Exception ex) {
-			throw new IllegalStateException("Error initializing JFunkRunner", ex);
+						Runtime.getRuntime().addShutdownHook(new Thread() {
+							@Override
+							public void run() {
+								instance.eventBus.post(new AfterRunEvent());
+							}
+						});
+					} catch (Exception ex) {
+						LOGGER.error("Error initializing Guice", ex);
+						throw new ExceptionInInitializerError(ex);
+					}
+				}
+			}
 		}
+		return instance;
+	}
+
+	@Inject
+	UnitSupport(final JFunkRunner jFunkRunner, final EventBus eventBus, final ThreadScope scriptScope, final Injector injector) {
+		this.jFunkRunner = jFunkRunner;
+		this.eventBus = eventBus;
+		this.scriptScope = scriptScope;
+		this.injector = injector;
 	}
 
 	void beforeTest(final Object testClassInstance) {
@@ -121,7 +132,7 @@ class UnitSupport {
 				while (!(th instanceof ModuleExecutionException)) {
 					if (th == null) {
 						// log original throwable which was passed in!!!
-						log.error("Error executing script: " + throwable.getMessage(), throwable);
+						LOGGER.error("Error executing script: " + throwable.getMessage(), throwable);
 						break;
 					}
 					th = th.getCause();
@@ -132,9 +143,5 @@ class UnitSupport {
 		} finally {
 			scriptScope.exitScope();
 		}
-	}
-
-	void afterTest() {
-		eventBus.post(new AfterRunEvent());
 	}
 }

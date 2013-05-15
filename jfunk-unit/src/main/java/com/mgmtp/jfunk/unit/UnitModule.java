@@ -29,5 +29,6 @@ class UnitModule extends BaseJFunkGuiceModule {
 	protected void doConfigure() {
 		install(new JFunkBaseModule());
 		bind(JFunkRunner.class);
+		bind(UnitSupport.class);
 	}
 }

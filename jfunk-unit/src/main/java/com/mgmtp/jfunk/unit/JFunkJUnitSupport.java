@@ -19,20 +19,16 @@ import java.util.List;
 
 import org.junit.rules.MethodRule;
 import org.junit.rules.TestWatchman;
-import org.junit.runner.Result;
 import org.junit.runner.RunWith;
 import org.junit.runner.Runner;
-import org.junit.runner.notification.RunListener;
-import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.Statement;
 
 /**
- * {@link Runner} implementation for integrating jFunk into JUnit. Must be used with the
- * {@link RunWith} annotation. An instance of {@link JFunkRunner} can then be injected into the test
- * class. Requires JUnit 4.7 or higher.
+ * {@link Runner} implementation for integrating jFunk into JUnit. Must be used with the {@link RunWith} annotation. An instance
+ * of {@link JFunkRunner} can then be injected into the test class. Requires JUnit 4.7 or higher.
  * 
  * <pre>
  * 
@@ -54,17 +50,8 @@ import org.junit.runners.model.Statement;
  */
 public final class JFunkJUnitSupport extends BlockJUnit4ClassRunner {
 
-	private volatile UnitSupport unitSupport;
-
 	public JFunkJUnitSupport(final Class<?> klass) throws InitializationError {
 		super(klass);
-	}
-
-	@Override
-	public void run(final RunNotifier notifier) {
-		notifier.addListener(new JUnitListener());
-		super.run(notifier);
-
 	}
 
 	@Override
@@ -83,19 +70,9 @@ public final class JFunkJUnitSupport extends BlockJUnit4ClassRunner {
 	protected Object createTest() throws Exception {
 		Object testClassInstance = super.createTest();
 
-		// We initialize jFunk only once per test class.
-		if (unitSupport == null) {
-			synchronized (this) {
-				if (unitSupport == null) {
-					unitSupport = new UnitSupport();
-					unitSupport.init(testClassInstance);
-				}
-			}
-		}
-
 		// As JUnit creates a new instance for every test case (i. e. method)
 		// we need to perform DI on the test class instance here.
-		unitSupport.beforeTest(testClassInstance);
+		UnitSupport.getInstance().beforeTest(testClassInstance);
 		return testClassInstance;
 	}
 
@@ -103,24 +80,17 @@ public final class JFunkJUnitSupport extends BlockJUnit4ClassRunner {
 
 		@Override
 		public void starting(final FrameworkMethod method) {
-			unitSupport.beforeScript(method.getName());
+			UnitSupport.getInstance().beforeScript(method.getName());
 		}
 
 		@Override
 		public void succeeded(final FrameworkMethod method) {
-			unitSupport.afterScript(method.getName(), true, null);
+			UnitSupport.getInstance().afterScript(method.getName(), true, null);
 		}
 
 		@Override
 		public void failed(final Throwable th, final FrameworkMethod method) {
-			unitSupport.afterScript(method.getName(), false, th);
-		}
-	}
-
-	final class JUnitListener extends RunListener {
-		@Override
-		public void testRunFinished(final Result result) throws Exception {
-			unitSupport.afterTest();
+			UnitSupport.getInstance().afterScript(method.getName(), false, th);
 		}
 	}
 }
