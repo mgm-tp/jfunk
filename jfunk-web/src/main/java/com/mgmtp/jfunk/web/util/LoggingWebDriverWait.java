@@ -6,7 +6,6 @@
  */
 package com.mgmtp.jfunk.web.util;
 
-import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
@@ -24,41 +23,21 @@ import com.google.common.base.Predicate;
 public class LoggingWebDriverWait extends WebDriverWait {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
-	private final boolean refreshPageAfterUnsuccessfulAttempt;
-	private final WebDriver driver;
 
 	public LoggingWebDriverWait(final WebDriver driver, final long timeOutInSeconds) {
-		this(driver, false, timeOutInSeconds);
-	}
-
-	public LoggingWebDriverWait(final WebDriver driver, final boolean refreshPageAfterUnsuccessfulAttempt,
-			final long timeOutInSeconds) {
-		this(driver, refreshPageAfterUnsuccessfulAttempt, timeOutInSeconds, DEFAULT_SLEEP_TIMEOUT);
+		super(driver, timeOutInSeconds);
 	}
 
 	public LoggingWebDriverWait(final WebDriver driver, final long timeOutInSeconds, final long sleepInMillis) {
-		this(driver, false, timeOutInSeconds, sleepInMillis);
-	}
-
-	public LoggingWebDriverWait(final WebDriver driver, final boolean refreshPageAfterUnsuccessfulAttempt,
-			final long timeOutInSeconds, final long sleepInMillis) {
 		super(driver, timeOutInSeconds, sleepInMillis);
-		this.driver = driver;
-		this.refreshPageAfterUnsuccessfulAttempt = refreshPageAfterUnsuccessfulAttempt;
 	}
 
 	@Override
 	public <V> V until(final Function<? super WebDriver, V> function) {
-		try {
-			V result = super.until(function);
-			log.info("Successfully waited for: {}", function);
-			return result;
-		} catch (TimeoutException ex) {
-			if (refreshPageAfterUnsuccessfulAttempt) {
-				driver.navigate().refresh();
-			}
-			throw ex;
-		}
+		log.info("Waiting for {}", function);
+		V result = super.until(function);
+		log.info("Successfully waited for {}", function);
+		return result;
 	}
 
 	@Override

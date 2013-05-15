@@ -15,6 +15,8 @@ import java.util.regex.Pattern;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
@@ -37,6 +39,10 @@ public class WebDriverFunctions {
 
 	public static Function<WebDriver, List<String>> pageSourceMatchesPattern(final Pattern pattern) {
 		return new PageSourceMatchesPatternFunction(pattern);
+	}
+
+	public static <V> Function<WebDriver, V> refreshOnFalseNullOrException(final Function<WebDriver, V> delegate) {
+		return new RefreshOnFalseNullOrExceptionWrapperFunction<V>(delegate);
 	}
 
 	private static class PageSourceMatchesPatternFunction implements Function<WebDriver, List<String>> {
@@ -79,4 +85,35 @@ public class WebDriverFunctions {
 			return String.format("page to match pattern '%s'", pattern);
 		}
 	}
+
+	private static class RefreshOnFalseNullOrExceptionWrapperFunction<V> implements Function<WebDriver, V> {
+		private final Logger log = LoggerFactory.getLogger(getClass());
+
+		private final Function<WebDriver, V> delegate;
+
+		public RefreshOnFalseNullOrExceptionWrapperFunction(final Function<WebDriver, V> delegate) {
+			this.delegate = delegate;
+		}
+
+		@Override
+		public V apply(final WebDriver input) {
+			boolean needsRefresh = true;
+			try {
+				V result = delegate.apply(input);
+				needsRefresh = result instanceof Boolean && !(Boolean) result || result == null;
+				return result;
+			} finally {
+				if (needsRefresh) {
+					log.trace("Refreshing page...");
+					input.navigate().refresh();
+				}
+			}
+		}
+
+		@Override
+		public String toString() {
+			return delegate.toString();
+		}
+	}
+
 }

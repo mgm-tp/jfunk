@@ -16,11 +16,13 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
+import com.google.common.base.Function;
+import com.google.common.base.Functions;
 import com.google.common.base.Predicate;
 
 /**
- * {@link Predicate}s that may be used e. g. in {@link WebDriverTool#waitFor(Predicate)} similarly to
- * {@link ExpectedConditions}.
+ * {@link Predicate}s that may be used e. g. in {@link WebDriverTool#waitFor(Predicate)} similarly
+ * to {@link ExpectedConditions}.
  * 
  * @author rnaegele
  */
@@ -89,6 +91,10 @@ public class WebDriverPredicates {
 
 	public static Predicate<WebDriver> pageToBeLoaded() {
 		return new PageToBeLoadedPredicate();
+	}
+
+	public static Predicate<WebDriver> refreshOnFalseNullOrException(final Predicate<WebDriver> delegate) {
+		return new RefreshOnFalseNullOrExceptionWrapperPredicate(delegate);
 	}
 
 	private static class TextEqualsPredicate extends LocatorPredicate {
@@ -276,6 +282,26 @@ public class WebDriverPredicates {
 		@Override
 		public String toString() {
 			return String.format("page to match pattern '%s'", pattern);
+		}
+	}
+
+	private static class RefreshOnFalseNullOrExceptionWrapperPredicate implements Predicate<WebDriver> {
+		private final Function<WebDriver, Boolean> delegateFunction;
+		private final Predicate<WebDriver> delegate;
+
+		public RefreshOnFalseNullOrExceptionWrapperPredicate(final Predicate<WebDriver> delegate) {
+			this.delegate = delegate;
+			this.delegateFunction = WebDriverFunctions.refreshOnFalseNullOrException(Functions.forPredicate(delegate));
+		}
+
+		@Override
+		public boolean apply(final WebDriver input) {
+			return delegateFunction.apply(input);
+		}
+
+		@Override
+		public String toString() {
+			return delegate.toString();
 		}
 	}
 }
