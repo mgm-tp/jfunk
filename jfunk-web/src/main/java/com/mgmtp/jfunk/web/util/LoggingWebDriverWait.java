@@ -24,13 +24,27 @@ import com.google.common.base.Predicate;
 public class LoggingWebDriverWait extends WebDriverWait {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
+	private final boolean refreshPageAfterUnsuccessfulAttempt;
+	private final WebDriver driver;
 
 	public LoggingWebDriverWait(final WebDriver driver, final long timeOutInSeconds) {
-		super(driver, timeOutInSeconds);
+		this(driver, false, timeOutInSeconds);
+	}
+
+	public LoggingWebDriverWait(final WebDriver driver, final boolean refreshPageAfterUnsuccessfulAttempt,
+			final long timeOutInSeconds) {
+		this(driver, refreshPageAfterUnsuccessfulAttempt, timeOutInSeconds, DEFAULT_SLEEP_TIMEOUT);
 	}
 
 	public LoggingWebDriverWait(final WebDriver driver, final long timeOutInSeconds, final long sleepInMillis) {
+		this(driver, false, timeOutInSeconds, sleepInMillis);
+	}
+
+	public LoggingWebDriverWait(final WebDriver driver, final boolean refreshPageAfterUnsuccessfulAttempt,
+			final long timeOutInSeconds, final long sleepInMillis) {
 		super(driver, timeOutInSeconds, sleepInMillis);
+		this.driver = driver;
+		this.refreshPageAfterUnsuccessfulAttempt = refreshPageAfterUnsuccessfulAttempt;
 	}
 
 	@Override
@@ -40,8 +54,16 @@ public class LoggingWebDriverWait extends WebDriverWait {
 			log.info("Successfully waited for: {}", function);
 			return result;
 		} catch (TimeoutException ex) {
-			log.error("Error waiting for: {}", function);
+			if (refreshPageAfterUnsuccessfulAttempt) {
+				driver.navigate().refresh();
+			}
 			throw ex;
 		}
+	}
+
+	@Override
+	protected RuntimeException timeoutException(final String message, final Throwable lastException) {
+		log.error(message);
+		return super.timeoutException(message, lastException);
 	}
 }

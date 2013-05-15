@@ -164,6 +164,32 @@ public class WebDriverTool {
 	 * 
 	 * @param function
 	 *            the function
+	 * @param refreshPageAfterUnsuccessfulAttempt
+	 *            refreshes the current page after unsuccessful repeated attempts
+	 * @param <V>
+	 *            the function's expected return type
+	 * @return the function's return value if the function returned something different from null or
+	 *         false before the timeout expired
+	 * @throws TimeoutException
+	 *             if the timeout expires.
+	 */
+	public <V> V waitFor(final Function<? super WebDriver, V> function, final boolean refreshPageAfterUnsuccessfulAttempt) {
+		return newWebDriverWait(refreshPageAfterUnsuccessfulAttempt).until(function);
+	}
+
+	/**
+	 * Repeatedly applies the current {@link WebDriver} instance to the specifed function until one
+	 * of the following occurs:
+	 * 
+	 * <ol>
+	 * <li>the function returns neither null nor false,</li>
+	 * <li>the function throws an unignored exception,</li>
+	 * <li>the timeout expires,
+	 * <li>the current thread is interrupted</li>
+	 * </ol>
+	 * 
+	 * @param function
+	 *            the function
 	 * @param timeoutSeconds
 	 *            the timeout in seconds
 	 * @param <V>
@@ -175,6 +201,35 @@ public class WebDriverTool {
 	 */
 	public <V> V waitFor(final Function<? super WebDriver, V> function, final long timeoutSeconds) {
 		return newWebDriverWait(timeoutSeconds).until(function);
+	}
+
+	/**
+	 * Repeatedly applies the current {@link WebDriver} instance to the specifed function until one
+	 * of the following occurs:
+	 * 
+	 * <ol>
+	 * <li>the function returns neither null nor false,</li>
+	 * <li>the function throws an unignored exception,</li>
+	 * <li>the timeout expires,
+	 * <li>the current thread is interrupted</li>
+	 * </ol>
+	 * 
+	 * @param function
+	 *            the function
+	 * @param refreshPageAfterUnsuccessfulAttempt
+	 *            refreshes the current page after unsuccessful repeated attempts
+	 * @param timeoutSeconds
+	 *            the timeout in seconds
+	 * @param <V>
+	 *            the function's expected return type
+	 * @return the function's return value if the function returned something different from null or
+	 *         false before the timeout expired
+	 * @throws TimeoutException
+	 *             if the timeout expires.
+	 */
+	public <V> V waitFor(final Function<? super WebDriver, V> function, final boolean refreshPageAfterUnsuccessfulAttempt,
+			final long timeoutSeconds) {
+		return newWebDriverWait(refreshPageAfterUnsuccessfulAttempt, timeoutSeconds).until(function);
 	}
 
 	/**
@@ -209,6 +264,40 @@ public class WebDriverTool {
 	}
 
 	/**
+	 * Repeatedly applies the current {@link WebDriver} instance to the specifed function until one
+	 * of the following occurs:
+	 * 
+	 * <ol>
+	 * <li>the function returns neither null nor false,</li>
+	 * <li>the function throws an unignored exception,</li>
+	 * <li>the timeout expires,
+	 * <li>the current thread is interrupted</li>
+	 * </ol>
+	 * 
+	 * The method uses the same timeout and milliseconds to sleep between polls as the internally
+	 * used default {@link WebElementFinder} instance
+	 * 
+	 * @param function
+	 *            the function
+	 * @param refreshPageAfterUnsuccessfulAttempt
+	 *            refreshes the current page after unsuccessful repeated attempts
+	 * @param timeoutSeconds
+	 *            the timeout in seconds
+	 * @param sleepMillis
+	 *            the time in milliseconds to sleep between polls
+	 * @param <V>
+	 *            the function's expected return type
+	 * @return the function's return value if the function returned something different from null or
+	 *         false before the timeout expired
+	 * @throws TimeoutException
+	 *             if the timeout expires.
+	 */
+	public <V> V waitFor(final Function<? super WebDriver, V> function, final boolean refreshPageAfterUnsuccessfulAttempt,
+			final long timeoutSeconds, final long sleepMillis) {
+		return newWebDriverWait(refreshPageAfterUnsuccessfulAttempt, timeoutSeconds, sleepMillis).until(function);
+	}
+
+	/**
 	 * Repeatedly applies the current {@link WebDriver} instance to the specified predicate until
 	 * the timeout expires or the predicate evaluates to true.
 	 * 
@@ -219,6 +308,21 @@ public class WebDriverTool {
 	 */
 	public void waitFor(final Predicate<WebDriver> predicate) {
 		newWebDriverWait().until(predicate);
+	}
+
+	/**
+	 * Repeatedly applies the current {@link WebDriver} instance to the specified predicate until
+	 * the timeout expires or the predicate evaluates to true.
+	 * 
+	 * @param predicate
+	 *            the predicate to wait on
+	 * @param refreshPageAfterUnsuccessfulAttempt
+	 *            refreshes the current page after unsuccessful repeated attempts
+	 * @throws TimeoutException
+	 *             if the timeout expires.
+	 */
+	public void waitFor(final Predicate<WebDriver> predicate, final boolean refreshPageAfterUnsuccessfulAttempt) {
+		newWebDriverWait(refreshPageAfterUnsuccessfulAttempt).until(predicate);
 	}
 
 	/**
@@ -242,6 +346,24 @@ public class WebDriverTool {
 	 * 
 	 * @param predicate
 	 *            the predicate to wait on
+	 * @param refreshPageAfterUnsuccessfulAttempt
+	 *            refreshes the current page after unsuccessful repeated attempts
+	 * @param timeoutSeconds
+	 *            the timeout in seconds
+	 * @throws TimeoutException
+	 *             if the timeout expires.
+	 */
+	public void waitFor(final Predicate<WebDriver> predicate, final boolean refreshPageAfterUnsuccessfulAttempt,
+			final long timeoutSeconds) {
+		newWebDriverWait(refreshPageAfterUnsuccessfulAttempt, timeoutSeconds).until(predicate);
+	}
+
+	/**
+	 * Repeatedly applies the current {@link WebDriver} instance to the specified predicate until
+	 * the timeout expires or the predicate evaluates to true.
+	 * 
+	 * @param predicate
+	 *            the predicate to wait on
 	 * @param timeoutSeconds
 	 *            the timeout in seconds
 	 * @param sleepMillis
@@ -254,15 +376,61 @@ public class WebDriverTool {
 	}
 
 	/**
+	 * Repeatedly applies the current {@link WebDriver} instance to the specified predicate until
+	 * the timeout expires or the predicate evaluates to true.
+	 * 
+	 * @param predicate
+	 *            the predicate to wait on
+	 * @param refreshPageAfterUnsuccessfulAttempt
+	 *            refreshes the current page after unsuccessful repeated attempts
+	 * @param timeoutSeconds
+	 *            the timeout in seconds
+	 * @param sleepMillis
+	 *            the time in milliseconds to sleep between polls
+	 * @throws TimeoutException
+	 *             if the timeout expires.
+	 */
+	public void waitFor(final Predicate<WebDriver> predicate, final boolean refreshPageAfterUnsuccessfulAttempt,
+			final long timeoutSeconds, final long sleepMillis) {
+		newWebDriverWait(refreshPageAfterUnsuccessfulAttempt, timeoutSeconds, sleepMillis).until(predicate);
+	}
+
+	/**
 	 * Creates a new {@link WebDriverWait} with the same timeout and milliseconds to sleep between
 	 * polls as the internally used default {@link WebElementFinder} instance.
 	 * 
 	 * @return the newly created {@link WebDriverWait} instance
 	 */
 	public WebDriverWait newWebDriverWait() {
+		return newWebDriverWait(false);
+	}
+
+	/**
+	 * Creates a new {@link WebDriverWait} with the same timeout and milliseconds to sleep between
+	 * polls as the internally used default {@link WebElementFinder} instance.
+	 * 
+	 * @param refreshPageAfterUnsuccessfulAttempt
+	 *            refreshes the current page after unsuccessful repeated attempts
+	 * @return the newly created {@link WebDriverWait} instance
+	 */
+	public WebDriverWait newWebDriverWait(final boolean refreshPageAfterUnsuccessfulAttempt) {
 		return wef.getSleepMillis() > 0L
-				? newWebDriverWait(wef.getTimeoutSeconds(), wef.getSleepMillis())
-				: newWebDriverWait(wef.getTimeoutSeconds());
+				? newWebDriverWait(refreshPageAfterUnsuccessfulAttempt, wef.getTimeoutSeconds(), wef.getSleepMillis())
+				: newWebDriverWait(refreshPageAfterUnsuccessfulAttempt, wef.getTimeoutSeconds());
+	}
+
+	/**
+	 * Creates a new {@link WebDriverWait} with the specified timeout.
+	 * 
+	 * @param refreshPageAfterUnsuccessfulAttempt
+	 *            refreshes the current page after unsuccessful repeated attempts
+	 * @param timeoutSeconds
+	 *            the timeout in seconds
+	 * 
+	 * @return the newly created {@link WebDriverWait} instance
+	 */
+	public WebDriverWait newWebDriverWait(final boolean refreshPageAfterUnsuccessfulAttempt, final long timeoutSeconds) {
+		return new LoggingWebDriverWait(webDriver, refreshPageAfterUnsuccessfulAttempt, timeoutSeconds);
 	}
 
 	/**
@@ -275,6 +443,24 @@ public class WebDriverTool {
 	 */
 	public WebDriverWait newWebDriverWait(final long timeoutSeconds) {
 		return new LoggingWebDriverWait(webDriver, timeoutSeconds);
+	}
+
+	/**
+	 * Creates a new {@link WebDriverWait} with the specified timeout and milliseconds to sleep
+	 * between polls.
+	 * 
+	 * @param refreshPageAfterUnsuccessfulAttempt
+	 *            refreshes the current page after unsuccessful repeated attempts
+	 * @param timeoutSeconds
+	 *            the timeout in seconds
+	 * @param sleepMillis
+	 *            the time in milliseconds to sleep between polls
+	 * 
+	 * @return the newly created {@link WebDriverWait} instance
+	 */
+	public WebDriverWait newWebDriverWait(final boolean refreshPageAfterUnsuccessfulAttempt, final long timeoutSeconds,
+			final long sleepMillis) {
+		return new LoggingWebDriverWait(webDriver, refreshPageAfterUnsuccessfulAttempt, timeoutSeconds, sleepMillis);
 	}
 
 	/**
