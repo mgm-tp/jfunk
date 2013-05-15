@@ -14,10 +14,14 @@ import java.util.regex.Pattern;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import com.google.common.base.Predicate;
 
 /**
+ * {@link Predicate}s that may be used e. g. in {@link WebDriverTool#waitFor(Predicate)} similarly to
+ * {@link ExpectedConditions}.
+ * 
  * @author rnaegele
  */
 public class WebDriverPredicates {
@@ -35,16 +39,19 @@ public class WebDriverPredicates {
 	}
 
 	public static Predicate<WebDriver> pageSourceContainsString(final String searchString) {
-		return new PageSourceContainsStringPredicate(searchString, false, true);
+		return new PageSourceContainsStringPredicate(searchString, false);
 	}
 
 	public static Predicate<WebDriver> pageSourceContainsString(final String searchString, final boolean caseSensitive) {
-		return new PageSourceContainsStringPredicate(searchString, caseSensitive, true);
+		return new PageSourceContainsStringPredicate(searchString, caseSensitive);
 	}
 
-	public static Predicate<WebDriver> pageSourceContainsString(final String searchString, final boolean caseSensitive,
-			final boolean mustExist) {
-		return new PageSourceContainsStringPredicate(searchString, caseSensitive, mustExist);
+	public static Predicate<WebDriver> pageSourceMatchesPattern(final Pattern pattern) {
+		return new PageSourceMatchesPatternFunction(pattern);
+	}
+
+	public static Predicate<WebDriver> pageSourceMatchesPattern(final String pattern) {
+		return new PageSourceMatchesPatternFunction(Pattern.compile(pattern));
 	}
 
 	public static Predicate<WebDriver> textEquals(final By locator, final String value) {
@@ -217,33 +224,6 @@ public class WebDriverPredicates {
 		}
 	}
 
-	private static class PageSourceContainsStringPredicate implements Predicate<WebDriver> {
-
-		private final String searchString;
-		private final boolean caseSensitive;
-		private final boolean mustExist;
-
-		public PageSourceContainsStringPredicate(final String searchString, final boolean caseSensitive, final boolean mustExist) {
-			this.searchString = searchString;
-			this.caseSensitive = caseSensitive;
-			this.mustExist = mustExist;
-		}
-
-		@Override
-		public boolean apply(final WebDriver input) {
-			String pageSource = input.getPageSource().replaceAll("\\s+", " ");
-
-			boolean outcome = caseSensitive ? pageSource.contains(searchString) : containsIgnoreCase(pageSource, searchString);
-			return mustExist ? outcome : !outcome;
-		}
-
-		@Override
-		public String toString() {
-			return String.format("page source %sto contain '%s' (%scase-sensitive)",
-					mustExist ? "" : "not ", searchString, caseSensitive ? "" : "not ");
-		}
-	}
-
 	private static class PageToBeLoadedPredicate implements Predicate<WebDriver> {
 
 		@Override
@@ -254,6 +234,48 @@ public class WebDriverPredicates {
 		@Override
 		public String toString() {
 			return "page to be loaded";
+		}
+	}
+
+	private static class PageSourceContainsStringPredicate implements Predicate<WebDriver> {
+
+		private final String searchString;
+		private final boolean caseSensitive;
+
+		public PageSourceContainsStringPredicate(final String searchString, final boolean caseSensitive) {
+			this.searchString = searchString;
+			this.caseSensitive = caseSensitive;
+		}
+
+		@Override
+		public boolean apply(final WebDriver input) {
+			String pageSource = normalizeSpace(input.getPageSource());
+			return caseSensitive ? pageSource.contains(searchString) : containsIgnoreCase(pageSource, searchString);
+		}
+
+		@Override
+		public String toString() {
+			return String.format("page source to contain '%s' (%scase-sensitive)", searchString, caseSensitive ? "" : "not ");
+		}
+	}
+
+	private static class PageSourceMatchesPatternFunction implements Predicate<WebDriver> {
+
+		private final Pattern pattern;
+
+		public PageSourceMatchesPatternFunction(final Pattern pattern) {
+			this.pattern = pattern;
+		}
+
+		@Override
+		public boolean apply(final WebDriver input) {
+			String pageSource = normalizeSpace(input.getPageSource());
+			return pattern.matcher(pageSource).matches();
+		}
+
+		@Override
+		public String toString() {
+			return String.format("page to match pattern '%s'", pattern);
 		}
 	}
 }
