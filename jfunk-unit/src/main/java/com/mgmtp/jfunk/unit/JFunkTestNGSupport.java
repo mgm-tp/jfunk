@@ -54,7 +54,7 @@ public final class JFunkTestNGSupport extends UnitSupport implements IInvokedMet
 	@Override
 	public void afterInvocation(final IInvokedMethod method, final ITestResult testResult) {
 		if (method.isTestMethod()) {
-			afterScript(testResult.isSuccess(), testResult.getThrowable());
+			afterScript(method.getTestMethod().getMethodName(), testResult.isSuccess(), testResult.getThrowable());
 		}
 	}
 

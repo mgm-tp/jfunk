@@ -6,7 +6,6 @@
  */
 package com.mgmtp.jfunk.core.event;
 
-import java.io.File;
 
 /**
  * @author rnaegele
@@ -15,8 +14,8 @@ public class AfterScriptEvent extends ScriptEvent {
 
 	private final boolean success;
 
-	public AfterScriptEvent(final File scriptFile, final boolean success) {
-		super(scriptFile);
+	public AfterScriptEvent(final String scriptFileOrTestMethod, final boolean success) {
+		super(scriptFileOrTestMethod);
 		this.success = success;
 	}
 

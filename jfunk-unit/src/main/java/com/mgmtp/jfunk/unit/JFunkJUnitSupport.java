@@ -99,12 +99,12 @@ public final class JFunkJUnitSupport extends BlockJUnit4ClassRunner {
 
 		@Override
 		public void succeeded(final FrameworkMethod method) {
-			unitSupport.afterScript(true, null);
+			unitSupport.afterScript(method.getName(), true, null);
 		}
 
 		@Override
 		public void failed(final Throwable th, final FrameworkMethod method) {
-			unitSupport.afterScript(false, th);
+			unitSupport.afterScript(method.getName(), false, th);
 		}
 	}
 

@@ -6,14 +6,13 @@
  */
 package com.mgmtp.jfunk.core.event;
 
-import java.io.File;
 
 /**
  * @author rnaegele
  */
 public class BeforeScriptEvent extends ScriptEvent {
 
-	public BeforeScriptEvent(final File scriptFile) {
-		super(scriptFile);
+	public BeforeScriptEvent(final String scriptFileOrTestMethod) {
+		super(scriptFileOrTestMethod);
 	}
 }

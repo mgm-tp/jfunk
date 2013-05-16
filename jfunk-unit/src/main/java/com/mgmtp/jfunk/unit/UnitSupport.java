@@ -101,10 +101,10 @@ class UnitSupport {
 		jFunkRunner.load(JFunkConstants.SCRIPT_PROPERTIES, false);
 		jFunkRunner.registerReporter(new SimpleReporter());
 		jFunkRunner.set(JFunkConstants.UNIT_TEST_METHOD, methodName);
-		eventBus.post(new BeforeScriptEvent(null));
+		eventBus.post(new BeforeScriptEvent(methodName));
 	}
 
-	void afterScript(final boolean success, final Throwable throwable) {
+	void afterScript(final String methodName, final boolean success, final Throwable throwable) {
 		try {
 			if (throwable != null) {
 				// Look up the cause hierarchy if we find a ModuleExecutionException.
@@ -121,7 +121,7 @@ class UnitSupport {
 				}
 			}
 
-			eventBus.post(new AfterScriptEvent(null, success));
+			eventBus.post(new AfterScriptEvent(methodName, success));
 		} finally {
 			scriptScope.exitScope();
 		}

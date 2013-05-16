@@ -97,7 +97,7 @@ public class ScriptExecutor {
 			initGroovyCommands(scriptEngine, ctx);
 			initScriptProperties(scriptEngine, scriptProperties);
 			eventBus.post(scriptEngine);
-			eventBus.post(new BeforeScriptEvent(script));
+			eventBus.post(new BeforeScriptEvent(script.getAbsolutePath()));
 			scriptEngine.eval(reader);
 			success = true;
 		} catch (IOException ex) {
@@ -119,7 +119,7 @@ public class ScriptExecutor {
 			}
 		} finally {
 			try {
-				eventBus.post(new AfterScriptEvent(script, success));
+				eventBus.post(new AfterScriptEvent(script.getAbsolutePath(), success));
 			} finally {
 				scriptScope.exitScope();
 				closeQuietly(reader);

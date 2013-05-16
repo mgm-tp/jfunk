@@ -6,23 +6,22 @@
  */
 package com.mgmtp.jfunk.core.event;
 
-import java.io.File;
 
 /**
  * @author rnaegele
  */
 public abstract class ScriptEvent extends AbstractBaseEvent {
 
-	private final File scriptFile;
+	private final String scriptFileOrTestMethod;
 
-	public ScriptEvent(final File scriptFile) {
-		this.scriptFile = scriptFile;
+	public ScriptEvent(final String scriptFileOrTestMethod) {
+		this.scriptFileOrTestMethod = scriptFileOrTestMethod;
 	}
 
 	/**
-	 * @return the scriptFile
+	 * @return the scriptFileOrTestMethod
 	 */
-	public File getScriptFile() {
-		return scriptFile;
+	public String getScriptFileOrTestMethod() {
+		return scriptFileOrTestMethod;
 	}
 }
