@@ -18,6 +18,7 @@ import javax.inject.Provider;
 
 import org.apache.commons.io.IOUtils;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
@@ -165,8 +166,9 @@ public class JFunkWebDriverEventListener implements WebDriverEventListener {
 	/**
 	 * Saves the currently displayed browser window. The page title is used for the filename -
 	 * preceded by some identifying information (thread, counter). Pages of the same type are
-	 * collected inside the same subdirectory. The subdirectory uses @ * eOutput#getIdentifier()}
-	 * for its name.
+	 * collected inside the same subdirectory. The subdirectory uses
+	 * {@link SaveOutput#getIdentifier()} for its name. If an alert is present, saving is not
+	 * supported and thus skipped.
 	 * 
 	 * @param action
 	 *            the event which triggered to save the page. Will be included in the filename.
@@ -177,6 +179,18 @@ public class JFunkWebDriverEventListener implements WebDriverEventListener {
 		File moduleArchiveDir = moduleArchiveDirProvider.get();
 		if (moduleArchiveDir == null) {
 			return;
+		}
+
+		try {
+			// Saving the page does not work if an alert is present 
+			driver.switchTo().alert();
+			log.trace("Cannot save page. Alert is present.");
+			return;
+		} catch (NoAlertPresentException ex) {
+			// ignore
+		} catch (UnsupportedOperationException ex) {
+			// ignore
+			// HtmlUnit does not support alerts
 		}
 
 		for (SaveOutput saveOutput : SaveOutput.values()) {
