@@ -55,9 +55,18 @@ public final class JFunkRunner {
 
 	/**
 	 * @see com.mgmtp.jfunk.core.scripting.ScriptContext#generate(String)
+	 * @deprecated use {@link #prepareNextDataSet(String)}
 	 */
+	@Deprecated
 	public void generate(final String dataSetKey) {
 		scriptContextProvider.get().generate(dataSetKey);
+	}
+
+	/**
+	 * @see com.mgmtp.jfunk.core.scripting.ScriptContext#prepareNextDataSet(String)
+	 */
+	public void prepareNextDataSet(final String dataSetKey) {
+		scriptContextProvider.get().prepareNextDataSet(dataSetKey);
 	}
 
 	/**
