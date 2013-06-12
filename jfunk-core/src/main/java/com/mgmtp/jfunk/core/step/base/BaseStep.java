@@ -9,8 +9,6 @@ package com.mgmtp.jfunk.core.step.base;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mgmtp.jfunk.core.module.TestModule;
-
 /**
  * Abstract base implementation for steps.
  * 
@@ -20,9 +18,6 @@ public abstract class BaseStep implements Step {
 
 	protected final String name;
 
-	@Deprecated
-	protected TestModule test;
-
 	/**
 	 * Creates a new instance.
 	 * 
@@ -30,7 +25,7 @@ public abstract class BaseStep implements Step {
 	 *            the step's name (if {@code null}, {@code getClass().getSimpleName()} is used)
 	 */
 	public BaseStep(final String name) {
-		this(name, null);
+		this.name = name == null ? getClass().getSimpleName() : name;
 	}
 
 	/**
@@ -38,23 +33,7 @@ public abstract class BaseStep implements Step {
 	 * name.
 	 */
 	public BaseStep() {
-		this(null, null);
-	}
-
-	/**
-	 * 
-	 * @param testModule
-	 *            param no longer used
-	 */
-	@Deprecated
-	public BaseStep(final TestModule testModule) {
-		this(null, testModule);
-	}
-
-	@Deprecated
-	public BaseStep(final String name, final TestModule testModule) {
-		this.name = name == null ? getClass().getSimpleName() : name;
-		this.test = testModule;
+		this(null);
 	}
 
 	@Override

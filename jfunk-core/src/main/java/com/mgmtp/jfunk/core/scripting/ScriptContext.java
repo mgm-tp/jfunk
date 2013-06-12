@@ -45,7 +45,6 @@ import com.mgmtp.jfunk.common.random.MathRandom;
 import com.mgmtp.jfunk.common.random.RandomCollection;
 import com.mgmtp.jfunk.common.random.Randomizable;
 import com.mgmtp.jfunk.common.util.Configuration;
-import com.mgmtp.jfunk.core.data.State;
 import com.mgmtp.jfunk.core.event.AfterCommandEvent;
 import com.mgmtp.jfunk.core.event.AfterModuleEvent;
 import com.mgmtp.jfunk.core.event.BeforeCommandEvent;
@@ -104,7 +103,7 @@ public class ScriptContext {
 		this.moduleBuilderProvider = moduleBuilderProvider;
 		this.moduleScope = moduleScope;
 		this.csvDataProcessor = csvDataProcessor;
-		this.defaultCharset = charset;
+		defaultCharset = charset;
 	}
 
 	/**
@@ -565,8 +564,8 @@ public class ScriptContext {
 			Class<? extends TestModule> moduleClass = Class.forName(moduleClassName).asSubclass(TestModule.class);
 			Constructor<? extends TestModule> constructor = null;
 			try {
-				constructor = moduleClass.getConstructor(State.class);
-				return constructor.newInstance((State) null);
+				constructor = moduleClass.getConstructor();
+				return constructor.newInstance();
 			} catch (NoSuchMethodException ex) {
 				constructor = moduleClass.getConstructor();
 				return constructor.newInstance();

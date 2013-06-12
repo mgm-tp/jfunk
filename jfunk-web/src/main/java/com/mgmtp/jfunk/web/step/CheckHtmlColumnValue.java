@@ -19,7 +19,6 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.google.common.base.Predicate;
 import com.mgmtp.jfunk.core.exception.ValidationException;
-import com.mgmtp.jfunk.core.module.TestModule;
 import com.mgmtp.jfunk.data.DataSet;
 import com.mgmtp.jfunk.web.WebConstants;
 
@@ -45,55 +44,14 @@ public class CheckHtmlColumnValue extends WebDriverStep {
 	 *            key for data in the generator
 	 * @param data
 	 *            the {@link DataSet} used for getting the value of the {@code dataKey}
-	 * @param test
-	 *            param no longer used
 	 * @param isPresent
 	 *            defines whether the step should check presence of the text or check that given
 	 *            text is not present in the column
 	 */
-	@Deprecated
-	public CheckHtmlColumnValue(final By tableBy, final By columnBy, final String dataKey, final DataSet data, final TestModule test,
+	public CheckHtmlColumnValue(final By tableBy, final By columnBy, final String dataKey, final DataSet data,
 			final boolean isPresent) {
-		this(tableBy, columnBy, dataKey, data, isPresent);
-	}
-
-	/**
-	 * Construct step that will use given text
-	 * 
-	 * @param tableBy
-	 *            specifies the table using {@link By}
-	 * @param columnBy
-	 *            specifies the column using {@link By}
-	 * @param value
-	 *            text to check
-	 * @param test
-	 *            param no longer used
-	 * @param isPresent
-	 *            defines whether the step should check presence of the text or check that given
-	 *            text is not present in the column
-	 */
-	@Deprecated
-	public CheckHtmlColumnValue(final By tableBy, final By columnBy, final String value, final TestModule test, final boolean isPresent) {
-		this(tableBy, columnBy, value, isPresent);
-	}
-
-	/**
-	 * Construct step that will use data from generator
-	 * 
-	 * @param tableBy
-	 *            specifies the table using {@link By}
-	 * @param columnBy
-	 *            specifies the column using {@link By}
-	 * @param dataKey
-	 *            key for data in the generator
-	 * @param data
-	 *            the {@link DataSet} used for getting the value of the {@code dataKey}
-	 * @param isPresent
-	 *            defines whether the step should check presence of the text or check that given
-	 *            text is not present in the column
-	 */
-	public CheckHtmlColumnValue(final By tableBy, final By columnBy, final String dataKey, final DataSet data, final boolean isPresent) {
-		this(tableBy, columnBy, checkNotNull(data.getValue(dataKey), "Can't get value from generator for key %s", dataKey), isPresent);
+		this(tableBy, columnBy, checkNotNull(data.getValue(dataKey), "Can't get value from generator for key %s", dataKey),
+				isPresent);
 	}
 
 	/**

@@ -7,7 +7,6 @@
 package com.mgmtp.jfunk.core.step;
 
 import com.mgmtp.jfunk.core.exception.StepException;
-import com.mgmtp.jfunk.core.module.TestModule;
 import com.mgmtp.jfunk.core.step.base.BaseStep;
 
 /**
@@ -17,11 +16,6 @@ import com.mgmtp.jfunk.core.step.base.BaseStep;
 public class SleepStep extends BaseStep {
 
 	private final long seconds;
-
-	@Deprecated
-	public SleepStep(final long seconds, @SuppressWarnings("unused") final TestModule test) {
-		this(seconds);
-	}
 
 	public SleepStep(final long seconds) {
 		this.seconds = seconds;

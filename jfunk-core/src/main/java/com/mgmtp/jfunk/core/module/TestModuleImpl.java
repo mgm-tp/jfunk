@@ -21,7 +21,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mgmtp.jfunk.common.JFunkConstants;
-import com.mgmtp.jfunk.core.data.State;
 import com.mgmtp.jfunk.core.scripting.BreakIndex;
 import com.mgmtp.jfunk.core.scripting.ExecutionMode;
 import com.mgmtp.jfunk.core.scripting.StepExecutor;
@@ -120,48 +119,12 @@ public class TestModuleImpl implements TestModule {
 	}
 
 	/**
-	 * @param name
-	 *            the module's name
-	 * @param dataSetKey
-	 *            the data set key
-	 * @param state
-	 *            param no longer used
-	 */
-	@Deprecated
-	protected TestModuleImpl(final String name, final String dataSetKey, final State state) {
-		this(name, dataSetKey);
-	}
-
-	/**
-	 * @param name
-	 *            the module's name
-	 * @param dataSetKey
-	 *            the data set key
-	 * @param state
-	 *            param no longer used
-	 * @param reuseWebDriver
-	 *            param no longer used
-	 */
-	@Deprecated
-	protected TestModuleImpl(final String name, final String dataSetKey, final State state, final boolean reuseWebDriver) {
-		this(name, dataSetKey);
-	}
-
-	/**
-	 * @deprecated Use {@link #executeSteps()} instead.
-	 */
-	@Deprecated
-	protected void initSteps() {
-		// default does nothing
-	}
-
-	/**
 	 * Override this method in order to specify the steps to be executed when this test module is
 	 * run calling {@link #executeStep(Step)}, {@link #executeStep(Step, boolean)}, or
 	 * {@link #executeSteps(Step...)}
 	 */
 	protected void executeSteps() {
-		initSteps();
+		// no-op
 	}
 
 	/**
@@ -209,15 +172,6 @@ public class TestModuleImpl implements TestModule {
 	}
 
 	/**
-	 * @deprecated use {@link #getDataSetKey()} instead
-	 */
-	@Override
-	@Deprecated
-	public String getVerfahren() {
-		return getDataSetKey();
-	}
-
-	/**
 	 * Returns this test module's execution mode.
 	 * 
 	 * @return the executionMode
@@ -233,22 +187,6 @@ public class TestModuleImpl implements TestModule {
 	 */
 	public int getBreakIndex() {
 		return breakIndex;
-	}
-
-	/**
-	 * @deprecated use {@link #executeStep(Step)} instead
-	 */
-	@Deprecated
-	protected void addStep(final Step step) {
-		addStep(step, false);
-	}
-
-	/**
-	 * @deprecated Use {@link #addStep(Step, boolean)} instead
-	 */
-	@Deprecated
-	protected void addStep(final Step step, final boolean isBreakStep) {
-		executeStep(step, isBreakStep);
 	}
 
 	/**

@@ -34,60 +34,6 @@ public class CheckHtml4Pattern extends WebDriverStep {
 	 * 
 	 * @param regex
 	 *            the regex pattern to search for
-	 * @param test
-	 *            param no longer used
-	 */
-	@Deprecated
-	public CheckHtml4Pattern(final String regex, final TestModule test) {
-		this(regex, null, true);
-	}
-
-	/**
-	 * Creates a new instance of CheckHtml4Pattern. Depending on the value of the parameter
-	 * {@code mustExist} the pattern must exist or must not exist on the page.
-	 * 
-	 * @param regex
-	 *            the regex pattern to search for
-	 * @param mustExist
-	 *            if {@code true} the regex pattern has to exist on the page, if {@code false} the
-	 *            pattern must not exist
-	 * @param test
-	 *            param no longer used
-	 */
-	@Deprecated
-	public CheckHtml4Pattern(final String regex, final boolean mustExist, final TestModule test) {
-		this(regex, null, mustExist);
-	}
-
-	/**
-	 * Creates a new instance of CheckHtml4Pattern. Depending on the value of the parameter
-	 * {@code mustExist} the pattern must exist or must not exist on the page. Additionally, the
-	 * name of a property key can be passed in which is then used to store the value of the grouping
-	 * expression.
-	 * 
-	 * @param regex
-	 *            the regex pattern to search for
-	 * @param groupKey
-	 *            if the regex pattern matches, the regex pattern has a grouping expression and the
-	 *            parameter {@code groupKey} is not null, the corresponding value will be stored as
-	 *            a property with the given property key. If the regex pattern consists of more than
-	 *            one grouping expression, the first one will be used.
-	 * @param mustExist
-	 *            if {@code true} the regex pattern has to exist on the page, if {@code false} the
-	 *            pattern must not exist
-	 * @param test
-	 *            param no longer used
-	 */
-	@Deprecated
-	public CheckHtml4Pattern(final String regex, final String groupKey, final boolean mustExist, final TestModule test) {
-		this(regex, groupKey, mustExist);
-	}
-
-	/**
-	 * Creates a new instance of CheckHtml4Pattern. The given regex pattern must exist on the page.
-	 * 
-	 * @param regex
-	 *            the regex pattern to search for
 	 */
 	public CheckHtml4Pattern(final String regex) {
 		this(regex, null, true);

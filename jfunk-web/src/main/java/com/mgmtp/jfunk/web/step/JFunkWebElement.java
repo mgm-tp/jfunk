@@ -27,7 +27,6 @@ import com.mgmtp.jfunk.common.util.DataUtils;
 import com.mgmtp.jfunk.common.util.ElementTrafo;
 import com.mgmtp.jfunk.core.exception.StepException;
 import com.mgmtp.jfunk.core.exception.ValidationException;
-import com.mgmtp.jfunk.core.module.TestModule;
 import com.mgmtp.jfunk.core.step.base.StepMode;
 import com.mgmtp.jfunk.data.DataSet;
 import com.mgmtp.jfunk.web.WebConstants;
@@ -60,130 +59,6 @@ public class JFunkWebElement extends WebDriverStep {
 
 	@Inject
 	protected Map<String, DataSet> dataSets;
-
-	/**
-	 * @param by
-	 *            By means of this value the HTML element is searched after which will then be
-	 *            checked or set.
-	 * @param value
-	 *            this value will be used to set or check the HTML element against
-	 * @param test
-	 *            param no longer used
-	 * @param stepMode
-	 *            the desired {@link StepMode}
-	 */
-	@Deprecated
-	public JFunkWebElement(final By by, final String value, final TestModule test, final StepMode stepMode) {
-		this(by, value, stepMode);
-	}
-
-	/**
-	 * Creates a new instance of JFunkWebElement. This constructor offers the biggest variety of
-	 * parameters, several other constructors with fewer parameters are available.
-	 * 
-	 * @param by
-	 *            By means of this value the HTML element is searched after which will then be
-	 *            checked or set.
-	 * @param dataKey
-	 *            When checking or setting the HTML element, this key is used to get the correct
-	 *            value from the given {@link DataSet} using {@link DataSet#getValue(String)}
-	 * @param data
-	 *            the {@link DataSet} used for getting the value of the {@code dataKey}
-	 * @param test
-	 *            param no longer used
-	 * @param stepMode
-	 *            the desired {@link StepMode}
-	 */
-	@Deprecated
-	public JFunkWebElement(final By by, final String dataKey, final DataSet data, final TestModule test, final StepMode stepMode) {
-		this(by, data.getValue(dataKey), stepMode);
-	}
-
-	/**
-	 * Creates a new instance of JFunkWebElement. This constructor offers the biggest variety of
-	 * parameters, several other constructors with fewer parameters are available.
-	 * 
-	 * @param by
-	 *            By means of this value the HTML element is searched after which will then be
-	 *            checked or set.
-	 * @param dataKey
-	 *            When checking or setting the HTML element, this key is used to get the correct
-	 *            value from the given {@link DataSet} using {@link DataSet#getValue(String)} or
-	 *            {@link DataSet#getValue(String, int)} if the specified index is non-null
-	 * @param index
-	 *            used to access indexed {@link DataSet} values
-	 * @param data
-	 *            the {@link DataSet} used for getting the value of the {@code dataKey}
-	 * @param test
-	 *            param no longer used
-	 * @param stepMode
-	 *            the desired {@link StepMode}
-	 */
-	@Deprecated
-	public JFunkWebElement(final By by, final String dataKey, final Integer index, final DataSet data, final TestModule test, final StepMode stepMode) {
-		this(by, index == null ? data.getValue(dataKey) : data.getValue(dataKey, index), stepMode);
-	}
-
-	/**
-	 * Creates a new instance of JFunkWebElement. This constructor offers the biggest variety of
-	 * parameters, several other constructors with fewer parameters are available.
-	 * 
-	 * @param by
-	 *            By means of this value the HTML element is searched after which will then be
-	 *            checked or set.
-	 * @param dataKey
-	 *            When checking or setting the HTML element, this key is used to get the correct
-	 *            value from the given {@link DataSet} using {@link DataSet#getValue(String)}
-	 * @param data
-	 *            the {@link DataSet} used for getting the value of the {@code dataKey}
-	 * @param test
-	 *            param no longer used
-	 * @param stepMode
-	 *            the desired {@link StepMode}
-	 * @param setTrafo
-	 *            when in {@link StepMode#SET_VALUE} this {@link ElementTrafo} will be applied at
-	 *            first to transform the value before it is set in the form
-	 * @param checkTrafo
-	 *            when in {@link StepMode#CHECK_VALUE} this {@link ElementTrafo} will be applied at
-	 *            first to transform the value before it is checked in the form
-	 */
-	@Deprecated
-	public JFunkWebElement(final By by, final String dataKey, final DataSet data, final TestModule test, final StepMode stepMode,
-			final ElementTrafo setTrafo, final ElementTrafo checkTrafo) {
-		this(by, data.getValue(dataKey), stepMode, setTrafo, checkTrafo);
-	}
-
-	/**
-	 * Creates a new instance of JFunkWebElement. This constructor offers the biggest variety of
-	 * parameters, several other constructors with fewer parameters are available.
-	 * 
-	 * @param by
-	 *            By means of this value the HTML element is searched after which will then be
-	 *            checked or set.
-	 * @param dataKey
-	 *            When checking or setting the HTML element, this key is used to get the correct
-	 *            value from the given {@link DataSet} using {@link DataSet#getValue(String)} or
-	 *            {@link DataSet#getValue(String, int)} if the specified index is non-null
-	 * @param index
-	 *            used to access indexed {@link DataSet} values
-	 * @param data
-	 *            the {@link DataSet} used for getting the value of the {@code dataKey}
-	 * @param test
-	 *            param no longer used
-	 * @param stepMode
-	 *            the desired {@link StepMode}
-	 * @param setTrafo
-	 *            when in {@link StepMode#SET_VALUE} this {@link ElementTrafo} will be applied at
-	 *            first to transform the value before it is set in the form
-	 * @param checkTrafo
-	 *            when in {@link StepMode#CHECK_VALUE} this {@link ElementTrafo} will be applied at
-	 *            first to transform the value before it is checked in the form
-	 */
-	@Deprecated
-	public JFunkWebElement(final By by, final String dataKey, final Integer index, final DataSet data, final TestModule test,
-			final StepMode stepMode, final ElementTrafo setTrafo, final ElementTrafo checkTrafo) {
-		this(by, index == null ? data.getValue(dataKey) : data.getValue(dataKey, index), stepMode, setTrafo, checkTrafo);
-	}
 
 	/**
 	 * @param by
@@ -224,7 +99,8 @@ public class JFunkWebElement extends WebDriverStep {
 	 *            when in {@link StepMode#CHECK_VALUE} this {@link ElementTrafo} will be applied at
 	 *            first to transform the value before it is checked in the form
 	 */
-	public JFunkWebElement(final By by, final String elementValue, final StepMode stepMode, final ElementTrafo setTrafo, final ElementTrafo checkTrafo) {
+	public JFunkWebElement(final By by, final String elementValue, final StepMode stepMode, final ElementTrafo setTrafo,
+			final ElementTrafo checkTrafo) {
 		this(by, elementValue, (Integer) null, (String) null, stepMode, setTrafo, checkTrafo);
 	}
 
@@ -265,7 +141,8 @@ public class JFunkWebElement extends WebDriverStep {
 	 * @param stepMode
 	 *            the desired {@link StepMode}
 	 */
-	public JFunkWebElement(final By by, final String dataKey, final Integer index, final String dataSetKey, final StepMode stepMode) {
+	public JFunkWebElement(final By by, final String dataKey, final Integer index, final String dataSetKey,
+			final StepMode stepMode) {
 		this(by, dataKey, index, dataSetKey, stepMode, null, null);
 	}
 
@@ -290,7 +167,8 @@ public class JFunkWebElement extends WebDriverStep {
 	 *            when in {@link StepMode#CHECK_VALUE} this {@link ElementTrafo} will be applied at
 	 *            first to transform the value before it is checked in the form
 	 */
-	public JFunkWebElement(final By by, final String dataKey, final String dataSetKey, final StepMode stepMode, final ElementTrafo setTrafo,
+	public JFunkWebElement(final By by, final String dataKey, final String dataSetKey, final StepMode stepMode,
+			final ElementTrafo setTrafo,
 			final ElementTrafo checkTrafo) {
 		this(by, dataKey, null, dataSetKey, stepMode, setTrafo, checkTrafo);
 	}
@@ -319,7 +197,8 @@ public class JFunkWebElement extends WebDriverStep {
 	 *            when in {@link StepMode#CHECK_VALUE} this {@link ElementTrafo} will be applied at
 	 *            first to transform the value before it is checked in the form
 	 */
-	public JFunkWebElement(final By by, final String dataKey, final Integer index, final String dataSetKey, final StepMode stepMode,
+	public JFunkWebElement(final By by, final String dataKey, final Integer index, final String dataSetKey,
+			final StepMode stepMode,
 			final ElementTrafo setTrafo, final ElementTrafo checkTrafo) {
 		this.by = by;
 		this.dataKey = index == null ? dataKey : dataKey + JFunkConstants.INDEXED_KEY_SEPARATOR + index;
@@ -370,9 +249,10 @@ public class JFunkWebElement extends WebDriverStep {
 		switch (stepMode) {
 			case CHECK_DEFAULT:
 				// Check only for text input and textarea
-				if (element.getTagName().equals(WebConstants.INPUT) && element.getAttribute(WebConstants.TYPE).equals(WebConstants.TEXT)
+				if (element.getTagName().equals(WebConstants.INPUT)
+						&& element.getAttribute(WebConstants.TYPE).equals(WebConstants.TEXT)
 						|| element.getTagName().equals(WebConstants.TEXTAREA)) {
-					log.info(this.toString());
+					log.info(toString());
 					String value = element.getAttribute(WebConstants.VALUE);
 					if (!DataUtils.isDefaultValue(value)) {
 						throw new ValidationException("Wrong default value=" + value + " of " + this);
@@ -394,7 +274,8 @@ public class JFunkWebElement extends WebDriverStep {
 				}
 
 				log.info(this + ", checkValue=" + checkValue);
-				if (WebConstants.INPUT.equalsIgnoreCase(element.getTagName()) && WebConstants.RADIO.equals(element.getAttribute(WebConstants.TYPE))) {
+				if (WebConstants.INPUT.equalsIgnoreCase(element.getTagName())
+						&& WebConstants.RADIO.equals(element.getAttribute(WebConstants.TYPE))) {
 					List<WebElement> elements = getWebDriver().findElements(by);
 					for (WebElement webElement : elements) {
 						if (webElement.isDisplayed() && webElement.isEnabled()) {
@@ -455,7 +336,8 @@ public class JFunkWebElement extends WebDriverStep {
 						}
 					}
 					if (!found) {
-						throw new StepException("Could not find a matching option element in " + element + " , By: " + by.toString());
+						throw new StepException("Could not find a matching option element in " + element + " , By: "
+								+ by.toString());
 					}
 				} else if (WebConstants.INPUT.equalsIgnoreCase(element.getTagName())
 						&& WebConstants.RADIO.equals(element.getAttribute(WebConstants.TYPE))) {
@@ -504,7 +386,8 @@ public class JFunkWebElement extends WebDriverStep {
 						}
 					}
 				} else if (WebConstants.CHECKBOX.equals(element.getAttribute(WebConstants.TYPE))) {
-					if (Boolean.valueOf(editValue) && !element.isSelected() || !Boolean.valueOf(editValue) && element.isSelected()) {
+					if (Boolean.valueOf(editValue) && !element.isSelected() || !Boolean.valueOf(editValue)
+							&& element.isSelected()) {
 						element.click();
 					}
 				} else {

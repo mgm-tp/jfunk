@@ -10,7 +10,6 @@ import static com.google.common.base.Preconditions.checkState;
 
 import javax.inject.Inject;
 
-import com.mgmtp.jfunk.core.module.TestModule;
 import com.mgmtp.jfunk.core.scripting.StepExecutor;
 
 /**
@@ -47,7 +46,8 @@ public abstract class ComplexStep extends DataSetsStep {
 	 *            the step mode (if {@code null}, {@link StepMode#SET_VALUE} is used)
 	 */
 	public ComplexStep(final String name, final String dataSetKey, final StepMode stepMode) {
-		this(null, name, dataSetKey, stepMode);
+		super(name, dataSetKey);
+		this.stepMode = stepMode == null ? StepMode.SET_VALUE : stepMode;
 	}
 
 	/**
@@ -63,7 +63,7 @@ public abstract class ComplexStep extends DataSetsStep {
 	 *            the data set key
 	 */
 	public ComplexStep(final String dataSetKey) {
-		this(null, dataSetKey, null);
+		this(null, dataSetKey);
 	}
 
 	/**
@@ -75,41 +75,7 @@ public abstract class ComplexStep extends DataSetsStep {
 	}
 
 	public ComplexStep() {
-		this(null, null, null, null);
-	}
-
-	/**
-	 * @param testModule
-	 *            param no longer used
-	 */
-	@Deprecated
-	protected ComplexStep(final TestModule testModule) {
-		this(testModule, null);
-	}
-
-	/**
-	 * @param testModule
-	 *            param no longer used
-	 * @param stepMode
-	 *            the step mode (if {@code null}, {@link StepMode#SET_VALUE} is used)
-	 */
-	@Deprecated
-	public ComplexStep(final TestModule testModule, final StepMode stepMode) {
-		this(testModule, null, null, stepMode);
-	}
-
-	@Deprecated
-	public ComplexStep(final TestModule testModule, final String name, final String dataSetKey, final StepMode stepMode) {
-		super(testModule, name, dataSetKey);
-		this.stepMode = stepMode == null ? StepMode.SET_VALUE : stepMode;
-	}
-
-	/**
-	 * @deprecated Use {@link #executeStep(Step)} instead.
-	 */
-	@Deprecated
-	protected void addStep(final Step step) {
-		executeStep(step);
+		this(null, null, null);
 	}
 
 	/**
@@ -140,15 +106,7 @@ public abstract class ComplexStep extends DataSetsStep {
 	 * calling {@link #executeStep(Step)}, or {@link #executeSteps(Step...)}
 	 */
 	protected void executeSteps() {
-		initSteps();
-	}
-
-	/**
-	 * @deprecated Use {@link #executeSteps} instead.
-	 */
-	@Deprecated
-	protected void initSteps() {
-		//
+		// no-op
 	}
 
 	/**

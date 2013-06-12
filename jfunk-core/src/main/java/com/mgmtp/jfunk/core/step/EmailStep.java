@@ -18,7 +18,6 @@ import com.mgmtp.jfunk.core.exception.MailException;
 import com.mgmtp.jfunk.core.exception.StepException;
 import com.mgmtp.jfunk.core.mail.BaseMailObject;
 import com.mgmtp.jfunk.core.mail.EmailParser;
-import com.mgmtp.jfunk.core.module.TestModule;
 import com.mgmtp.jfunk.core.step.base.BaseStep;
 
 /**
@@ -49,12 +48,6 @@ public class EmailStep extends BaseStep {
 
 	@Inject
 	Configuration config;
-
-	@Deprecated
-	public EmailStep(final String subjectExpression, final String bodyExpression, @SuppressWarnings("unused") final TestModule test,
-			final String... groupConfigKeys) {
-		this(subjectExpression, bodyExpression, groupConfigKeys);
-	}
 
 	/**
 	 * Creates a new instance.

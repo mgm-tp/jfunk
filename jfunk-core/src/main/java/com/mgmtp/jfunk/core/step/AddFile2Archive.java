@@ -14,7 +14,6 @@ import javax.inject.Inject;
 import org.apache.log4j.Logger;
 
 import com.mgmtp.jfunk.core.exception.StepException;
-import com.mgmtp.jfunk.core.module.TestModule;
 import com.mgmtp.jfunk.core.scripting.ModuleArchiver;
 import com.mgmtp.jfunk.core.step.base.BaseStep;
 
@@ -49,19 +48,6 @@ public class AddFile2Archive extends BaseStep {
 	 */
 	public AddFile2Archive(final File file) {
 		this.file = file;
-	}
-
-	/**
-	 * Creates a new instance of AddFile2Archive.
-	 * 
-	 * @param fileName
-	 *            the name of the file to be added to the archive directory
-	 * @param testModule
-	 *            param no longer used
-	 */
-	@Deprecated
-	public AddFile2Archive(final String fileName, final TestModule testModule) {
-		this(fileName);
 	}
 
 	@Override

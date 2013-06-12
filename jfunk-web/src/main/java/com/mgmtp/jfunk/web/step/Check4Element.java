@@ -27,31 +27,6 @@ public class Check4Element extends WebDriverStep {
 	/**
 	 * @param by
 	 *            By means of this value the HTML element is searched after
-	 * @param test
-	 *            param no longer used
-	 */
-	@Deprecated
-	public Check4Element(final By by, final TestModule test) {
-		this(by);
-	}
-
-	/**
-	 * @param by
-	 *            By means of this value the HTML element is searched after
-	 * @param mustExist
-	 *            if {@code true} the element has to exist on the page, if {@code false} the element
-	 *            must not exist.
-	 * @param test
-	 *            param no longer used
-	 */
-	@Deprecated
-	public Check4Element(final By by, final boolean mustExist, final TestModule test) {
-		this(by, mustExist);
-	}
-
-	/**
-	 * @param by
-	 *            By means of this value the HTML element is searched after
 	 */
 	public Check4Element(final By by) {
 		this(by, true);

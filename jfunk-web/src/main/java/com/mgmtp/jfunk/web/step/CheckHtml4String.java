@@ -9,7 +9,6 @@ package com.mgmtp.jfunk.web.step;
 import static org.apache.commons.lang3.StringUtils.containsIgnoreCase;
 
 import com.mgmtp.jfunk.core.exception.ValidationException;
-import com.mgmtp.jfunk.core.module.TestModule;
 
 /**
  * Searches for a string on the current HTML page.
@@ -19,31 +18,6 @@ public class CheckHtml4String extends WebDriverStep {
 	private final String string;
 	private final boolean mustExist;
 	private final boolean caseSensitive;
-
-	/*
-	 * @see #CheckHtml4String(String)
-	 */
-	@Deprecated
-	public CheckHtml4String(final String string, @SuppressWarnings("unused") final TestModule test) {
-		this(string, true, true);
-	}
-
-	/**
-	 * @see #CheckHtml4String(String, boolean)
-	 */
-	@Deprecated
-	public CheckHtml4String(final String string, final boolean caseSensitive, @SuppressWarnings("unused") final TestModule test) {
-		this(string, caseSensitive, true);
-	}
-
-	/**
-	 * @see #CheckHtml4String(String, boolean, boolean)
-	 */
-	@Deprecated
-	public CheckHtml4String(final String string, final boolean caseSensitive, final boolean mustExist,
-			@SuppressWarnings("unused") final TestModule test) {
-		this(string, caseSensitive, mustExist);
-	}
 
 	/**
 	 * Creates a new instance. Search is case-sensitive. The string is expected to be found.

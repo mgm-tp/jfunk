@@ -15,7 +15,6 @@ import com.mgmtp.jfunk.common.JFunkConstants;
 import com.mgmtp.jfunk.common.util.Configuration;
 import com.mgmtp.jfunk.core.exception.PatternException;
 import com.mgmtp.jfunk.core.exception.StepException;
-import com.mgmtp.jfunk.core.module.TestModule;
 import com.mgmtp.jfunk.core.step.base.BaseStep;
 
 /**
@@ -34,37 +33,16 @@ public class CheckString4Pattern extends BaseStep {
 	@Inject
 	Configuration config;
 
-	@Deprecated
-	public CheckString4Pattern(final String sourceString, final String regex, final String mustExist, final TestModule test) {
-		this(sourceString, regex, !JFunkConstants.FALSE.equals(mustExist));
-	}
-
 	public CheckString4Pattern(final String sourceString, final String regex, final String mustExist) {
 		this(sourceString, regex, !JFunkConstants.FALSE.equals(mustExist));
-	}
-
-	@Deprecated
-	public CheckString4Pattern(final String source, final String pattern, @SuppressWarnings("unused") final TestModule test) {
-		this(source, pattern, true);
 	}
 
 	public CheckString4Pattern(final String source, final String pattern) {
 		this(source, pattern, true);
 	}
 
-	@Deprecated
-	public CheckString4Pattern(final String sourceString, final String regex, final boolean mustExist,
-			@SuppressWarnings("unused") final TestModule test) {
-		this(sourceString, regex, null, mustExist);
-	}
-
 	public CheckString4Pattern(final String sourceString, final String regex, final boolean mustExist) {
 		this(sourceString, regex, null, mustExist);
-	}
-
-	@Deprecated
-	public CheckString4Pattern(final String sourceString, final String regex, final String groupKey, final boolean mustExist, final TestModule test) {
-		this(sourceString, regex, groupKey, mustExist);
 	}
 
 	/**

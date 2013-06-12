@@ -31,20 +31,6 @@ public class CheckElement4Pattern extends WebDriverStep {
 	 *            By means of this value the HTML element is searched after
 	 * @param pattern
 	 *            a regular expression pattern which must match the element's content
-	 * @param test
-	 *            param no longer used
-	 * 
-	 */
-	@Deprecated
-	public CheckElement4Pattern(final By by, final String pattern, final TestModule test) {
-		this(by, pattern);
-	}
-
-	/**
-	 * @param by
-	 *            By means of this value the HTML element is searched after
-	 * @param pattern
-	 *            a regular expression pattern which must match the element's content
 	 * 
 	 */
 	public CheckElement4Pattern(final By by, final String pattern) {

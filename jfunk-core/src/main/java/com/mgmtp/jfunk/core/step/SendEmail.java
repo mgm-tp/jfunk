@@ -15,7 +15,6 @@ import com.mgmtp.jfunk.core.config.InjectConfig;
 import com.mgmtp.jfunk.core.exception.StepException;
 import com.mgmtp.jfunk.core.mail.EmailConstants;
 import com.mgmtp.jfunk.core.mail.EmailParser;
-import com.mgmtp.jfunk.core.module.TestModule;
 import com.mgmtp.jfunk.core.step.base.BaseStep;
 
 /**
@@ -33,11 +32,6 @@ public class SendEmail extends BaseStep {
 
 	@InjectConfig(name = EmailConstants.MAIL_ADDRESS)
 	String emailAddress;
-
-	@Deprecated
-	public SendEmail(final String subject, final String body, final String recipient, @SuppressWarnings("unused") final TestModule test) {
-		this(subject, body, recipient);
-	}
 
 	/**
 	 * Creates a new instance.

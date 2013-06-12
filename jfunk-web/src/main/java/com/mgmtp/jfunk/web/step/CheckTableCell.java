@@ -16,7 +16,6 @@ import org.openqa.selenium.WebElement;
 
 import com.mgmtp.jfunk.core.exception.StepException;
 import com.mgmtp.jfunk.core.exception.ValidationException;
-import com.mgmtp.jfunk.core.module.TestModule;
 import com.mgmtp.jfunk.web.WebConstants;
 
 /**
@@ -29,24 +28,6 @@ public class CheckTableCell extends WebDriverStep {
 	private final int rowNumber;
 	private final int columnNumber;
 	private final Pattern pattern;
-
-	/**
-	 * @param idName
-	 *            the value of the id-attribute the table has to match
-	 * @param rowNumber
-	 *            the row number starting with 0, if there is a header it also counts as a row
-	 * @param columnNumber
-	 *            the column number starting with 0
-	 * @param pattern
-	 *            a regular expression pattern which must match the entry in the given lineNumber
-	 *            and columnNumber of the table
-	 * @param test
-	 *            param no longer used
-	 */
-	@Deprecated
-	public CheckTableCell(final String idName, final int rowNumber, final int columnNumber, final String pattern, final TestModule test) {
-		this(idName, rowNumber, columnNumber, pattern);
-	}
 
 	/**
 	 * @param idName
@@ -82,7 +63,8 @@ public class CheckTableCell extends WebDriverStep {
 		String actualValue = cell.getText().trim();
 		Matcher m = pattern.matcher(actualValue);
 		if (!m.matches()) {
-			throw new ValidationException("Value of row " + rowNumber + " and column " + columnNumber + " was not correct: The actual value "
+			throw new ValidationException("Value of row " + rowNumber + " and column " + columnNumber
+					+ " was not correct: The actual value "
 					+ actualValue + " does not match the regular expression " + pattern);
 		}
 	}

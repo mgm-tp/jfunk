@@ -10,7 +10,6 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import com.mgmtp.jfunk.core.module.TestModule;
 import com.mgmtp.jfunk.data.DataSet;
 
 /**
@@ -33,7 +32,7 @@ public abstract class DataSetsStep extends BaseStep {
 	 *            the map of all available data sets
 	 */
 	public DataSetsStep(final String dataSetKey) {
-		this(null, null, dataSetKey);
+		this(null, dataSetKey);
 	}
 
 	/**
@@ -44,22 +43,8 @@ public abstract class DataSetsStep extends BaseStep {
 	 *            the map of all available data sets
 	 */
 	public DataSetsStep(final String name, final String dataSetKey) {
-		this(null, name, dataSetKey);
-	}
-
-	@Deprecated
-	public DataSetsStep(final TestModule testModule, final String dataSetKey) {
-		this(testModule, null, dataSetKey);
-	}
-
-	@Deprecated
-	public DataSetsStep(final TestModule testModule, final String name, final String dataSetKey) {
-		super(name, testModule);
-		if (dataSetKey == null && testModule != null) {
-			this.dataSetKey = testModule.getDataSetKey();
-		} else {
-			this.dataSetKey = dataSetKey;
-		}
+		super(name);
+		this.dataSetKey = dataSetKey;
 	}
 
 	/**

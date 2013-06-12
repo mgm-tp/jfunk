@@ -6,7 +6,6 @@
  */
 package com.mgmtp.jfunk.core.step.base;
 
-import com.mgmtp.jfunk.core.module.TestModule;
 
 /**
  * Base class for repeated execution of a list of steps.
@@ -51,29 +50,6 @@ public abstract class BaseRepeatComplexStep extends ComplexStep {
 
 	public BaseRepeatComplexStep() {
 		super();
-	}
-
-	/**
-	 * @param testModule
-	 *            param no longer used
-	 */
-	@Deprecated
-	protected BaseRepeatComplexStep(final TestModule testModule) {
-		super(testModule);
-	}
-
-	/**
-	 * @param testModule
-	 *            param no longer used
-	 */
-	@Deprecated
-	public BaseRepeatComplexStep(final TestModule testModule, final StepMode stepMode) {
-		super(testModule, stepMode);
-	}
-
-	@Deprecated
-	public BaseRepeatComplexStep(final TestModule testModule, final String name, final String dataSetKey, final StepMode stepMode) {
-		super(testModule, name, dataSetKey, stepMode);
 	}
 
 	/**

@@ -18,7 +18,6 @@ import com.mgmtp.jfunk.core.exception.MailException;
 import com.mgmtp.jfunk.core.exception.StepException;
 import com.mgmtp.jfunk.core.mail.BaseMailObject;
 import com.mgmtp.jfunk.core.mail.EmailParser;
-import com.mgmtp.jfunk.core.module.TestModule;
 import com.mgmtp.jfunk.core.step.base.BaseStep;
 
 /**
@@ -37,12 +36,6 @@ public class ReplyEmail extends BaseStep {
 	@Inject
 	@ArchiveDir
 	File archiveDir;
-
-	@Deprecated
-	public ReplyEmail(final String subjectPattern, final String bodyPattern, final String replyBody,
-			@SuppressWarnings("unused") final TestModule test) {
-		this(subjectPattern, bodyPattern, replyBody);
-	}
 
 	/**
 	 * Creates a new instance.
@@ -70,7 +63,8 @@ public class ReplyEmail extends BaseStep {
 
 		BaseMailObject mail = new BaseMailObject(subjectPattern, bodyPattern, emailParser, archiveDir) {
 			@Override
-			protected boolean processMsg(final Message msg, final String subjectString, final String bodyString) throws MailException {
+			protected boolean processMsg(final Message msg, final String subjectString, final String bodyString)
+					throws MailException {
 				try {
 					log.info("Replying to e-mail...");
 

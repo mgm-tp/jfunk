@@ -32,9 +32,6 @@ public interface TestModule extends NamedObject {
 	 */
 	void setDataSetKey(String dataSetKey);
 
-	@Deprecated
-	String getVerfahren();
-
 	/**
 	 * Sets an error flag.
 	 * 
