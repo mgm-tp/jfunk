@@ -269,26 +269,28 @@ public class ModuleArchiver {
 	}
 
 	private void saveDataSets(final Configuration config) {
-		File dir = new File(moduleArchiveDir, "formdata");
-		checkState(dir.mkdir(), "Could not create directory " + dir.getPath() + " in archive dir " + this);
+		if (config.getBoolean(JFunkConstants.ARCHIVE_DATASETS, true)) {
+			File dir = new File(moduleArchiveDir, "formdata");
+			checkState(dir.mkdir(), "Could not create directory " + dir.getPath() + " in archive dir " + this);
 
-		for (Entry<String, DataSet> entry : dataSource.getCurrentDataSets().entrySet()) {
-			DataSet data = entry.getValue();
-			// May be null, if configured in script.properties but no data
-			// available for the key.
-			if (data != null) {
-				File f = new File(dir, entry.getKey() + JFunkConstants.FORM_PROPERTIES_ENDING);
-				config.put(JFunkConstants.FORM_DATA_PREFIX + entry.getKey() + JFunkConstants.PROPERTIES_ENDING,
-						"formdata/" + f.getName());
-				FileOutputStream out = null;
-				try {
-					out = new FileOutputStream(f);
-					ExtendedProperties p = new ExtendedProperties(data.getDataView());
-					p.store(out, "Archived form data", true, false);
-				} catch (IOException ex) {
-					throw new JFunkException("Could not write FormData properties " + f.getName(), ex);
-				} finally {
-					closeQuietly(out);
+			for (Entry<String, DataSet> entry : dataSource.getCurrentDataSets().entrySet()) {
+				DataSet data = entry.getValue();
+				// May be null, if configured in script.properties but no data
+				// available for the key.
+				if (data != null) {
+					File f = new File(dir, entry.getKey() + JFunkConstants.FORM_PROPERTIES_ENDING);
+					config.put(JFunkConstants.FORM_DATA_PREFIX + entry.getKey() + JFunkConstants.PROPERTIES_ENDING,
+							"formdata/" + f.getName());
+					FileOutputStream out = null;
+					try {
+						out = new FileOutputStream(f);
+						ExtendedProperties p = new ExtendedProperties(data.getDataView());
+						p.store(out, "Archived form data", true, false);
+					} catch (IOException ex) {
+						throw new JFunkException("Could not write FormData properties " + f.getName(), ex);
+					} finally {
+						closeQuietly(out);
+					}
 				}
 			}
 		}
