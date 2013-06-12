@@ -14,7 +14,7 @@ package com.mgmtp.jfunk.common.util;
 public interface NamedObject {
 
 	/**
-	 * Gets the ojbect's name.
+	 * Gets the object's name.
 	 * 
 	 * @return the name
 	 */
