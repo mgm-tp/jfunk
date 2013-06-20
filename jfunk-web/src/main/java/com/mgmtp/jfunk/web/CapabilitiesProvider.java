@@ -39,23 +39,23 @@ import com.mgmtp.jfunk.common.util.Configuration;
 /**
  * <p>
  * Creates a {@link Map} of {@link Capabilities} by driver type, i. e. it is possible to configure
- * different capabilitiesMap for different driver types ({@code chrome}, {@code firefox},
- * {@code remote}, etc.). Global capabilitiesMap are considered for all driver types.
- * Driver-type-specific capabilitiesMap override global ones.
+ * different capabilities for different driver types ({@code chrome}, {@code firefox},
+ * {@code remote}, etc.). Global capabilities are considered for all driver types.
+ * Driver-type-specific capabilities override global ones.
  * </p>
  * <p>
- * List capabilitiesMap (e. g. {@code chrome.switches}) are supported. They must have a unique
- * integer index(after the capability name, separated by a period) which is used to identity them as
- * list capabilitiesMap. The index has otherwise not special meaning.
+ * List capabilities (e. g. {@code chrome.switches}) are supported. They must have a unique integer
+ * index(after the capability name, separated by a period) which is used to identity them as list
+ * capabilities. The index has otherwise not special meaning.
  * </p>
  * 
- * <b>Configuring global capabilitiesMap:</b>
+ * <b>Configuring global capabilities:</b>
  * 
  * <pre>
  * webdriver.capability.globalCapability = globalCapabilityValue
  * </pre>
  * 
- * <b>Configuring capabilitiesMap per driver type:</b>
+ * <b>Configuring capabilities per driver type:</b>
  * 
  * <pre>
  * webdriver.firefox.capability.firefoxCapability = firefoxCapabilityValue
