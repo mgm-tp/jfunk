@@ -46,7 +46,6 @@ import com.mgmtp.jfunk.core.config.JFunkDefaultModule;
 import com.mgmtp.jfunk.core.config.ModulesLoader;
 import com.mgmtp.jfunk.core.event.BeforeRunEvent;
 import com.mgmtp.jfunk.core.scripting.ScriptExecutor;
-import com.mgmtp.jfunk.core.util.ConfigLoader;
 
 /**
  * Class for running a jFunk test. See {@link #main(String[])} for a description of all command line
@@ -78,8 +77,8 @@ public final class JFunk extends JFunkBase {
 	 *            script properties passed in with {@code -S<key>=<value>}
 	 */
 	@Inject
-	public JFunk(final ScriptExecutor scriptExecutor, final EventBus eventBus, @Assisted final int threadCount, @Assisted final boolean parallel,
-			@Assisted final List<File> scripts, @Assisted final Properties scriptProperties) {
+	public JFunk(final ScriptExecutor scriptExecutor, final EventBus eventBus, @Assisted final int threadCount,
+			@Assisted final boolean parallel, @Assisted final List<File> scripts, @Assisted final Properties scriptProperties) {
 		super(eventBus);
 
 		this.scriptExecutor = scriptExecutor;
@@ -167,7 +166,8 @@ public final class JFunk extends JFunkBase {
 					StopWatch stopWatch = new StopWatch();
 					stopWatch.start();
 
-					RESULT_LOG.info("Thread " + Thread.currentThread().getName() + ": starting execution of script " + script.getName());
+					RESULT_LOG.info("Thread " + Thread.currentThread().getName() + ": starting execution of script "
+							+ script.getName());
 
 					try {
 						success = scriptExecutor.executeScript(script, scriptProperties);
@@ -178,7 +178,8 @@ public final class JFunk extends JFunkBase {
 
 					LOG.info("SCRIPT EXECUTION " + (success ? "SUCCESSFUL" : "FAILED") + " (" + script + ")");
 
-					RESULT_LOG.info("Thread " + Thread.currentThread().getName() + ": finished execution of script " + script.getName() + " (took "
+					RESULT_LOG.info("Thread " + Thread.currentThread().getName() + ": finished execution of script "
+							+ script.getName() + " (took "
 							+ stopWatch + " H:mm:ss.SSS)");
 
 				}
@@ -253,13 +254,15 @@ public final class JFunk extends JFunkBase {
 			for (String arg : args) {
 				if (arg.startsWith("-threadcount")) {
 					String[] split = arg.split("=");
-					Preconditions.checkArgument(split.length == 2, "The number of threads must be specified as follows: -threadcount=<value>");
+					Preconditions.checkArgument(split.length == 2,
+							"The number of threads must be specified as follows: -threadcount=<value>");
 					threadCount = Integer.parseInt(split[1]);
 					RESULT_LOG.info("Using " + threadCount + (threadCount == 1 ? " thread" : " threads"));
 				} else if (arg.startsWith("-S")) {
 					arg = arg.substring(2);
 					String[] split = arg.split("=");
-					Preconditions.checkArgument(split.length == 2, "Script parameters must be given in the form -S<name>=<value>");
+					Preconditions
+							.checkArgument(split.length == 2, "Script parameters must be given in the form -S<name>=<value>");
 					scriptProperties.setProperty(split[0], normalizeScriptParameterValue(split[1]));
 					RESULT_LOG.info("Using script parameter " + split[0] + " with value " + split[1]);
 				} else if (arg.equals("-parallel")) {
@@ -285,7 +288,7 @@ public final class JFunk extends JFunkBase {
 
 			// load config only in order to set global properties as system properties
 			// specifiying "true" as the last parameter
-			ConfigLoader.loadConfig(injector.getInstance(Configuration.class), JFunkConstants.SCRIPT_PROPERTIES, false, true);
+			injector.getInstance(Configuration.class).load(JFunkConstants.SCRIPT_PROPERTIES, false);
 
 			JFunkFactory factory = injector.getInstance(JFunkFactory.class);
 			JFunkBase jFunk = factory.create(threadCount, parallel, scripts, scriptProperties);

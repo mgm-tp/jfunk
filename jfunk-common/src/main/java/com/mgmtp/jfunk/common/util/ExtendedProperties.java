@@ -32,7 +32,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.annotation.concurrent.NotThreadSafe;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.MapMaker;
@@ -48,10 +49,12 @@ import com.google.common.collect.Sets;
  * as {@link #size()}, {@link #keySet}, or {@link #entrySet} always consider potential defaults.
  * This in turn, however, means that removal operations also affect defaults (e. g. {@link #clear()}
  * ).
- *
+ * 
  */
 @NotThreadSafe
 public class ExtendedProperties implements Map<String, String>, Serializable, Cloneable {
+
+	protected final Logger logger = LoggerFactory.getLogger(getClass());
 
 	private static final long serialVersionUID = 1L;
 
@@ -61,8 +64,6 @@ public class ExtendedProperties implements Map<String, String>, Serializable, Cl
 			return Lists.newArrayListWithCapacity(256);
 		}
 	};
-
-	private static final Logger LOG = Logger.getLogger(ExtendedProperties.class);
 
 	private Map<String, String> propsMap;
 	private Map<String, String> defaults;
@@ -80,7 +81,7 @@ public class ExtendedProperties implements Map<String, String>, Serializable, Cl
 
 	/**
 	 * Creates an empty instance with the specified defaults.
-	 *
+	 * 
 	 * @param defaults
 	 *            The defaults
 	 */
@@ -91,7 +92,7 @@ public class ExtendedProperties implements Map<String, String>, Serializable, Cl
 
 	/**
 	 * Created an instance from the specified {@link java.util.Properties} instance.
-	 *
+	 * 
 	 * @param props
 	 *            The properties instance
 	 * @return The {@link ExtendedProperties} instance
@@ -118,7 +119,7 @@ public class ExtendedProperties implements Map<String, String>, Serializable, Cl
 	/**
 	 * Looks up a property. Recursively checks the defaults if necessary. Internally,
 	 * {@code get(key, true)} is called to look up the value.
-	 *
+	 * 
 	 * @param key
 	 *            The property key
 	 * @return The property value, or {@code null} if the property is not found
@@ -131,7 +132,7 @@ public class ExtendedProperties implements Map<String, String>, Serializable, Cl
 	/**
 	 * Looks up a property. Recursively checks the defaults if necessary. Internally,
 	 * {@code get(key, true)} is called to look up the value.
-	 *
+	 * 
 	 * @param key
 	 *            The property key
 	 * @param defaultValue
@@ -146,7 +147,7 @@ public class ExtendedProperties implements Map<String, String>, Serializable, Cl
 	/**
 	 * Looks up a property. Recursively checks the defaults if necessary. If the property is found
 	 * as a system property, this value will be used.
-	 *
+	 * 
 	 * @param key
 	 *            The property key
 	 * @param process
@@ -155,12 +156,7 @@ public class ExtendedProperties implements Map<String, String>, Serializable, Cl
 	 * @return The property value, or {@code null} if the property is not found
 	 */
 	public String get(final Object key, final boolean process) {
-		// Check system properties first
-		String value = System.getProperty(String.valueOf(key));
-		if (value == null) {
-			value = propsMap.get(key);
-		}
-
+		String value = propsMap.get(key);
 		if (process) {
 			value = processPropertyValue(value);
 		}
@@ -198,7 +194,7 @@ public class ExtendedProperties implements Map<String, String>, Serializable, Cl
 
 	/**
 	 * Sets the property with the specified key.
-	 *
+	 * 
 	 * @param key
 	 *            The key (may not be {@code null})
 	 * @param value
@@ -213,20 +209,20 @@ public class ExtendedProperties implements Map<String, String>, Serializable, Cl
 	/**
 	 * Return {@code true} if the property with the specified key exists. Defaults are considered in
 	 * the result.
-	 *
+	 * 
 	 * @param key
 	 *            The key
 	 * @return {@code true} if the property with the specified key exists
 	 */
 	@Override
 	public boolean containsKey(final Object key) {
-		return System.getProperty(key.toString()) != null ? true : propsMap.containsKey(key) ? true : defaults != null && defaults.containsKey(key);
+		return propsMap.containsKey(key) ? true : defaults != null && defaults.containsKey(key);
 	}
 
 	/**
 	 * Return {@code true} if a property with the specified value exists. Defaults are considered in
 	 * the result.
-	 *
+	 * 
 	 * @param value
 	 *            The value
 	 * @return {@code true} if a property with the specified value exists
@@ -245,7 +241,7 @@ public class ExtendedProperties implements Map<String, String>, Serializable, Cl
 	 * Returns a set of Entries representing property key-value pairs. The returned set is a view to
 	 * the internal data structures and reflects changes to this instance. Potential defaults are
 	 * included in the returned set.
-	 *
+	 * 
 	 * @return The entry set
 	 */
 	@Override
@@ -258,7 +254,7 @@ public class ExtendedProperties implements Map<String, String>, Serializable, Cl
 
 	/**
 	 * Returns {@code true} if no properties are available. Defaults are considered in the result.
-	 *
+	 * 
 	 * @return {@code true} if no properties are available
 	 */
 	@Override
@@ -268,7 +264,7 @@ public class ExtendedProperties implements Map<String, String>, Serializable, Cl
 
 	/**
 	 * Adds all key-value pairs from the specified map.
-	 *
+	 * 
 	 * @param map
 	 *            The map
 	 */
@@ -281,7 +277,7 @@ public class ExtendedProperties implements Map<String, String>, Serializable, Cl
 
 	/**
 	 * Removes the property with the specified key. Defaults are considered.
-	 *
+	 * 
 	 * @param key
 	 *            The key
 	 * @return The previous value associated with the property
@@ -302,7 +298,7 @@ public class ExtendedProperties implements Map<String, String>, Serializable, Cl
 	 * Returns a collection of property values. The returned collection is a view to the internal
 	 * data structures and reflects changes to this instance. Potential defaults are included in the
 	 * returned collection.
-	 *
+	 * 
 	 * @return The values collection
 	 */
 	@Override
@@ -316,7 +312,7 @@ public class ExtendedProperties implements Map<String, String>, Serializable, Cl
 	/**
 	 * Returns a set of property keys. The returned set is a view to the internal data structures
 	 * and reflects changes to this instance. Potential defaults are included in the returned set.
-	 *
+	 * 
 	 * @return The key set
 	 */
 	@Override
@@ -329,7 +325,7 @@ public class ExtendedProperties implements Map<String, String>, Serializable, Cl
 
 	/**
 	 * Calculates and returns the number of properties. Defaults are considered in the result.
-	 *
+	 * 
 	 * @return The number of properties
 	 */
 	@Override
@@ -358,7 +354,7 @@ public class ExtendedProperties implements Map<String, String>, Serializable, Cl
 	 * Tokens may be nested, e. g. <code>${key${user.dir,c:/${current.dir}/archive},default}}</code>
 	 * .
 	 * </p>
-	 *
+	 * 
 	 * @param input
 	 *            The input string
 	 * @return The processed value
@@ -403,7 +399,8 @@ public class ExtendedProperties implements Map<String, String>, Serializable, Cl
 				buffer.append(s);
 				buffer.append("-->");
 			}
-			throw new IllegalStateException("The string '" + input + "' is already being processed; this results in a short circuit: " + buffer);
+			throw new IllegalStateException("The string '" + input
+					+ "' is already being processed; this results in a short circuit: " + buffer);
 		}
 		tokens.add(input);
 		// now the startIndex is at the nun  ${ and endIndex at the associated }, so process the internal
@@ -420,12 +417,9 @@ public class ExtendedProperties implements Map<String, String>, Serializable, Cl
 		}
 		property = null;
 		if (key.length() == 0) {
-			LOG.warn("'" + input + "' contains an empty placeholder token ${...} which is not allowed");
+			logger.warn("'" + input + "' contains an empty placeholder token ${...} which is not allowed");
 		} else {
 			property = get(key);
-			if (property == null) {
-				property = System.getProperty(key);
-			}
 		}
 		// no value found; default value
 		if (property == null) {
@@ -442,9 +436,7 @@ public class ExtendedProperties implements Map<String, String>, Serializable, Cl
 		tokens.remove(input);
 		// assemble and return value
 		String result = prefix + property + postfix;
-		if (LOG.isDebugEnabled()) {
-			LOG.debug("Processing property " + input + " to " + result);
-		}
+		logger.debug("Processing property {} to {}", input, result);
 		return result;
 	}
 
@@ -474,7 +466,7 @@ public class ExtendedProperties implements Map<String, String>, Serializable, Cl
 
 	/**
 	 * Returns a new {@link java.util.Properties} instance representing the properties.
-	 *
+	 * 
 	 * @return The properties
 	 */
 	public Properties toProperties() {
@@ -490,7 +482,7 @@ public class ExtendedProperties implements Map<String, String>, Serializable, Cl
 	/**
 	 * Returns a string representation of this instance. Returns all properties recursively
 	 * including defaults.
-	 *
+	 * 
 	 * @return The string representation of the instance
 	 */
 	@Override
@@ -507,7 +499,7 @@ public class ExtendedProperties implements Map<String, String>, Serializable, Cl
 	/**
 	 * Loads properties from the specified stream using the default encoding. The caller of this
 	 * method is responsible for closing the stream.
-	 *
+	 * 
 	 * @param is
 	 *            The input stream
 	 */
@@ -518,7 +510,7 @@ public class ExtendedProperties implements Map<String, String>, Serializable, Cl
 	/**
 	 * Loads properties from the specified stream. The caller of this method is responsible for
 	 * closing the stream.
-	 *
+	 * 
 	 * @param is
 	 *            The input stream
 	 * @param encoding
@@ -531,7 +523,7 @@ public class ExtendedProperties implements Map<String, String>, Serializable, Cl
 	/**
 	 * Loads properties from the specified reader. The caller of this method is responsible for
 	 * closing the reader.
-	 *
+	 * 
 	 * @param reader
 	 *            The reader
 	 */
@@ -592,7 +584,7 @@ public class ExtendedProperties implements Map<String, String>, Serializable, Cl
 
 	/**
 	 * Writes the properties to the specified stream using the default encoding, including defaults.
-	 *
+	 * 
 	 * @param os
 	 *            The output stream
 	 * @param comments
@@ -602,13 +594,14 @@ public class ExtendedProperties implements Map<String, String>, Serializable, Cl
 	 * @param process
 	 *            If {@code true}, place holders are resolved
 	 */
-	public void store(final OutputStream os, final String comments, final boolean sorted, final boolean process) throws IOException {
+	public void store(final OutputStream os, final String comments, final boolean sorted, final boolean process)
+			throws IOException {
 		store(new OutputStreamWriter(os), comments, sorted, process);
 	}
 
 	/**
 	 * Writes the properties to the specified stream, including defaults.
-	 *
+	 * 
 	 * @param os
 	 *            The output stream
 	 * @param encoding
@@ -620,14 +613,15 @@ public class ExtendedProperties implements Map<String, String>, Serializable, Cl
 	 * @param process
 	 *            If {@code true}, place holders are resolved
 	 */
-	public void store(final OutputStream os, final String encoding, final String comments, final boolean sorted, final boolean process)
+	public void store(final OutputStream os, final String encoding, final String comments, final boolean sorted,
+			final boolean process)
 			throws IOException {
 		store(new OutputStreamWriter(os, encoding), comments, sorted, process);
 	}
 
 	/**
 	 * Writes the properties to the specified writer, including defaults.
-	 *
+	 * 
 	 * @param writer
 	 *            The writer
 	 * @param comments
@@ -931,7 +925,7 @@ public class ExtendedProperties implements Map<String, String>, Serializable, Cl
 
 		@Override
 		public boolean contains(final Object o) {
-			return ExtendedProperties.this.containsKey(o);
+			return containsKey(o);
 		}
 
 		@Override
@@ -978,7 +972,7 @@ public class ExtendedProperties implements Map<String, String>, Serializable, Cl
 
 		@Override
 		public boolean contains(final Object o) {
-			return ExtendedProperties.this.containsValue(o);
+			return containsValue(o);
 		}
 
 		@Override
@@ -1077,8 +1071,8 @@ public class ExtendedProperties implements Map<String, String>, Serializable, Cl
 		}
 
 		public SimpleEntry(final Entry<String, String> e) {
-			this.key = e.getKey();
-			this.value = e.getValue();
+			key = e.getKey();
+			value = e.getValue();
 		}
 
 		@Override

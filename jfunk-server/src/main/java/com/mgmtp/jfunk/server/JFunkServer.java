@@ -24,7 +24,6 @@ import com.mgmtp.jfunk.common.util.Configuration;
 import com.mgmtp.jfunk.core.JFunk;
 import com.mgmtp.jfunk.core.JFunkBase;
 import com.mgmtp.jfunk.core.config.ModulesLoader;
-import com.mgmtp.jfunk.core.util.ConfigLoader;
 import com.mgmtp.jfunk.server.config.JFunkServerModule;
 
 /**
@@ -68,7 +67,8 @@ public class JFunkServer extends JFunkBase {
 		for (String arg : args) {
 			if (arg.startsWith("-threadcount")) {
 				String[] split = arg.split("=");
-				Preconditions.checkArgument(split.length == 2, "The number of threads must be specified as follows: -threadcount=<value>");
+				Preconditions.checkArgument(split.length == 2,
+						"The number of threads must be specified as follows: -threadcount=<value>");
 				threadCount = Integer.parseInt(split[1]);
 				RESULT_LOG.info("Using " + threadCount + (threadCount == 1 ? " thread" : " threads"));
 			} else if (arg.startsWith("-port")) {
@@ -98,7 +98,7 @@ public class JFunkServer extends JFunkBase {
 			Injector injector = Guice.createInjector(modules);
 			// load config only in order to set global properties as system properties
 			// specifiying "true" as the last parameter
-			ConfigLoader.loadConfig(injector.getInstance(Configuration.class), JFunkConstants.SCRIPT_PROPERTIES, false, true);
+			injector.getInstance(Configuration.class).load(JFunkConstants.SCRIPT_PROPERTIES, false);
 
 			JFunkBase jFunk = injector.getInstance(JFunkBase.class);
 			jFunk.execute();

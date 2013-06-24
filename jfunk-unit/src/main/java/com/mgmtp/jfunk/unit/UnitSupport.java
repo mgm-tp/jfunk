@@ -32,7 +32,6 @@ import com.mgmtp.jfunk.core.event.BeforeScriptEvent;
 import com.mgmtp.jfunk.core.reporting.SimpleReporter;
 import com.mgmtp.jfunk.core.scripting.ModuleExecutionException;
 import com.mgmtp.jfunk.core.scripting.ScriptContext;
-import com.mgmtp.jfunk.core.util.ConfigLoader;
 
 /**
  * Provides support for integrating jFunk into a unit test framework.
@@ -74,7 +73,7 @@ class UnitSupport {
 
 			// load config only in order to set global properties as system properties
 			// specifiying "true" as the last parameter
-			ConfigLoader.loadConfig(injector.getInstance(Configuration.class), JFunkConstants.SCRIPT_PROPERTIES, false, true);
+			injector.getInstance(Configuration.class).load(JFunkConstants.SCRIPT_PROPERTIES, false);
 
 			injector.injectMembers(this);
 

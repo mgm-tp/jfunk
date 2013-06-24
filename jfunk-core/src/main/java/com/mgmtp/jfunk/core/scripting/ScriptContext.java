@@ -52,7 +52,6 @@ import com.mgmtp.jfunk.core.event.BeforeModuleEvent;
 import com.mgmtp.jfunk.core.event.ModuleInitializedEvent;
 import com.mgmtp.jfunk.core.module.TestModule;
 import com.mgmtp.jfunk.core.reporting.Reporter;
-import com.mgmtp.jfunk.core.util.ConfigLoader;
 import com.mgmtp.jfunk.core.util.CsvDataProcessor;
 import com.mgmtp.jfunk.data.DataSet;
 import com.mgmtp.jfunk.data.source.DataSource;
@@ -326,7 +325,7 @@ public class ScriptContext {
 	 */
 	@Cmd
 	public void load(final String fileName, final boolean preserveExistingProps) {
-		ConfigLoader.loadConfig(config, fileName, preserveExistingProps, false);
+		config.load(fileName, preserveExistingProps);
 		String scriptDir = getScriptDir();
 		if (scriptDir != null) {
 			config.put(JFunkConstants.SCRIPT_DIR, scriptDir);

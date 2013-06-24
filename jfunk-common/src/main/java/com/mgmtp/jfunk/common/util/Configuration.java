@@ -7,6 +7,7 @@
 package com.mgmtp.jfunk.common.util;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Queues.newArrayDeque;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -16,8 +17,10 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
+import java.util.Deque;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Queue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -27,7 +30,6 @@ import java.util.zip.ZipFile;
 import javax.annotation.concurrent.NotThreadSafe;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
@@ -43,10 +45,8 @@ import com.mgmtp.jfunk.common.exception.JFunkException;
 public final class Configuration extends ExtendedProperties {
 
 	private static final Pattern PLACEHOLDER_PATTERN = Pattern.compile("\\$\\{([^},]+)(?:\\s*,[^}]*)?\\}");
-
 	private static final long serialVersionUID = 1L;
-
-	private static Logger log = Logger.getLogger(ExtendedProperties.class);
+	private static final Object STACK_OBJECT = new Object();
 
 	private transient ZipFile zipArchive;
 
@@ -54,7 +54,7 @@ public final class Configuration extends ExtendedProperties {
 
 	private final Charset charset;
 
-	private boolean loading;
+	private final Deque<Object> loadingStack = newArrayDeque();
 
 	/**
 	 * Creates an empty instance.
@@ -98,11 +98,13 @@ public final class Configuration extends ExtendedProperties {
 	 *            properties file.
 	 */
 	public void load(final String fileName, final boolean preserveExisting) {
+		logger.info("Loading config file: {} (preserveExisting={})", fileName, preserveExisting);
+
 		InputStream is = null;
 		try {
-			loading = true;
+			loadingStack.push(STACK_OBJECT);
 			if (fileName.endsWith(JFunkConstants.ZIP_FILE_SUFFIX)) {
-				log.info("Loading zip archive '" + fileName + "'...");
+				logger.info("Loading zip archive '{}'...", fileName);
 				zipArchive = new ZipFile(fileName);
 				ZipEntry entry = zipArchive.getEntry(JFunkConstants.SCRIPT_PROPERTIES);
 				if (entry == null) {
@@ -113,15 +115,48 @@ public final class Configuration extends ExtendedProperties {
 				doLoad(is, preserveExisting);
 			} else {
 				is = ResourceLoader.getConfigInputStream(fileName);
-				log.info("Loading file '" + fileName + "'...");
+				logger.info("Loading file '{}'...", fileName);
+
+				boolean initiallyEmpty = isEmpty();
 				doLoad(is, preserveExisting);
+
+				if (initiallyEmpty) {
+					// If config was emtpy initially, we add system properties, which always override existing properties.
+					// Extra properties are only loaded afterwards but do not override existing properties.
+					putAll(ExtendedProperties.fromProperties(System.getProperties()));
+
+					// Archiving is always necessary when execution mode is 'start'.
+					// Otherwise continuing after the breakpoint would not be possible.
+					if (JFunkConstants.EXECUTION_MODE_START.equals(get(JFunkConstants.EXECUTION_MODE))) {
+						put(JFunkConstants.ARCHIVING_MODE, JFunkConstants.ARCHIVING_MODE_ALL);
+					}
+				}
+
 				loadExtraFiles(JFunkConstants.SYSTEM_PROPERTIES);
+
+				if (initiallyEmpty) {
+					// copy SSL settings to System properties
+					Properties props = System.getProperties();
+					copyProperty(props, this, JFunkConstants.JAVAX_NET_SSL_KEY_STORE_PASSWORD);
+					copyProperty(props, this, JFunkConstants.JAVAX_NET_SSL_KEY_STORE);
+					copyProperty(props, this, JFunkConstants.JAVAX_NET_SSL_KEY_STORE_TYPE);
+					copyProperty(props, this, JFunkConstants.JAVAX_NET_SSL_TRUST_STORE_PASSWORD);
+					copyProperty(props, this, JFunkConstants.JAVAX_NET_SSL_TRUST_STORE);
+					copyProperty(props, this, JFunkConstants.JAVAX_NET_SSL_TRUST_STORE_TYPE);
+				}
 			}
 		} catch (IOException ex) {
 			throw new JFunkException("Error loading properties: " + fileName, ex);
 		} finally {
-			loading = false;
+			loadingStack.pop();
 			IOUtils.closeQuietly(is);
+		}
+	}
+
+	private static void copyProperty(final Properties target, final Configuration source, final String key) {
+		String value = source.get(key);
+		if (!Strings.isNullOrEmpty(value)) {
+			target.setProperty(key, value);
 		}
 	}
 
@@ -161,7 +196,8 @@ public final class Configuration extends ExtendedProperties {
 					// not all placeholders were resolved, so we enqueue it again to process another file first
 					fileKeys.offer(fileName);
 				} else {
-					load(fileName);
+					// preserve existing keys, so e. g. System properties keep precedence
+					load(fileName, true);
 				}
 			}
 		}
@@ -171,7 +207,7 @@ public final class Configuration extends ExtendedProperties {
 	public String put(final String key, final String value) {
 		String result = super.put(key, value);
 
-		if (!loading) {
+		if (loadingStack.isEmpty()) {
 			// put is also called during loading, so we need to exclude this re-loading mechanism there,
 			// it is not necessary and may lead to errors because not all placeholders might have been resolved yet
 			if (!Strings.isNullOrEmpty(value)) {
@@ -214,7 +250,7 @@ public final class Configuration extends ExtendedProperties {
 				}
 			} while (entry == null && index > 0);
 			if (entry != null) {
-				log.info("Opening stream to '" + name + "' in zip archive...");
+				logger.info("Opening stream to '{}' in zip archive...", name);
 				return zipArchive.getInputStream(entry);
 			}
 		}
@@ -243,7 +279,7 @@ public final class Configuration extends ExtendedProperties {
 				} else if (!forceOverwrite) {
 					return;
 				}
-				log.info("Loading file '" + targetFile + "' from zip archive...");
+				logger.info("Loading file '{}' from zip archive...", targetFile);
 				OutputStream out = null;
 				InputStream in = null;
 				try {
@@ -255,7 +291,7 @@ public final class Configuration extends ExtendedProperties {
 					IOUtils.closeQuietly(out);
 				}
 			} else {
-				log.info("Could not find file '" + targetFile + "' in zip archive");
+				logger.error("Could not find file '{}' in zip archive", targetFile);
 			}
 		}
 	}
