@@ -33,7 +33,6 @@ import com.google.inject.Provides;
 import com.google.inject.TypeLiteral;
 import com.mgmtp.jfunk.common.JFunkConstants;
 import com.mgmtp.jfunk.common.config.ModuleScoped;
-import com.mgmtp.jfunk.common.config.ScriptScoped;
 import com.mgmtp.jfunk.common.util.Configuration;
 import com.mgmtp.jfunk.web.util.DumpFileCreator;
 import com.mgmtp.jfunk.web.util.FormInputHandler;
@@ -52,10 +51,10 @@ abstract class ScopingWebDriverModule extends BaseWebDriverModule {
 	private static final Pattern HOST_EXTRACTION_PATTERN =
 			Pattern.compile("(?<=\\Q" + WebConstants.HTMLUNIT_CREDENTIALS_PREFIX + ".\\E).*(?=\\Q." + JFunkConstants.PASSWORD
 					+ "\\E)");
+
 	private final Class<? extends Annotation> scopeAnnotationClass;
 
 	ScopingWebDriverModule(final Class<? extends Annotation> scopeAnnotationClass) {
-		checkState(scopeAnnotationClass == ScriptScoped.class || scopeAnnotationClass == ModuleScoped.class);
 		this.scopeAnnotationClass = scopeAnnotationClass;
 	}
 
@@ -72,11 +71,11 @@ abstract class ScopingWebDriverModule extends BaseWebDriverModule {
 		bind(AjaxController.class).to(NicelyResynchronizingAjaxController.class);
 		bind(DumpFileCreator.class);
 
-		bindWebDriver(WebConstants.WEBDRIVER_HTMLUNIT, HtmlUnitDriverProvider.class, scopeAnnotationClass);
-		bindWebDriver(WebConstants.WEBDRIVER_FIREFOX, FirefoxDriverProvider.class, scopeAnnotationClass);
-		bindWebDriver(WebConstants.WEBDRIVER_CHROME, ChromeDriverProvider.class, scopeAnnotationClass);
-		bindWebDriver(WebConstants.WEBDRIVER_INTERNET_EXPLORER, InternetExplorerDriverProvider.class, scopeAnnotationClass);
-		bindWebDriver(WebConstants.WEBDRIVER_REMOTE, RemoteWebDriverProvider.class, scopeAnnotationClass);
+		bindWebDriver(WebConstants.WEBDRIVER_HTMLUNIT, HtmlUnitDriverProvider.class);
+		bindWebDriver(WebConstants.WEBDRIVER_FIREFOX, FirefoxDriverProvider.class);
+		bindWebDriver(WebConstants.WEBDRIVER_CHROME, ChromeDriverProvider.class);
+		bindWebDriver(WebConstants.WEBDRIVER_INTERNET_EXPLORER, InternetExplorerDriverProvider.class);
+		bindWebDriver(WebConstants.WEBDRIVER_REMOTE, RemoteWebDriverProvider.class);
 
 		if (scopeAnnotationClass == ModuleScoped.class) {
 			bindModuleScopedDisposable().to(WebDriverDisposable.class);

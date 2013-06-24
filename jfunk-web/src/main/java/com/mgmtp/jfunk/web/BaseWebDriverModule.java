@@ -6,8 +6,6 @@
  */
 package com.mgmtp.jfunk.web;
 
-import java.lang.annotation.Annotation;
-
 import javax.inject.Provider;
 
 import org.openqa.selenium.WebDriver;
@@ -40,9 +38,8 @@ public abstract class BaseWebDriverModule extends BaseJFunkGuiceModule {
 
 	protected abstract void doConfigureWebDriverModule();
 
-	protected void bindWebDriver(final String webDriverKey, final Class<? extends Provider<? extends WebDriver>> providerClass,
-			final Class<? extends Annotation> scopeAnnotation) {
-		bind(WebDriver.class).annotatedWith(Names.named(webDriverKey)).toProvider(providerClass).in(scopeAnnotation);
+	protected void bindWebDriver(final String webDriverKey, final Class<? extends Provider<? extends WebDriver>> providerClass) {
+		bind(WebDriver.class).annotatedWith(Names.named(webDriverKey)).toProvider(providerClass);
 	}
 
 	protected LinkedBindingBuilder<WebDriverEventListener> bindWebDriverEventListener() {
