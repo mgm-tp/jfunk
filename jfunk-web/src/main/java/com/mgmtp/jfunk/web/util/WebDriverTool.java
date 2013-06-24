@@ -31,7 +31,6 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Sets.SetView;
-import com.mgmtp.jfunk.common.config.ModuleScoped;
 import com.mgmtp.jfunk.data.DataSet;
 
 /**
@@ -45,7 +44,6 @@ import com.mgmtp.jfunk.data.DataSet;
  * 
  * @author rnaegele
  */
-@ModuleScoped
 public class WebDriverTool {
 
 	private static final String APPEND_OPEN_WINDOW_LINK_SCRIPT_TEMPLATE = "(function() { "
