@@ -522,7 +522,7 @@ public class WebDriverTool {
 	 *            identifies the element to click on in order to open the new window
 	 * @param timeoutSeconds
 	 *            the timeout in seconds to wait for the new window to open
-	 * @return the handle of window that opened the new window
+	 * @return the handle of the window that opened the new window
 	 */
 	public String openNewWindow(final By openClickBy, final long timeoutSeconds) {
 		return openNewWindow(new Runnable() {
@@ -538,7 +538,7 @@ public class WebDriverTool {
 	 * opened by inserting a new link with {@code target='_blank'} and {@code href='about:blank'} at
 	 * the end of the page, which is then clicked and removed again afterwards.
 	 * 
-	 * @return the handle of window that opened the new window
+	 * @return the handle of the window that opened the new window
 	 */
 	public String openNewWindow() {
 		return openNewWindow("about:blank");
@@ -551,7 +551,7 @@ public class WebDriverTool {
 	 * 
 	 * @param url
 	 *            the url to open
-	 * @return the handle of window that opened the new window
+	 * @return the handle of the window that opened the new window
 	 */
 	public String openNewWindow(final String url) {
 		String id = UUID.randomUUID().toString();
@@ -577,7 +577,7 @@ public class WebDriverTool {
 	 *            logic for opening the new window
 	 * @param timeoutSeconds
 	 *            the timeout in seconds to wait for the new window to open
-	 * @return the handle of window that opened the new window
+	 * @return the handle of the window that opened the new window
 	 */
 	public String openNewWindow(final Runnable openCommand, final long timeoutSeconds) {
 		String oldHandle = webDriver.getWindowHandle();
