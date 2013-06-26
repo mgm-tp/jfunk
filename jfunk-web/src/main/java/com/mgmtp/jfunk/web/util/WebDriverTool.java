@@ -27,6 +27,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
@@ -45,6 +47,7 @@ import com.mgmtp.jfunk.data.DataSet;
  * @author rnaegele
  */
 public class WebDriverTool {
+	protected final Logger logger = LoggerFactory.getLogger(getClass());
 
 	private static final String APPEND_OPEN_WINDOW_LINK_SCRIPT_TEMPLATE = "(function() { "
 			+ "var jFunkAnchorTag = document.createElement('a');"
@@ -73,6 +76,11 @@ public class WebDriverTool {
 		this.wef = wef;
 		this.fih = fih;
 		this.dataSets = dataSets;
+	}
+
+	public void get(final String url) {
+		logger.info("GET {}", url);
+		webDriver.get(url);
 	}
 
 	/**
@@ -298,11 +306,14 @@ public class WebDriverTool {
 	 * @return {@code true} if the element was found and clicked, {@code false} otherwise
 	 */
 	public boolean tryClick(final By by) {
+		logger.info("Trying to click on {}", by);
 		List<WebElement> elements = wef.timeout(2L).by(by).findAll();
 		if (elements.size() > 0) {
 			elements.get(0).click();
+			logger.info("Click successful");
 			return true;
 		}
+		logger.info("Click not successful");
 		return false;
 	}
 
