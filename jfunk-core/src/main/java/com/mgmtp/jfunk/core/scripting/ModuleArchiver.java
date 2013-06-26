@@ -176,8 +176,6 @@ public class ModuleArchiver {
 			saveConfiguration(configClone);
 			saveStackTrace(throwable);
 
-			zipUpArchive(success);
-
 			log.info("Finished archiving: (module={}, moduleArchiveDir={})", testModule, moduleArchiveDir);
 		} finally {
 			if (moduleAppender != null) {
@@ -185,7 +183,15 @@ public class ModuleArchiver {
 				moduleAppender.stop();
 				loggerContext.getLogger(Logger.ROOT_LOGGER_NAME).detachAppender(moduleAppender);
 			}
-			deleteQuietly(moduleArchiveDir);
+
+			String archiveType = configuration.get(JFunkConstants.ARCHIVE_TYPE, "zip");
+			if ("dir".equals(archiveType)) {
+				File dest = new File(moduleArchiveDir.getParent(), moduleArchiveDir.getName() + (success ? "_ok" : "_error"));
+				moduleArchiveDir.renameTo(dest);
+			} else {
+				zipUpArchive(success);
+				deleteQuietly(moduleArchiveDir);
+			}
 		}
 	}
 
