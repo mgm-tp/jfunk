@@ -16,7 +16,7 @@ import com.mgmtp.jfunk.common.util.Range;
 import com.mgmtp.jfunk.data.generator.util.XMLTags;
 
 /**
- * Returns a configutable number of cases within the allowed rage. Every cases is a random value
+ * Returns a configurable number of cases within the allowed range. Every case is a random value
  * within the allowed range ({@link FieldCase#AVG}).
  * 
  */
