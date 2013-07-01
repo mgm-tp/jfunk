@@ -39,8 +39,8 @@ public class ContainerModuleTest {
 		};
 
 		TestModule testModule = ContainerModule.forName("container")
-				.addTestModule(new GoogleModule(), prepareDataCallback, null)
-				.addTestModule(new GoogleModule(), prepareDataCallback, null)
+				.addTestModule(prepareDataCallback, new GoogleModule())
+				.addTestModule(prepareDataCallback, new GoogleModule())
 				.build();
 
 		jFunkRunner.run(testModule);

@@ -9,6 +9,7 @@ package com.mgmtp.jfunk.core.module;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.Lists.newArrayListWithExpectedSize;
+import static com.google.common.collect.Lists.transform;
 
 import java.io.File;
 import java.util.List;
@@ -19,6 +20,7 @@ import javax.inject.Provider;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import com.google.common.base.Function;
 import com.mgmtp.jfunk.common.JFunkConstants;
 import com.mgmtp.jfunk.common.util.Configuration;
 import com.mgmtp.jfunk.core.config.ArchiveDir;
@@ -82,6 +84,8 @@ public class ContainerModule implements TestModule {
 	@Inject
 	private Configuration config;
 
+	private String moduleArchiveDir;
+
 	private ContainerModule(final String name, final List<ModuleWithCallbacks> modulesWithCallbacks) {
 		this.name = checkNotNull(name, "'name' must not be null");
 		this.modulesWithCallbacks = checkNotNull(modulesWithCallbacks, "'modulesWithCallbacks' must not be null");
@@ -107,7 +111,8 @@ public class ContainerModule implements TestModule {
 
 		try {
 			// make sure archive dirs are within that of the container module
-			config.put(JFunkConstants.ARCHIVE_DIR, moduleArchiveDirProvider.get().getPath());
+			moduleArchiveDir = moduleArchiveDirProvider.get().getPath();
+			config.put(JFunkConstants.ARCHIVE_DIR, moduleArchiveDir);
 
 			for (ModuleWithCallbacks moduleWithCallbacks : modulesWithCallbacks) {
 				TestModule testModule = moduleWithCallbacks.testModule;
@@ -128,7 +133,7 @@ public class ContainerModule implements TestModule {
 			// reset for outer module, so property is correctly archived
 			config.put(JFunkConstants.ARCHIVE_DIR, previousArchiveDir);
 
-			// it does not make sense to archive datasets in the container module, 
+			// it does not make sense to archive datasets in the container module,
 			// these would be those of the test module executed last
 			config.put(JFunkConstants.ARCHIVE_DATASETS, "false");
 		}
@@ -156,7 +161,19 @@ public class ContainerModule implements TestModule {
 
 	@Override
 	public String toString() {
-		return ToStringBuilder.reflectionToString(ToStringStyle.SHORT_PREFIX_STYLE);
+		ToStringBuilder tsb = new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE);
+		tsb.append("name", name);
+		if (moduleArchiveDir != null) {
+			tsb.append("moduleArchiveDir", moduleArchiveDir);
+		}
+		tsb.append("error", error);
+		tsb.append("modules", transform(modulesWithCallbacks, new Function<ModuleWithCallbacks, TestModule>() {
+			@Override
+			public TestModule apply(final ModuleWithCallbacks input) {
+				return input.testModule;
+			}
+		}));
+		return tsb.toString();
 	}
 
 	/**
@@ -201,23 +218,57 @@ public class ContainerModule implements TestModule {
 		}
 
 		/**
+		 * Adds a test module and the specified callback to the {@link ContainerModule}. The
+		 * callback is executed before the specified module in the scope of the
+		 * {@link ContainerModule}.
+		 * 
+		 * @param beforeModuleCallback
+		 *            a {@link Runnable} to be executed just before the specified module is
+		 *            executed, may be {@code null}
+		 * @param testModule
+		 *            the test module to be added to the {@link ContainerModule}
+		 * @return this {@link Builder} instance
+		 */
+		public Builder addTestModule(final Runnable beforeModuleCallback, final TestModule testModule) {
+			modulesWithCallbacks.add(new ModuleWithCallbacks(testModule, beforeModuleCallback, null));
+			return this;
+		}
+
+		/**
 		 * Adds a test module and the specified callbacks to the {@link ContainerModule}. Callbacks
 		 * are executed before and/or after the specified module in the scope of the
 		 * {@link ContainerModule}.
 		 * 
-		 * @param testModule
-		 *            the test module to be added to the {@link ContainerModule}
 		 * @param beforeModuleCallback
 		 *            a {@link Runnable} to be executed just before the specified module is
 		 *            executed, may be {@code null}
+		 * @param testModule
+		 *            the test module to be added to the {@link ContainerModule}
 		 * @param afterModuleCallback
 		 *            a {@link Runnable} to be executed right after the specified module is
 		 *            executed, may be {@code null}
 		 * @return this {@link Builder} instance
 		 */
-		public Builder addTestModule(final TestModule testModule, final Runnable beforeModuleCallback,
+		public Builder addTestModule(final Runnable beforeModuleCallback, final TestModule testModule,
 				final Runnable afterModuleCallback) {
 			modulesWithCallbacks.add(new ModuleWithCallbacks(testModule, beforeModuleCallback, afterModuleCallback));
+			return this;
+		}
+
+		/**
+		 * Adds a test module and the specified callback to the {@link ContainerModule}. The
+		 * callback is executed after the specified module in the scope of the
+		 * {@link ContainerModule}.
+		 * 
+		 * @param testModule
+		 *            the test module to be added to the {@link ContainerModule}
+		 * @param afterModuleCallback
+		 *            a {@link Runnable} to be executed right after the specified module is
+		 *            executed, may be {@code null}
+		 * @return this {@link Builder} instance
+		 */
+		public Builder addTestModule(final TestModule testModule, final Runnable afterModuleCallback) {
+			modulesWithCallbacks.add(new ModuleWithCallbacks(testModule, null, afterModuleCallback));
 			return this;
 		}
 
