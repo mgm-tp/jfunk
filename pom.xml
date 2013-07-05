@@ -14,23 +14,19 @@
 	<version>3.1.0-SNAPSHOT</version>
 	<description>Java Functional Testing Framework Parent POM</description>
 
-	<scm>
-		<developerConnection>scm:git:ssh://hudson@gerrit.mgm-tp.com:29418/mqa/jfunk</developerConnection>
-		<connection>scm:git:ssh://hudson@gerrit.mgm-tp.com:29418/mqa/jfunk</connection>
-		<tag>HEAD</tag>
-	</scm>
-
-	<url>https://wiki.mgm-tp.com/confluence/display/KNOWHOW/jFunk</url>
+	<url>https://github.com/mgm-tp/jfunk</url>
 
 	<issueManagement>
-		<system>JIRA</system>
-		<url>https://jira.mgm-tp.com/jira/browse/MQA</url>
+		<system>Github Issue Tracker</system>
+		<url>https://github.com/mgm-tp/jfunk/issues</url>
 	</issueManagement>
 
-	<ciManagement>
-		<system>Hudson</system>
-		<url>http://mgmbuilder02:8082/view/jFunk/</url>
-	</ciManagement>
+	<scm>
+		<connection>scm:git:git://github.com/mgm-tp/jfunk.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com/mgm-tp/jfunk.git</developerConnection>
+		<url>https://github.com/mgm-tp/jfunk</url>
+		<tag>HEAD</tag>
+	</scm>
 
 	<developers>
 		<developer>
@@ -130,10 +126,7 @@
 			<plugin>
 				<artifactId>maven-release-plugin</artifactId>
 				<configuration>
-					<suppressCommitBeforeTag>false</suppressCommitBeforeTag>
-					<scmCommentPrefix>MQA-000000: [maven-release-plugin] </scmCommentPrefix>
-					<releaseProfiles>dist,include-license</releaseProfiles>
-					<preparationGoals>clean verify</preparationGoals>
+					<releaseProfiles>dist</releaseProfiles>
 				</configuration>
 			</plugin>
 		</plugins>
