@@ -1,6 +1,6 @@
 # jFunk
 
-**jfunk is mgm' functional testing framework**
+**jfunk is mgm's functional testing framework**
 
 ---
 
