@@ -41,7 +41,6 @@ import com.google.inject.Key;
 import com.google.inject.Provides;
 import com.google.inject.TypeLiteral;
 import com.mgmtp.jfunk.common.JFunkConstants;
-import com.mgmtp.jfunk.common.config.ModuleScoped;
 import com.mgmtp.jfunk.common.util.Configuration;
 import com.mgmtp.jfunk.web.util.DumpFileCreator;
 import com.mgmtp.jfunk.web.util.FormInputHandler;
@@ -86,11 +85,7 @@ abstract class ScopingWebDriverModule extends BaseWebDriverModule {
 		bindWebDriver(WebConstants.WEBDRIVER_INTERNET_EXPLORER, InternetExplorerDriverProvider.class);
 		bindWebDriver(WebConstants.WEBDRIVER_REMOTE, RemoteWebDriverProvider.class);
 
-		if (scopeAnnotationClass == ModuleScoped.class) {
-			bindModuleScopedDisposable().to(WebDriverDisposable.class);
-		} else {
-			bindScriptScopedDisposable().to(WebDriverDisposable.class);
-		}
+		bindDisposable(Key.get(WebDriver.class)).to(WebDriverDisposable.class);
 
 		bind(new TypeLiteral<Map<String, Capabilities>>() {
 			//

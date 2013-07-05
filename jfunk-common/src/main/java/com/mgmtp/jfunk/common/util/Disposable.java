@@ -19,12 +19,17 @@ package com.mgmtp.jfunk.common.util;
  * Interface for some disposal logic. Implementers of this interface may be registered to be called
  * either after module or after script execution.
  * 
+ * @param <T>
+ *            type of the object to be disposed
  * @author rnaegele
  */
-public interface Disposable {
+public interface Disposable<T> {
 
 	/**
 	 * Performs some disposal logic.
+	 * 
+	 * @param source
+	 *            the object subject to some disposal logic
 	 */
-	void dispose();
+	void dispose(T source);
 }

@@ -21,13 +21,8 @@ import static com.google.common.collect.Maps.newHashMap;
 
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.inject.Key;
 import com.google.inject.Provider;
-import com.google.inject.Scope;
-import com.mgmtp.jfunk.common.util.Disposable;
 
 /**
  * Guice scope which uses thread-local storage for Guice-managed objects. A scope context needs to
@@ -35,10 +30,9 @@ import com.mgmtp.jfunk.common.util.Disposable;
  * 
  * @author rnaegele
  */
-public class ThreadScope implements Scope {
-	private final Logger log = LoggerFactory.getLogger(getClass());
+public class ThreadScope extends BaseScope {
 
-	private final ThreadLocal<Map<Key<?>, Object>> scopeCache = new ThreadLocal<Map<Key<?>, Object>>();
+	final ThreadLocal<Map<Key<?>, Object>> scopeCache = new ThreadLocal<Map<Key<?>, Object>>();
 
 	@Override
 	public <T> Provider<T> scope(final Key<T> key, final Provider<T> unscoped) {
@@ -46,21 +40,8 @@ public class ThreadScope implements Scope {
 			@Override
 			public T get() {
 				Map<Key<?>, Object> map = scopeCache.get();
-
 				checkState(map != null, "No scope map found for the current thread. Forgot to call enterScope()?");
-
-				// ok, because we know what we'd put in before
-				@SuppressWarnings("unchecked")
-				T value = (T) map.get(key);
-				if (value == null) {
-					/*
-					 * no cache instance present, so we use the one we get from the unscoped
-					 * provider and add it to the cache
-					 */
-					value = unscoped.get();
-					map.put(key, value);
-				}
-				return value;
+				return getScopedObject(key, unscoped, map);
 			}
 
 			@Override
@@ -77,6 +58,7 @@ public class ThreadScope implements Scope {
 	 * @throws IllegalStateException
 	 *             if there is already a scope context for the current thread
 	 */
+	@Override
 	public void enterScope() {
 		checkState(scopeCache.get() == null, "Scope has already been entered. Forgot to call exitScope()?");
 		Map<Key<?>, Object> scopeMap = newHashMap();
@@ -101,21 +83,12 @@ public class ThreadScope implements Scope {
 	 * @throws IllegalStateException
 	 *             if there is no scope context for the current thread
 	 */
+	@Override
 	public void exitScope() {
 		Map<Key<?>, Object> scopeMap = checkNotNull(scopeCache.get(),
 				"No scope map found for the current thread. Forgot to call enterScope()?");
 		scopeCache.remove();
-
-		for (Object obj : scopeMap.values()) {
-			if (obj instanceof Disposable) {
-				((Disposable) obj).dispose();
-			}
-		}
+		performDisposal(scopeMap);
 		log.debug("Exited scope.");
-	}
-
-	@Override
-	public String toString() {
-		return "ThreadScope";
 	}
 }

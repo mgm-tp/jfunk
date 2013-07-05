@@ -20,6 +20,8 @@ import javax.inject.Provider;
 import javax.inject.Singleton;
 
 import org.openqa.selenium.WebDriver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.mgmtp.jfunk.common.util.Configuration;
 import com.mgmtp.jfunk.common.util.Disposable;
@@ -30,14 +32,13 @@ import com.mgmtp.jfunk.common.util.Disposable;
  * @author rnaegele
  */
 @Singleton
-public class WebDriverDisposable implements Disposable {
+public class WebDriverDisposable implements Disposable<WebDriver> {
+	private final Logger logger = LoggerFactory.getLogger(getClass());
 
-	private final Provider<WebDriver> webDriverProvider;
 	private final Provider<Configuration> configurationProvider;
 
 	@Inject
-	public WebDriverDisposable(final Provider<WebDriver> webDriverProvider, final Provider<Configuration> configurationProvider) {
-		this.webDriverProvider = webDriverProvider;
+	public WebDriverDisposable(final Provider<Configuration> configurationProvider) {
 		this.configurationProvider = configurationProvider;
 	}
 
@@ -45,11 +46,11 @@ public class WebDriverDisposable implements Disposable {
 	 * Calls {@link WebDriver#quit()} on the instance return by the provider.
 	 */
 	@Override
-	public void dispose() {
+	public void dispose(final WebDriver source) {
 		if (configurationProvider.get().getBoolean(WebConstants.WEBDRIVER_DONT_QUIT)) {
 			return;
 		}
-		webDriverProvider.get().quit();
+		logger.info("Quitting WebDriver...");
+		source.quit();
 	}
-
 }

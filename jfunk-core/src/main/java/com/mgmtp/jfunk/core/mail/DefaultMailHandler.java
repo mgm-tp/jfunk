@@ -35,7 +35,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.mgmtp.jfunk.common.exception.JFunkException;
 import com.mgmtp.jfunk.common.util.Configuration;
-import com.mgmtp.jfunk.common.util.Disposable;
 import com.mgmtp.jfunk.common.util.ExtendedProperties;
 
 /**
@@ -43,7 +42,7 @@ import com.mgmtp.jfunk.common.util.ExtendedProperties;
  * 
  */
 @Singleton
-public class DefaultMailHandler implements MailHandler, Disposable {
+public class DefaultMailHandler implements MailHandler {
 
 	private static final String MAIL_ACCOUNT_PREFIX = "mail.account.";
 
@@ -114,14 +113,6 @@ public class DefaultMailHandler implements MailHandler, Disposable {
 		} finally {
 			lock.unlock();
 		}
-	}
-
-	/**
-	 * Calls {@link #releaseAllMailAccountsForThread()}.
-	 */
-	@Override
-	public void dispose() {
-		releaseAllMailAccountsForThread();
 	}
 
 	@Override
