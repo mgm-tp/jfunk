@@ -4,8 +4,8 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>com.mgmtp.maven.poms</groupId>
-		<artifactId>mgm-pom</artifactId>
-		<version>17</version>
+		<artifactId>mgm-oss-parent</artifactId>
+		<version>3</version>
 	</parent>
 	<groupId>com.mgmtp.jfunk</groupId>
 	<artifactId>jfunk</artifactId>

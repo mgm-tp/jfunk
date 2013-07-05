@@ -1,0 +1,52 @@
+// ------------------------------------------------------------------
+// Transitive dependencies of this project determined from the
+// maven pom organized by organization.
+// ------------------------------------------------------------------
+
+jFunk Benerator Integration
+Copyright 2013 mgm technology partners GmbH
+
+From: 'an unknown organization'
+  - AOP alliance (http://aopalliance.sourceforge.net) aopalliance:aopalliance:jar:1.0
+    License: Public Domain 
+  - FindBugs-jsr305 (http://findbugs.sourceforge.net/) com.google.code.findbugs:jsr305:jar:2.0.1
+    License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+  - Guava: Google Core Libraries for Java (http://code.google.com/p/guava-libraries/guava) com.google.guava:guava:bundle:14.0.1
+    License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+  - javax.inject (http://code.google.com/p/atinject/) javax.inject:javax.inject:jar:1
+    License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+  - databene benerator (http://databene.org/databene-benerator) org.databene:databene-benerator:jar:0.5.9-SR1
+    License: GNU Public License  (http://www.fsf.org/licensing/licenses/gpl.txt)
+    License: Commercial License  (http://databene.org/commercial_license.txt)
+  - databene commons (http://databene.org/databene-commons) org.databene:databene-commons:jar:0.4.9-SR1
+    License: GNU Public License  (http://www.fsf.org/licensing/licenses/gpl.txt)
+    License: Commercial License  (http://databene.org/commercial_license.txt)
+  - databene webdecs (http://databene.org/databene-webdecs) org.databene:databene-webdecs:jar:0.4.9-SR1
+    License: GNU Public License  (http://www.fsf.org/licensing/licenses/gpl.txt)
+    License: Commercial License  (http://databene.org/commercial_license.txt)
+  - FreeMarker (http://www.freemarker.org) org.freemarker:freemarker:jar:2.3.9
+    License: BSD-style license  (http://www.freemarker.org/LICENSE.txt)
+  - JDOM (http://www.jdom.org/) org.jdom:jdom:jar:1.1
+
+From: 'Google, Inc.' (http://www.google.com)
+  - Google Guice - Core Library (http://code.google.com/p/google-guice/guice/) com.google.inject:guice:jar:3.0
+    License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+  - Google Guice - Extensions - MultiBindings (http://code.google.com/p/google-guice/extensions-parent/guice-multibindings/) com.google.inject.extensions:guice-multibindings:jar:3.0
+    License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+
+From: 'QOS.ch' (http://www.qos.ch)
+  - JCL 1.1.1 implemented over SLF4J (http://www.slf4j.org) org.slf4j:jcl-over-slf4j:jar:1.7.5
+    License: MIT License  (http://www.opensource.org/licenses/mit-license.php)
+  - Log4j Implemented Over SLF4J (http://www.slf4j.org) org.slf4j:log4j-over-slf4j:jar:1.7.5
+    License: Apache Software Licenses  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+  - SLF4J API Module (http://www.slf4j.org) org.slf4j:slf4j-api:jar:1.7.5
+    License: MIT License  (http://www.opensource.org/licenses/mit-license.php)
+
+From: 'The Apache Software Foundation' (http://www.apache.org/)
+  - Commons IO (http://commons.apache.org/io/) commons-io:commons-io:jar:2.4
+    License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+  - Commons Lang (http://commons.apache.org/lang/) org.apache.commons:commons-lang3:jar:3.1
+    License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+
