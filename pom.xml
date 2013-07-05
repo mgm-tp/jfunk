@@ -59,7 +59,6 @@
 		<module>jfunk-core</module>
 		<module>jfunk-data</module>
 		<module>jfunk-data-generator</module>
-		<module>jfunk-data-benerator</module>
 		<module>jfunk-data-excel</module>
 		<module>jfunk-samples</module>
 		<module>jfunk-server</module>
