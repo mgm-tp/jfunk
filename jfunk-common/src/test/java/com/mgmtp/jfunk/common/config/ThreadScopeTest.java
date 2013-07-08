@@ -15,6 +15,7 @@
  */
 package com.mgmtp.jfunk.common.config;
 
+import static com.google.common.collect.Maps.newHashMap;
 import static org.testng.Assert.fail;
 
 import java.util.List;
@@ -47,6 +48,7 @@ public class ThreadScopeTest {
 	@Test
 	public void testThreadScope() throws InterruptedException {
 		final ThreadScope scope = new ThreadScope();
+		scope.disposables = newHashMap();
 
 		int size = 10;
 		final ExecutorService execSrv = Executors.newCachedThreadPool();
@@ -128,6 +130,8 @@ public class ThreadScopeTest {
 	@Test
 	public void testCleanUp() {
 		ThreadScope scope = new ThreadScope();
+		scope.disposables = newHashMap();
+
 		Provider<Object> prov = scope.scope(Key.get(Object.class), new Provider<Object>() {
 			@Override
 			public Object get() {
