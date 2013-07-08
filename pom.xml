@@ -205,49 +205,6 @@
 				<version>2.0.1</version>
 			</dependency>
 			<dependency>
-				<groupId>org.databene</groupId>
-				<artifactId>databene-benerator</artifactId>
-				<version>0.5.9-SR1</version>
-				<exclusions>
-					<exclusion>
-						<groupId>org.databene</groupId>
-						<artifactId>databene-gui</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>hsqldb</groupId>
-						<artifactId>hsqldb</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>mysql</groupId>
-						<artifactId>mysql-connector-java</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>org.apache.poi</groupId>
-						<artifactId>poi</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>org.apache.derby</groupId>
-						<artifactId>derbyclient</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>postgresql</groupId>
-						<artifactId>postgresql</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>net.sourceforge.jtds</groupId>
-						<artifactId>jtds</artifactId>
-					</exclusion>
-					<exclusion>
-						<artifactId>commons-logging</artifactId>
-						<groupId>commons-logging</groupId>
-					</exclusion>
-					<exclusion>
-						<artifactId>log4j</artifactId>
-						<groupId>log4j</groupId>
-					</exclusion>
-				</exclusions>
-			</dependency>
-			<dependency>
 				<groupId>org.codehaus.groovy</groupId>
 				<artifactId>groovy</artifactId>
 				<version>${groovy.version}</version>

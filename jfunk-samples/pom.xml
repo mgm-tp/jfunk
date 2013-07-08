@@ -170,13 +170,6 @@
 										</artifactItem>
 										<artifactItem>
 											<groupId>${project.groupId}</groupId>
-											<artifactId>jfunk-data-benerator</artifactId>
-											<version>${project.version}</version>
-											<type>jar</type>
-											<classifier>sources</classifier>
-										</artifactItem>
-										<artifactItem>
-											<groupId>${project.groupId}</groupId>
 											<artifactId>jfunk-data-excel</artifactId>
 											<version>${project.version}</version>
 											<type>jar</type>
