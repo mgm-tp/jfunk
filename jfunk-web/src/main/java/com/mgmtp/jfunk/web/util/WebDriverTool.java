@@ -30,6 +30,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NotFoundException;
+import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
@@ -54,8 +55,9 @@ import com.mgmtp.jfunk.data.DataSet;
  * </p>
  * 
  * @author rnaegele
+ * @since 3.1
  */
-public class WebDriverTool {
+public class WebDriverTool implements SearchContext {
 	protected final Logger logger = LoggerFactory.getLogger(getClass());
 
 	private static final String APPEND_OPEN_WINDOW_LINK_SCRIPT_TEMPLATE = "(function() { "
@@ -98,8 +100,22 @@ public class WebDriverTool {
 	 * @param by
 	 *            the {@link By} used to locate the element
 	 * @return the element
+	 * @deprecated Use {@link #findElement(By)} instead
 	 */
+	@Deprecated
 	public WebElement find(final By by) {
+		return findElement(by);
+	}
+
+	/**
+	 * Finds the first element. Uses the internal {@link WebElementFinder}.
+	 * 
+	 * @param by
+	 *            the {@link By} used to locate the element
+	 * @return the element
+	 */
+	@Override
+	public WebElement findElement(final By by) {
 		return wef.by(by).find();
 	}
 
@@ -112,8 +128,24 @@ public class WebDriverTool {
 	 * @param condition
 	 *            a condition the found element must meet
 	 * @return the element
+	 * @deprecated Use {@link #findElement(By, Predicate)} instead
 	 */
+	@Deprecated
 	public WebElement find(final By by, final Predicate<WebElement> condition) {
+		return findElement(by, condition);
+	}
+
+	/**
+	 * Finds the first element. Uses the internal {@link WebElementFinder}, which tries to apply the
+	 * specified {@code condition} until it times out.
+	 * 
+	 * @param by
+	 *            the {@link By} used to locate the element
+	 * @param condition
+	 *            a condition the found element must meet
+	 * @return the element
+	 */
+	public WebElement findElement(final By by, final Predicate<WebElement> condition) {
 		return wef.by(by).condition(condition).find();
 	}
 
@@ -123,8 +155,22 @@ public class WebDriverTool {
 	 * @param by
 	 *            the {@link By} used to locate the elements
 	 * @return the list of elements
+	 * @deprecated Use {@link #findElements(By)} instead
 	 */
+	@Deprecated
 	public List<WebElement> findAll(final By by) {
+		return findElements(by);
+	}
+
+	/**
+	 * Finds all elements. Uses the internal {@link WebElementFinder}.
+	 * 
+	 * @param by
+	 *            the {@link By} used to locate the elements
+	 * @return the list of elements
+	 */
+	@Override
+	public List<WebElement> findElements(final By by) {
 		return wef.by(by).findAll();
 	}
 
@@ -137,8 +183,24 @@ public class WebDriverTool {
 	 * @param condition
 	 *            a condition the found elements must meet
 	 * @return the list of elements
+	 * @deprecated Use {@link #findElements(By, Predicate)} instead
 	 */
+	@Deprecated
 	public List<WebElement> findAll(final By by, final Predicate<WebElement> condition) {
+		return findElements(by, condition);
+	}
+
+	/**
+	 * Finds all elements. Uses the internal {@link WebElementFinder}, which tries to apply the
+	 * specified {@code condition} until it times out.
+	 * 
+	 * @param by
+	 *            the {@link By} used to locate the element
+	 * @param condition
+	 *            a condition the found elements must meet
+	 * @return the list of elements
+	 */
+	public List<WebElement> findElements(final By by, final Predicate<WebElement> condition) {
 		return wef.by(by).condition(condition).findAll();
 	}
 
@@ -327,7 +389,7 @@ public class WebDriverTool {
 	}
 
 	/**
-	 * Delegates to {@link #find(By)} and calls {@link WebElement#sendKeys(CharSequence...)
+	 * Delegates to {@link #findElement(By)} and calls {@link WebElement#sendKeys(CharSequence...)
 	 * sendKeys(CharSequence...)} on the returned element.
 	 * 
 	 * @param by
@@ -336,69 +398,69 @@ public class WebDriverTool {
 	 *            the keys to send
 	 */
 	public void sendKeys(final By by, final CharSequence... keysToSend) {
-		find(by).sendKeys(keysToSend);
+		findElement(by).sendKeys(keysToSend);
 	}
 
 	/**
-	 * Delegates to {@link #find(By)} and calls {@link WebElement#clear() clear()} on the returned
-	 * element.
+	 * Delegates to {@link #findElement(By)} and calls {@link WebElement#clear() clear()} on the
+	 * returned element.
 	 * 
 	 * @param by
 	 *            the {@link By} used to locate the element
 	 */
 	public void clear(final By by) {
-		find(by).clear();
+		findElement(by).clear();
 	}
 
 	/**
-	 * Delegates to {@link #find(By)} and calls {@link WebElement#click() click()} on the returned
-	 * element.
+	 * Delegates to {@link #findElement(By)} and calls {@link WebElement#click() click()} on the
+	 * returned element.
 	 * 
 	 * @param by
 	 *            the {@link By} used to locate the element
 	 */
 	public void click(final By by) {
-		find(by).click();
+		findElement(by).click();
 	}
 
 	/**
-	 * Delegates to {@link #find(By)} and then performs a context-click using the {@link Actions}
-	 * class.
-	 * 
-	 * @param by
-	 *            the {@link By} used to locate the element
-	 */
-	public void contextClick(final By by) {
-		WebElement element = find(by);
-		new Actions(webDriver).contextClick(element).perform();
-	}
-
-	/**
-	 * Delegates to {@link #find(By)} and then performs a double-click using the {@link Actions}
-	 * class.
-	 * 
-	 * @param by
-	 *            the {@link By} used to locate the element
-	 */
-	public void doubleClick(final By by) {
-		WebElement element = find(by);
-		new Actions(webDriver).doubleClick(element).perform();
-	}
-
-	/**
-	 * Delegates to {@link #find(By)} and then moves the mouse to the returned element using the
+	 * Delegates to {@link #findElement(By)} and then performs a context-click using the
 	 * {@link Actions} class.
 	 * 
 	 * @param by
 	 *            the {@link By} used to locate the element
 	 */
+	public void contextClick(final By by) {
+		WebElement element = findElement(by);
+		new Actions(webDriver).contextClick(element).perform();
+	}
+
+	/**
+	 * Delegates to {@link #findElement(By)} and then performs a double-click using the
+	 * {@link Actions} class.
+	 * 
+	 * @param by
+	 *            the {@link By} used to locate the element
+	 */
+	public void doubleClick(final By by) {
+		WebElement element = findElement(by);
+		new Actions(webDriver).doubleClick(element).perform();
+	}
+
+	/**
+	 * Delegates to {@link #findElement(By)} and then moves the mouse to the returned element using
+	 * the {@link Actions} class.
+	 * 
+	 * @param by
+	 *            the {@link By} used to locate the element
+	 */
 	public void hover(final By by) {
-		WebElement element = find(by);
+		WebElement element = findElement(by);
 		new Actions(webDriver).moveToElement(element).perform();
 	}
 
 	/**
-	 * Delegates to {@link #find(By)}, moves the mouse to the returned element using the
+	 * Delegates to {@link #findElement(By)}, moves the mouse to the returned element using the
 	 * {@link Actions} class and then tries to find and element using {@code byToAppear} with a
 	 * timeout of 1 seconds, retrying up to ten times because hovers sometimes do not work very
 	 * reliably.
@@ -415,7 +477,7 @@ public class WebDriverTool {
 		RuntimeException exception = null;
 		for (int i = 0; i < 10; ++i) {
 			try {
-				WebElement element = find(by);
+				WebElement element = findElement(by);
 				new Actions(webDriver).moveToElement(element).perform();
 				return finder.find();
 			} catch (NoSuchElementException ex) {
@@ -430,7 +492,7 @@ public class WebDriverTool {
 	}
 
 	/**
-	 * Delegates to {@link #find(By)} and then calls {@link WebElement#getAttribute(String)
+	 * Delegates to {@link #findElement(By)} and then calls {@link WebElement#getAttribute(String)
 	 * getAttribute(String)} on the returned element.
 	 * 
 	 * @param by
@@ -440,12 +502,12 @@ public class WebDriverTool {
 	 * @return the attribute value
 	 */
 	public String getAttributeValue(final By by, final String attributeName) {
-		WebElement element = find(by);
+		WebElement element = findElement(by);
 		return element.getAttribute(attributeName);
 	}
 
 	/**
-	 * Delegates to {@link #find(By)} and then calls {@link WebElement#getCssValue(String)
+	 * Delegates to {@link #findElement(By)} and then calls {@link WebElement#getCssValue(String)
 	 * getAttribute(String)} on the returned element.
 	 * 
 	 * @param by
@@ -455,13 +517,14 @@ public class WebDriverTool {
 	 * @return The current, computed value of the property.
 	 */
 	public String getCssValue(final By by, final String propertyName) {
-		WebElement element = find(by);
+		WebElement element = findElement(by);
 		return element.getCssValue(propertyName);
 	}
 
 	/**
-	 * Delegates to {@link #find(By)} and then calls {@link WebElement#getText() getText()} on the
-	 * returned element. The element's text is passed to {@link StringUtils#normalizeSpace(String)}.
+	 * Delegates to {@link #findElement(By)} and then calls {@link WebElement#getText() getText()}
+	 * on the returned element. The element's text is passed to
+	 * {@link StringUtils#normalizeSpace(String)}.
 	 * 
 	 * @param by
 	 *            the {@link By} used to locate the element
@@ -472,9 +535,9 @@ public class WebDriverTool {
 	}
 
 	/**
-	 * Delegates to {@link #find(By)} and then calls {@link WebElement#getText() getText()} on the
-	 * returned element. If {@code normalizeSpace} is {@code true}, the element's text is passed to
-	 * {@link StringUtils#normalizeSpace(String)}.
+	 * Delegates to {@link #findElement(By)} and then calls {@link WebElement#getText() getText()}
+	 * on the returned element. If {@code normalizeSpace} is {@code true}, the element's text is
+	 * passed to {@link StringUtils#normalizeSpace(String)}.
 	 * 
 	 * @param by
 	 *            the {@link By} used to locate the element
@@ -483,7 +546,7 @@ public class WebDriverTool {
 	 * @return the text
 	 */
 	public String getElementText(final By by, final boolean normalizeSpace) {
-		WebElement element = find(by);
+		WebElement element = findElement(by);
 		String text = element.getText();
 		return normalizeSpace ? StringUtils.normalizeSpace(text) : text;
 	}
