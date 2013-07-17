@@ -87,8 +87,8 @@ public class ThreadScope extends BaseScope {
 	public void exitScope() {
 		Map<Key<?>, Object> scopeMap = checkNotNull(scopeCache.get(),
 				"No scope map found for the current thread. Forgot to call enterScope()?");
-		scopeCache.remove();
 		performDisposal(scopeMap);
+		scopeCache.remove();
 		log.debug("Exited scope.");
 	}
 }

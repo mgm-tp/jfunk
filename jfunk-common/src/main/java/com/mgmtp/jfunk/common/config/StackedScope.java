@@ -76,8 +76,9 @@ public class StackedScope extends BaseScope {
 	 */
 	@Override
 	public void exitScope() {
-		Map<Key<?>, Object> scopeMap = scopeStackCache.get().pop();
+		Map<Key<?>, Object> scopeMap = scopeStackCache.get().peek();
 		performDisposal(scopeMap);
+		scopeStackCache.get().pop();
 		log.debug("Exited scope.");
 	}
 }
