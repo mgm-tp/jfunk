@@ -53,6 +53,7 @@ import com.google.common.io.Files;
 import com.mgmtp.jfunk.common.JFunkConstants;
 import com.mgmtp.jfunk.common.config.ModuleScoped;
 import com.mgmtp.jfunk.common.exception.JFunkException;
+import com.mgmtp.jfunk.common.random.MathRandom;
 import com.mgmtp.jfunk.common.util.Configuration;
 import com.mgmtp.jfunk.common.util.ExtendedProperties;
 import com.mgmtp.jfunk.core.config.ArchiveDir;
@@ -89,6 +90,7 @@ public class ModuleArchiver {
 	private File moduleArchiveDir;
 
 	private FileAppender<ILoggingEvent> moduleAppender;
+	private final MathRandom random;
 
 	/**
 	 * Creates a new instance.
@@ -102,11 +104,12 @@ public class ModuleArchiver {
 	 */
 	@Inject
 	ModuleArchiver(final Configuration configuration, final DataSource dataSource, @ArchiveDir final File archiveDir,
-			final Charset charset) {
+			final Charset charset, final MathRandom random) {
 		this.configuration = configuration;
 		this.dataSource = dataSource;
 		this.archiveDir = archiveDir;
 		this.charset = charset;
+		this.random = random;
 	}
 
 	/**
@@ -180,6 +183,7 @@ public class ModuleArchiver {
 			configClone.put(JFunkConstants.CURRENT_MODULE_NAME, testModule.getName());
 			configClone.put(JFunkConstants.CURRENT_MODULE_RESULT, success ? JFunkConstants.OK : JFunkConstants.ERROR);
 			configClone.put(JFunkConstants.TESTMODULE_CLASS, testModule.getClass().getName());
+			configClone.put(JFunkConstants.RANDOM_SEED, String.valueOf(random.getSeed()));
 
 			saveDataSets(configClone);
 			saveConfiguration(configClone);

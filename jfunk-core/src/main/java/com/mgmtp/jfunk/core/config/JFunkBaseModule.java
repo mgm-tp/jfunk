@@ -195,17 +195,7 @@ public final class JFunkBaseModule extends BaseJFunkGuiceModule {
 	@ScriptScoped
 	MathRandom provideMathRandom(final Configuration config) {
 		String seedString = config.get(JFunkConstants.RANDOM_SEED, false);
-
-		MathRandom mathRandom;
-		if (seedString == null) {
-			mathRandom = new MathRandom();
-			if (config.get(JFunkConstants.RANDOM_SEED, false) == null) {
-				config.put(JFunkConstants.RANDOM_SEED, String.valueOf(mathRandom.getSeed()));
-			}
-		} else {
-			mathRandom = new MathRandom(Long.parseLong(seedString));
-		}
-		return mathRandom;
+		return seedString == null ? new MathRandom() : new MathRandom(Long.parseLong(seedString));
 	}
 
 	@Provides
