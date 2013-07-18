@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>com.mgmtp.maven.poms</groupId>
 		<artifactId>mgm-oss-parent</artifactId>
-		<version>3</version>
+		<version>4</version>
 	</parent>
 	<groupId>com.mgmtp.jfunk</groupId>
 	<artifactId>jfunk</artifactId>
@@ -105,10 +105,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-clean-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.1</version><!--$NO-MVN-MAN-VER$-->
 			</plugin>
 			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>
