@@ -16,7 +16,10 @@
     limitations under the License.
 
 -->
-<!DOCTYPE configuration SYSTEM "generator.dtd">
+<!DOCTYPE configuration SYSTEM "generator.dtd"[
+	<!ENTITY controls_xml SYSTEM "controls.xml">
+	<!ENTITY fields_xml SYSTEM "fields.xml">
+]>
 <configuration>
 	<format>
 		<date>
@@ -41,34 +44,8 @@
 			<bad_expression>[[^\x00-\x1F\x7F\x80-\x9F\s][ ]]</bad_expression>
 		</charset>
 	</charsets>
-	<controls>
-		<control id="default.control" class="EnumerationControl">
-			<case type="min"/>
-			<case type="avg"/>
-			<case type="max"/>
-		</control>
-		<control id="linear.control" class="LinearControl" shuffle="true"/>
-	</controls>
-	<fields>
-		<field id="text" class="InverseExpression">
-			<control_ref id="default.control"/>
-			<expression>[A-Z][a-züöä]*</expression>
-		</field>
-		<field id="integerNumber" class="InverseExpression">
-			<control_ref id="default.control"/>
-			<expression>[0-9]*</expression>
-		</field>
-		<field id="doubleNumber" class="InverseExpression">
-			<control_ref id="default.control"/>
-			<expression>[0-9]*[.][0-9]*</expression>
-		</field>
-		<field id="select">
-			<control_ref id="linear.control"/>
-			<value>red</value>
-			<value>green</value>
-			<value>blue</value>
-		</field>
-	</fields>
+	&controls_xml;
+	&fields_xml;
 	<constraints charset_id="iso-8859-1">
 		<constraint id="google.all" class="Complex">
 			<constraint id="google.searchTerm">
