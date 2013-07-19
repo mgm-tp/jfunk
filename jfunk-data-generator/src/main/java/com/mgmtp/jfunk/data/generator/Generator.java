@@ -15,12 +15,14 @@
  */
 package com.mgmtp.jfunk.data.generator;
 
+import static org.apache.commons.io.FileUtils.toFile;
+import static org.apache.commons.io.FilenameUtils.removeExtension;
 import static org.apache.commons.io.IOUtils.closeQuietly;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.net.URI;
 import java.util.Collection;
 import java.util.List;
 
@@ -33,6 +35,7 @@ import org.jdom.input.SAXBuilder;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 
+import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;
 import com.google.inject.Injector;
 import com.mgmtp.jfunk.common.random.MathRandom;
@@ -100,37 +103,18 @@ public class Generator {
 		builder.setEntityResolver(new EntityResolver() {
 			@Override
 			public InputSource resolveEntity(final String publicId, final String systemId) throws IOException {
-				int index = systemId.lastIndexOf('/');
-				if (index == -1) {
-					index = 0;
-				}
-				String filename = configuration.processPropertyValue(systemId.substring(index));
-				File subFile = new File(filename);
-				InputStream in = null;
-				if (!subFile.exists()) {
-					subFile = new File(new File(generatorFile).getParent(), filename);
-				}
-				try {
-					if (subFile.isAbsolute()) {
-						in = ResourceLoader.getInputStream(subFile.getPath());
-					} else {
-						in = ResourceLoader.getConfigInputStream(subFile.getPath());
-					}
-				} catch (Exception e) {
-					// ignore
-					in = null;
-				}
-				if (in == null) {
-					throw new IllegalStateException("Error reading generator configuration; could not find entity " + systemId);
-				}
-				return new InputSource(new InputStreamReader(in));
+				String resolvedSystemId = configuration.processPropertyValue(systemId);
+				URI uri = URI.create(resolvedSystemId);
+				File file = uri.isAbsolute() ? toFile(uri.toURL()) : new File(uri.toString());
+				return new InputSource(ResourceLoader.getBufferedReader(file, Charsets.UTF_8.name()));
 			}
 		});
 
 		InputStream in = ResourceLoader.getConfigInputStream(generatorFile);
 		Document doc = null;
 		try {
-			doc = builder.build(in);
+			String systemId = ResourceLoader.getConfigDir() + '/' + removeExtension(generatorFile) + ".dtd";
+			doc = builder.build(in, systemId);
 			Element root = doc.getRootElement();
 
 			Element charsetsElement = root.getChild(XMLTags.CHARSETS);
