@@ -15,7 +15,6 @@
  */
 package com.mgmtp.jfunk.core.mail;
 
-import com.google.inject.Key;
 import com.google.inject.Provides;
 import com.mgmtp.jfunk.common.util.Configuration;
 import com.mgmtp.jfunk.core.config.BaseJFunkGuiceModule;
@@ -33,7 +32,6 @@ public class EmailModule extends BaseJFunkGuiceModule {
 		bind(EmailParserFactory.class);
 		bind(MailHandler.class).to(DefaultMailHandler.class);
 		bindEventHandler().to(EmailEventHandler.class);
-		bindDisposable(Key.get(MailHandler.class)).to(DefaultMailHandlerDisposable.class);
 	}
 
 	@Provides

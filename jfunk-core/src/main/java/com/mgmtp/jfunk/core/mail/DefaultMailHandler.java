@@ -29,7 +29,8 @@ import java.util.regex.Pattern;
 
 import javax.inject.Singleton;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -46,7 +47,7 @@ public class DefaultMailHandler implements MailHandler {
 
 	private static final String MAIL_ACCOUNT_PREFIX = "mail.account.";
 
-	private final Logger log = Logger.getLogger(getClass());
+	private final Logger log = LoggerFactory.getLogger(getClass());
 	private final Map<String, Thread> usedAccounts = Maps.newHashMap();
 	private final ReentrantLock lock = new ReentrantLock();
 	private final Condition condition = lock.newCondition();
@@ -120,8 +121,10 @@ public class DefaultMailHandler implements MailHandler {
 		lock.lock();
 		try {
 			for (Iterator<Entry<String, Thread>> it = usedAccounts.entrySet().iterator(); it.hasNext();) {
-				if (it.next().getValue().equals(Thread.currentThread())) {
+				Entry<String, Thread> entry = it.next();
+				if (entry.getValue().equals(Thread.currentThread())) {
 					it.remove();
+					log.info("Released e-mail account: {}", entry.getKey());
 				}
 			}
 			condition.signalAll();
@@ -135,6 +138,7 @@ public class DefaultMailHandler implements MailHandler {
 		lock.lock();
 		try {
 			usedAccounts.remove(accountId);
+			log.info("Released e-mail account: {}", accountId);
 			condition.signal();
 		} finally {
 			lock.unlock();

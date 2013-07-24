@@ -24,6 +24,7 @@ import org.apache.log4j.Logger;
 import com.google.common.eventbus.AllowConcurrentEvents;
 import com.google.common.eventbus.Subscribe;
 import com.mgmtp.jfunk.common.util.Configuration;
+import com.mgmtp.jfunk.core.event.AfterScriptEvent;
 import com.mgmtp.jfunk.core.event.BeforeModuleEvent;
 import com.mgmtp.jfunk.core.exception.MailException;
 
@@ -38,11 +39,14 @@ public class EmailEventHandler {
 
 	private final Provider<EmailParser> emailParserProvider;
 	private final Provider<Configuration> configProvider;
+	private final MailHandler mailHandler;
 
 	@Inject
-	public EmailEventHandler(final Provider<EmailParser> emailParserProvider, final Provider<Configuration> configProvider) {
+	public EmailEventHandler(final Provider<EmailParser> emailParserProvider, final Provider<Configuration> configProvider,
+			final MailHandler mailHandler) {
 		this.emailParserProvider = emailParserProvider;
 		this.configProvider = configProvider;
+		this.mailHandler = mailHandler;
 	}
 
 	/**
@@ -59,5 +63,11 @@ public class EmailEventHandler {
 				log.error("Error deleting mails on startup.", ex);
 			}
 		}
+	}
+
+	@Subscribe
+	@AllowConcurrentEvents
+	public void handleEvent(@SuppressWarnings("unused") final AfterScriptEvent event) {
+		mailHandler.releaseAllMailAccountsForThread();
 	}
 }
