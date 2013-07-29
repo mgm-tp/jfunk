@@ -27,6 +27,7 @@ public final class JFunkConstants {
 	public static final String ARCHIVING_MODE_NONE = "none";
 	public static final String ARCHIVE_TYPE = "archive.type";
 	public static final String ARCHIVE_DATASETS = "archive.datasets";
+	public static final String ARCHIVE_DO_NOT_SAVE_WHEN_ALERT = "archive.doNotSaveWhenAlert";
 	public static final String LASTPAGE_HTML = "lastpage.html";
 	public static final String STACKTRACE_LOG = "stacktrace.log";
 

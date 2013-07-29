@@ -190,16 +190,18 @@ public class JFunkWebDriverEventListener implements WebDriverEventListener {
 			return;
 		}
 
-		try {
-			// Saving the page does not work if an alert is present 
-			driver.switchTo().alert();
-			log.trace("Cannot save page. Alert is present.");
-			return;
-		} catch (NoAlertPresentException ex) {
-			// ignore
-		} catch (UnsupportedOperationException ex) {
-			// ignore
-			// HtmlUnit does not support alerts
+		if (config.getBoolean(JFunkConstants.ARCHIVE_DO_NOT_SAVE_WHEN_ALERT, true)) {
+			try {
+				// Saving the page does not work if an alert is present
+				driver.switchTo().alert();
+				log.trace("Cannot save page. Alert is present.");
+				return;
+			} catch (NoAlertPresentException ex) {
+				// ignore
+			} catch (UnsupportedOperationException ex) {
+				// ignore
+				// HtmlUnit does not support alerts
+			}
 		}
 
 		for (SaveOutput saveOutput : SaveOutput.values()) {
