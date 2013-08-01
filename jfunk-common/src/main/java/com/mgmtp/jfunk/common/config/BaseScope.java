@@ -23,6 +23,7 @@ import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.eventbus.EventBus;
 import com.google.inject.Key;
 import com.google.inject.Provider;
 import com.google.inject.Scope;
@@ -44,12 +45,15 @@ public abstract class BaseScope implements Scope {
 	@Inject
 	Map<Key<?>, Disposable<?>> disposables;
 
+	@Inject
+	EventBus eventBus;
+
 	public abstract void enterScope();
 
 	public abstract void exitScope();
 
 	/**
-	 * If already present, gets theobject for the specified key from the scope map. Otherwise it is
+	 * If already present, gets the object for the specified key from the scope map. Otherwise it is
 	 * retrieved from the unscoped provider and stored in the scope map.
 	 * 
 	 * @param key
