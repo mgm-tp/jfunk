@@ -23,12 +23,13 @@ import java.util.Set;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.Validate;
-import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.Augmenter;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.events.WebDriverEventListener;
 
+import com.google.common.eventbus.EventBus;
 import com.mgmtp.jfunk.common.util.Configuration;
 
 /**
@@ -41,12 +42,12 @@ public class RemoteWebDriverProvider extends BaseWebDriverProvider {
 
 	@Inject
 	public RemoteWebDriverProvider(final Configuration config, final Set<WebDriverEventListener> eventListeners,
-			final Map<String, Capabilities> capabilitiesMap) {
-		super(config, eventListeners, capabilitiesMap);
+			final Map<String, DesiredCapabilities> capabilitiesMap, final EventBus eventBus) {
+		super(config, eventListeners, capabilitiesMap, eventBus);
 	}
 
 	@Override
-	protected WebDriver createWebDriver() {
+	protected WebDriver createWebDriver(final DesiredCapabilities capabilities) {
 		String remoteWebDriverUrl = config.get(WebConstants.REMOTE_WEBDRIVER_URL, "");
 		Validate.notBlank(remoteWebDriverUrl, "Property '%s' must be set in configuration", WebConstants.REMOTE_WEBDRIVER_URL);
 
@@ -58,6 +59,6 @@ public class RemoteWebDriverProvider extends BaseWebDriverProvider {
 		}
 
 		log.info("Starting remote web driver with capabilitiesMap: {}", capabilitiesMap);
-		return new Augmenter().augment(new RemoteWebDriver(url, capabilitiesMap.get(WebConstants.WEBDRIVER_REMOTE)));
+		return new Augmenter().augment(new RemoteWebDriver(url, capabilities));
 	}
 }

@@ -20,11 +20,12 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
-import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.events.WebDriverEventListener;
 
+import com.google.common.eventbus.EventBus;
 import com.mgmtp.jfunk.common.util.Configuration;
 
 /**
@@ -34,12 +35,12 @@ public class InternetExplorerDriverProvider extends BaseWebDriverProvider {
 
 	@Inject
 	public InternetExplorerDriverProvider(final Configuration config, final Set<WebDriverEventListener> eventListeners,
-			final Map<String, Capabilities> capabilitiesMap) {
-		super(config, eventListeners, capabilitiesMap);
+			final Map<String, DesiredCapabilities> capabilitiesMap, final EventBus eventBus) {
+		super(config, eventListeners, capabilitiesMap, eventBus);
 	}
 
 	@Override
-	protected WebDriver createWebDriver() {
-		return new InternetExplorerDriver(capabilitiesMap.get(WebConstants.WEBDRIVER_INTERNET_EXPLORER));
+	protected WebDriver createWebDriver(final DesiredCapabilities capabilities) {
+		return new InternetExplorerDriver(capabilities);
 	}
 }

@@ -100,7 +100,7 @@ import com.mgmtp.jfunk.common.util.Configuration;
  * 
  * @author rnaegele
  */
-public class CapabilitiesProvider implements Provider<Map<String, Capabilities>> {
+public class CapabilitiesProvider implements Provider<Map<String, DesiredCapabilities>> {
 
 	private static final String PROXY_PREFIX = "webdriver.proxy.";
 
@@ -114,7 +114,7 @@ public class CapabilitiesProvider implements Provider<Map<String, Capabilities>>
 	}
 
 	@Override
-	public Map<String, Capabilities> get() {
+	public Map<String, DesiredCapabilities> get() {
 		Configuration config = configProvider.get();
 
 		Map<String, Map<String, List<JFunkCapability>>> capabilitiesMap = newHashMap();
@@ -164,10 +164,10 @@ public class CapabilitiesProvider implements Provider<Map<String, Capabilities>>
 		final Proxy proxy = createProxyFromConfig(config);
 
 		// transform in to map of capabilities for each webdriver type
-		final Map<String, Capabilities> byDriverTypeCapabilities = transformEntries(capabilitiesMap,
-				new EntryTransformer<String, Map<String, List<JFunkCapability>>, Capabilities>() {
+		final Map<String, DesiredCapabilities> byDriverTypeCapabilities = transformEntries(capabilitiesMap,
+				new EntryTransformer<String, Map<String, List<JFunkCapability>>, DesiredCapabilities>() {
 					@Override
-					public Capabilities transformEntry(final String key, final Map<String, List<JFunkCapability>> value) {
+					public DesiredCapabilities transformEntry(final String key, final Map<String, List<JFunkCapability>> value) {
 						Map<String, Object> capabilities = newHashMap(globalCapabilities);
 						Map<String, Object> transformedCapabilities = transformCapabilities(value);
 						capabilities.putAll(transformedCapabilities);
@@ -181,15 +181,15 @@ public class CapabilitiesProvider implements Provider<Map<String, Capabilities>>
 				});
 
 		// wrap, so we get empty capabilities instead of nulls
-		return new ForwardingMap<String, Capabilities>() {
+		return new ForwardingMap<String, DesiredCapabilities>() {
 			@Override
-			protected Map<String, Capabilities> delegate() {
+			protected Map<String, DesiredCapabilities> delegate() {
 				return byDriverTypeCapabilities;
 			}
 
 			@Override
-			public Capabilities get(final Object key) {
-				Capabilities capabilities = super.get(key);
+			public DesiredCapabilities get(final Object key) {
+				DesiredCapabilities capabilities = super.get(key);
 				if (capabilities == null) {
 					DesiredCapabilities desiredCapabilities = new DesiredCapabilities();
 					if (proxy != null) {

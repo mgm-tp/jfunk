@@ -23,14 +23,16 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Provider;
 
-import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
 import org.openqa.selenium.support.events.WebDriverEventListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.eventbus.EventBus;
 import com.mgmtp.jfunk.common.util.Configuration;
+import com.mgmtp.jfunk.web.event.BeforeWebDriverCreationEvent;
 
 /**
  * @author rnaegele
@@ -40,20 +42,28 @@ public abstract class BaseWebDriverProvider implements Provider<WebDriver> {
 
 	protected final Configuration config;
 	private final Set<WebDriverEventListener> eventListeners;
-	protected final Map<String, Capabilities> capabilitiesMap;
+	protected final Map<String, DesiredCapabilities> capabilitiesMap;
+	private final EventBus eventBus;
 
 	public BaseWebDriverProvider(final Configuration config, final Set<WebDriverEventListener> eventListeners,
-			final Map<String, Capabilities> capabilitiesMap) {
+			final Map<String, DesiredCapabilities> capabilitiesMap, final EventBus eventBus) {
 		this.config = config;
 		this.eventListeners = eventListeners;
 		this.capabilitiesMap = capabilitiesMap;
+		this.eventBus = eventBus;
 	}
 
 	@Override
 	public WebDriver get() {
-		log.info("Creating new WebDriver instance with key '{}'...", config.get(WebConstants.WEBDRIVER_KEY));
+		String webDriverKey = config.get(WebConstants.WEBDRIVER_KEY);
+		log.info("Creating new WebDriver instance with key '{}'...", webDriverKey);
 
-		WebDriver webDriver = createWebDriver();
+		DesiredCapabilities capabilities = capabilitiesMap.get(webDriverKey);
+
+		// post event so users can customize capabilities
+		eventBus.post(new BeforeWebDriverCreationEvent(webDriverKey, capabilities));
+
+		WebDriver webDriver = createWebDriver(capabilities);
 		checkState(!(webDriver instanceof EventFiringWebDriver),
 				"WebDrivers must not be wrapped explicitly into an EventFiringWebDriver. This is implicitly done by jFunk.");
 
@@ -69,5 +79,5 @@ public abstract class BaseWebDriverProvider implements Provider<WebDriver> {
 		return eventFiringWebDriver;
 	}
 
-	protected abstract WebDriver createWebDriver();
+	protected abstract WebDriver createWebDriver(DesiredCapabilities capabilities);
 }

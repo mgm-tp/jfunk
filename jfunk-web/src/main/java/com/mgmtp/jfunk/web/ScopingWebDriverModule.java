@@ -27,8 +27,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.http.client.CredentialsProvider;
-import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.events.WebDriverEventListener;
 
 import com.gargoylesoftware.htmlunit.AjaxController;
@@ -87,7 +87,7 @@ abstract class ScopingWebDriverModule extends BaseWebDriverModule {
 
 		bindDisposable(Key.get(WebDriver.class)).to(WebDriverDisposable.class);
 
-		bind(new TypeLiteral<Map<String, Capabilities>>() {
+		bind(new TypeLiteral<Map<String, DesiredCapabilities>>() {
 			//
 		}).toProvider(CapabilitiesProvider.class);
 

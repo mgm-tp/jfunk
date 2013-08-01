@@ -26,6 +26,7 @@ import java.util.Map;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.testng.annotations.Test;
 
 import com.google.common.base.Charsets;
@@ -48,7 +49,7 @@ public class CapabilitiesProviderTest {
 			config.load(reader);
 
 			CapabilitiesProvider provider = new CapabilitiesProvider(Providers.of(config));
-			Map<String, Capabilities> capabilitiesMap = provider.get();
+			Map<String, DesiredCapabilities> capabilitiesMap = provider.get();
 
 			assertThat(capabilitiesMap).hasSize(2);
 			assertThat(capabilitiesMap).containsKey("firefox");

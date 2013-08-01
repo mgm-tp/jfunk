@@ -23,15 +23,16 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 
 import org.apache.http.client.CredentialsProvider;
-import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.events.WebDriverEventListener;
 
 import com.gargoylesoftware.htmlunit.AjaxController;
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.WebWindowListener;
+import com.google.common.eventbus.EventBus;
 import com.mgmtp.jfunk.common.util.Configuration;
 import com.mgmtp.jfunk.core.config.ModuleArchiveDir;
 import com.mgmtp.jfunk.web.util.DumpFileCreator;
@@ -56,8 +57,9 @@ public class HtmlUnitDriverProvider extends BaseWebDriverProvider {
 			final Map<String, CredentialsProvider> credentialsProviderMap,
 			final Provider<DumpFileCreator> htmlFileCreatorProvider,
 			@ModuleArchiveDir final Provider<File> moduleArchiveDirProvider,
-			final Provider<Set<WebWindowListener>> listenersProvider, final Map<String, Capabilities> capabilitiesMap) {
-		super(config, eventListeners, capabilitiesMap);
+			final Provider<Set<WebWindowListener>> listenersProvider, final Map<String, DesiredCapabilities> capabilitiesMap,
+			final EventBus eventBus) {
+		super(config, eventListeners, capabilitiesMap, eventBus);
 		this.webDriverParams = webDriverParams;
 		this.sslParams = sslParams;
 		this.browserVersion = browserVersion;
@@ -69,8 +71,7 @@ public class HtmlUnitDriverProvider extends BaseWebDriverProvider {
 	}
 
 	@Override
-	protected WebDriver createWebDriver() {
-		Capabilities capabilities = capabilitiesMap.get(WebConstants.WEBDRIVER_HTMLUNIT);
+	protected WebDriver createWebDriver(final DesiredCapabilities capabilities) {
 		Proxy proxy = capabilities != null ? (Proxy) capabilities.getCapability(CapabilityType.PROXY) : null;
 		return new JFunkHtmlUnitDriverImpl(browserVersion, webDriverParams, ajaxController, sslParams,
 				credentialsProviderMap, htmlFileCreatorProvider, moduleArchiveDirProvider, listenersProvider, proxy);
