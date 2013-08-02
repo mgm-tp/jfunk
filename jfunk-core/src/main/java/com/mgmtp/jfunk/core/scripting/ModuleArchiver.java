@@ -337,7 +337,7 @@ public class ModuleArchiver {
 
 		File zipFile = new File(moduleArchiveDir.getParentFile(), moduleArchiveDir.getName()
 				+ (success ? "_ok.zip" : "_error.zip"));
-		log.info("Creating zip file " + zipFile + " from directory " + this);
+		log.info("Creating zip file: {}" + zipFile);
 
 		ZipOutputStream zipOut = null;
 		try {
