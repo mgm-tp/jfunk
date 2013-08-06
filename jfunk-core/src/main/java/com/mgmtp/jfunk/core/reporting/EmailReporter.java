@@ -31,6 +31,7 @@ import javax.activation.DataHandler;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.ThreadSafe;
 import javax.inject.Inject;
+import javax.inject.Provider;
 import javax.mail.BodyPart;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -66,16 +67,17 @@ public final class EmailReporter implements Reporter {
 	private final Logger log = Logger.getLogger(getClass());
 
 	private final List<ReportData> reportDataList = newArrayList();
-	private final String recipients;
-	private final SmtpClient smtpClient;
-	private final Session session;
+	private final Provider<String> recipientsProvider;
+	private final Provider<SmtpClient> smtpClientProvider;
+	private final Provider<Session> sessionProvider;
 
 	@Inject
-	public EmailReporter(final SmtpClient smtpClient, @Nullable @ReportMailRecipients final String recipients,
-			@TransportSession final Session session) {
-		this.smtpClient = smtpClient;
-		this.recipients = recipients;
-		this.session = session;
+	public EmailReporter(final Provider<SmtpClient> smtpClientProvider,
+			@Nullable @ReportMailRecipients final Provider<String> recipientsProvider,
+			@TransportSession final Provider<Session> sessionProvider) {
+		this.smtpClientProvider = smtpClientProvider;
+		this.recipientsProvider = recipientsProvider;
+		this.sessionProvider = sessionProvider;
 	}
 
 	@Override
@@ -90,7 +92,7 @@ public final class EmailReporter implements Reporter {
 
 	@Override
 	public synchronized void createReport() throws IOException {
-		if (trimToNull(recipients) == null) {
+		if (trimToNull(recipientsProvider.get()) == null) {
 			log.warn("No recipients for global e-mail report set. Cannot send report.");
 			return;
 		}
@@ -104,9 +106,9 @@ public final class EmailReporter implements Reporter {
 
 	private void sendMessage(final String content) {
 		try {
-			MimeMessage msg = new MimeMessage(session);
+			MimeMessage msg = new MimeMessage(sessionProvider.get());
 			msg.setSubject("jFunk E-mail Report");
-			msg.addRecipients(Message.RecipientType.TO, recipients);
+			msg.addRecipients(Message.RecipientType.TO, recipientsProvider.get());
 
 			BodyPart messageBodyPart = new MimeBodyPart();
 			messageBodyPart.setContent(content, "text/html; charset=UTF-8");
@@ -126,10 +128,10 @@ public final class EmailReporter implements Reporter {
 
 			msg.setContent(multipart);
 
-			smtpClient.send(msg);
+			smtpClientProvider.get().send(msg);
 
 			int anzahlRecipients = msg.getAllRecipients().length;
-			log.info("Report e-mail was sent to " + anzahlRecipients + " recipient(s): " + recipients);
+			log.info("Report e-mail was sent to " + anzahlRecipients + " recipient(s): " + recipientsProvider.get());
 		} catch (MessagingException e) {
 			log.error("Error while creating report e-mail", e);
 		} catch (MailException e) {
