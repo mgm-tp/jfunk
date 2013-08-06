@@ -50,6 +50,7 @@ import com.mgmtp.jfunk.core.data.DataSetAdapter;
 import com.mgmtp.jfunk.core.event.AfterCommandEvent;
 import com.mgmtp.jfunk.core.event.BeforeCommandEvent;
 import com.mgmtp.jfunk.core.event.EventHandlers;
+import com.mgmtp.jfunk.core.mail.EmailModule;
 import com.mgmtp.jfunk.core.reporting.ReportData;
 import com.mgmtp.jfunk.core.scripting.BreakIndex;
 import com.mgmtp.jfunk.core.scripting.Cmd;
@@ -94,6 +95,7 @@ public final class JFunkBaseModule extends BaseJFunkGuiceModule {
 
 		install(new DataSourceModule());
 		install(new ScriptingModule());
+		install(new EmailModule());
 	}
 
 	private <T extends Scope> void bindScope(final Class<T> scopeClass, final T scope,

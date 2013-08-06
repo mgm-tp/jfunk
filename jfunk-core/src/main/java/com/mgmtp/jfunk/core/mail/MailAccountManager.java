@@ -120,7 +120,6 @@ public class MailAccountManager {
 	@Inject
 	MailAccountManager(final SetMultimap<String, MailAccount> emailAddressPools, final MathRandom random,
 			final Provider<EventBus> eventBusProvider, final Configuration config) {
-		checkState(emailAddressPools.keySet().size() > 0, "E-mail address pool is empty.");
 		this.emailAddressPools = emailAddressPools;
 		this.random = random;
 		this.defaultPool = emailAddressPools.keySet().size() == 1 ? getOnlyElement(emailAddressPools.keySet()) : null;
@@ -188,6 +187,7 @@ public class MailAccountManager {
 	private MailAccount reserveAvailableMailAccount(final String accountReservationKey, final List<MailAccount> addressPool) {
 		checkNotNull(accountReservationKey, "'accountReservationKey' must not be null");
 		checkNotNull(addressPool, "'addressPool' must not be null");
+		checkState(emailAddressPools.keySet().size() > 0, "'addressPool' must not be empty.");
 
 		lock.lock();
 		try {
@@ -368,7 +368,7 @@ public class MailAccountManager {
 	 *            the account to release
 	 */
 	public void releaseMailAccountForThread(final MailAccount account) {
-		log.debug("Releasing mail account for the current thread: %s", account);
+		log.info("Releasing mail account for the current thread: %s", account);
 		lock.lock();
 		try {
 			ThreadReservationKeyWrapper wrapper = usedAccounts.get(account);
