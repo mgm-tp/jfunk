@@ -56,6 +56,7 @@ import com.mgmtp.jfunk.core.scripting.BreakIndex;
 import com.mgmtp.jfunk.core.scripting.Cmd;
 import com.mgmtp.jfunk.core.scripting.ExecutionMode;
 import com.mgmtp.jfunk.core.scripting.ModuleArchiver;
+import com.mgmtp.jfunk.core.scripting.ModuleArchiver.ArchivingMode;
 import com.mgmtp.jfunk.core.scripting.ScriptContext;
 import com.mgmtp.jfunk.core.scripting.ScriptingModule;
 import com.mgmtp.jfunk.core.util.CsvDataProcessor;
@@ -210,5 +211,10 @@ public final class JFunkBaseModule extends BaseJFunkGuiceModule {
 	@BreakIndex
 	int provideBreakIndex(final Configuration config) {
 		return config.getInteger(JFunkConstants.STEP, 0);
+	}
+
+	@Provides
+	ArchivingMode provideArchivingMode(final Configuration config) {
+		return ArchivingMode.valueOf(config.get(JFunkConstants.ARCHIVING_MODE, JFunkConstants.ARCHIVING_MODE_ALL));
 	}
 }

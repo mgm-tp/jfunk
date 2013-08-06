@@ -91,6 +91,7 @@ public class ModuleArchiver {
 
 	private FileAppender<ILoggingEvent> moduleAppender;
 	private final MathRandom random;
+	private final ArchivingMode archivingMode;
 
 	/**
 	 * Creates a new instance.
@@ -104,12 +105,13 @@ public class ModuleArchiver {
 	 */
 	@Inject
 	ModuleArchiver(final Configuration configuration, final DataSource dataSource, @ArchiveDir final File archiveDir,
-			final Charset charset, final MathRandom random) {
+			final Charset charset, final MathRandom random, final ArchivingMode archivingMode) {
 		this.configuration = configuration;
 		this.dataSource = dataSource;
 		this.archiveDir = archiveDir;
 		this.charset = charset;
 		this.random = random;
+		this.archivingMode = archivingMode;
 	}
 
 	/**
@@ -170,12 +172,13 @@ public class ModuleArchiver {
 	}
 
 	void finishArchiving(final TestModule testModule, final Throwable throwable) {
+		if (archivingMode == ArchivingMode.none) {
+			return;
+		}
+
 		boolean success = !testModule.isError() && throwable == null;
 		try {
-			if (isArchivingDisabled()) {
-				return;
-			}
-			if (JFunkConstants.ARCHIVING_MODE_ERROR.equals(configuration.get(JFunkConstants.ARCHIVING_MODE)) && success) {
+			if (archivingMode == ArchivingMode.error && success) {
 				return;
 			}
 
@@ -197,13 +200,17 @@ public class ModuleArchiver {
 				loggerContext.getLogger(Logger.ROOT_LOGGER_NAME).detachAppender(moduleAppender);
 			}
 
-			String archiveType = configuration.get(JFunkConstants.ARCHIVE_TYPE, "zip");
-			if ("dir".equals(archiveType)) {
-				File dest = new File(moduleArchiveDir.getParent(), moduleArchiveDir.getName() + (success ? "_ok" : "_error"));
-				moduleArchiveDir.renameTo(dest);
-			} else {
-				zipUpArchive(success);
+			if (archivingMode == ArchivingMode.error && success) {
 				deleteQuietly(moduleArchiveDir);
+			} else {
+				String archiveType = configuration.get(JFunkConstants.ARCHIVE_TYPE, "zip");
+				if ("dir".equals(archiveType)) {
+					File dest = new File(moduleArchiveDir.getParent(), moduleArchiveDir.getName() + (success ? "_ok" : "_error"));
+					moduleArchiveDir.renameTo(dest);
+				} else {
+					zipUpArchive(success);
+					deleteQuietly(moduleArchiveDir);
+				}
 			}
 		}
 	}
@@ -284,7 +291,7 @@ public class ModuleArchiver {
 	}
 
 	public boolean isArchivingDisabled() {
-		return JFunkConstants.ARCHIVING_MODE_NONE.equals(configuration.get(JFunkConstants.ARCHIVING_MODE));
+		return archivingMode == ArchivingMode.none;
 	}
 
 	private void saveDataSets(final Configuration config) {
@@ -370,5 +377,9 @@ public class ModuleArchiver {
 				zipOut.closeEntry();
 			}
 		}
+	}
+
+	public static enum ArchivingMode {
+		all, error, none;
 	}
 }
