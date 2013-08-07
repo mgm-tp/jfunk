@@ -81,7 +81,7 @@ class UnitSupport {
 			injector = Guice.createInjector(modules);
 
 			// load config only in order to set global properties as system properties
-			// specifiying "true" as the last parameter
+			// specifying "true" as the last parameter
 			injector.getInstance(Configuration.class).load(JFunkConstants.SCRIPT_PROPERTIES, false);
 
 			injector.injectMembers(this);
