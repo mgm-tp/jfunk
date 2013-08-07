@@ -19,6 +19,7 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
 
+import com.google.common.collect.Table;
 import com.google.common.eventbus.AllowConcurrentEvents;
 import com.google.common.eventbus.Subscribe;
 
@@ -33,12 +34,15 @@ public class MailboxPurger {
 
 	private final Provider<MailService> emailServiceProvider;
 	private final Provider<Boolean> deleteOnStartupProvider;
+	private final Provider<Table<String, String, MailMessage>> mailAccountCacheProvider;
 
 	@Inject
 	MailboxPurger(final Provider<MailService> emailServiceProvider,
-			@MailDeleteOnReservation final Provider<Boolean> deleteOnStartupProvider) {
+			@MailDeleteOnReservation final Provider<Boolean> deleteOnStartupProvider,
+			final Provider<Table<String, String, MailMessage>> mailAccountCacheProvider) {
 		this.emailServiceProvider = emailServiceProvider;
 		this.deleteOnStartupProvider = deleteOnStartupProvider;
+		this.mailAccountCacheProvider = mailAccountCacheProvider;
 	}
 
 	@Subscribe
@@ -47,5 +51,6 @@ public class MailboxPurger {
 		if (deleteOnStartupProvider.get()) {
 			emailServiceProvider.get().deleteMessages(event.getAccountReservationKey());
 		}
+		mailAccountCacheProvider.get().row(event.getMailAccount().getAccountId()).clear();
 	}
 }

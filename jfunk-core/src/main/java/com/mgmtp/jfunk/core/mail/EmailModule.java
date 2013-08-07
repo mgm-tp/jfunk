@@ -41,12 +41,15 @@ import javax.mail.Session;
 
 import org.apache.commons.lang3.mutable.MutableInt;
 
+import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
+import com.google.common.collect.Table;
 import com.google.inject.PrivateModule;
 import com.google.inject.Provides;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
 import com.mgmtp.jfunk.common.config.ModuleScoped;
+import com.mgmtp.jfunk.common.config.ScriptScoped;
 import com.mgmtp.jfunk.common.exception.JFunkException;
 import com.mgmtp.jfunk.common.util.Configuration;
 import com.mgmtp.jfunk.core.config.BaseJFunkGuiceModule;
@@ -68,6 +71,7 @@ public class EmailModule extends BaseJFunkGuiceModule {
 	protected void doConfigure() {
 		bind(MailService.class);
 		bind(MailAccountManager.class);
+		bind(SmtpClient.class);
 
 		install(new PrivateModule() {
 			@Override
@@ -108,11 +112,11 @@ public class EmailModule extends BaseJFunkGuiceModule {
 				MAIL_TRANSPORT_PROTOCOL);
 		Properties sessionProps = new Properties();
 		sessionProps.putAll(filterKeys(config, contains('.' + protocol + '.')));
-		sessionProps.setProperty(MAIL_DEBUG, config.get(MAIL_DEBUG, false));
+		sessionProps.setProperty(MAIL_DEBUG, config.get(MAIL_DEBUG, "false"));
 		sessionProps.setProperty(MAIL_TRANSPORT_PROTOCOL, protocol);
 
 		String user = config.get("mail." + protocol + ".user");
-		String password = config.get("mail." + protocol + ".user");
+		String password = config.get("mail." + protocol + ".password");
 
 		return !isNullOrEmpty(user) && !isNullOrEmpty(password)
 				? Session.getInstance(sessionProps, new MailAuthenticator(user, password))
@@ -176,5 +180,11 @@ public class EmailModule extends BaseJFunkGuiceModule {
 		}
 
 		return result;
+	}
+
+	@Provides
+	@ScriptScoped
+	Table<String, String, MailMessage> provideMailMessageCache() {
+		return HashBasedTable.create();
 	}
 }

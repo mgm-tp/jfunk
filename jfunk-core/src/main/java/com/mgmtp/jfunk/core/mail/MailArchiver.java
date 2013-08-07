@@ -20,15 +20,15 @@ import static com.google.common.io.Files.write;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
-import javax.mail.Message;
-import javax.mail.MessagingException;
 
 import org.apache.commons.lang3.mutable.MutableInt;
+import org.apache.commons.lang3.text.StrBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,10 +66,8 @@ public class MailArchiver {
 	 * @param message
 	 *            the message
 	 */
-	public void archiveMessage(final Message message) {
+	public void archiveMessage(final MailMessage message) {
 		try {
-			String messageText = MessageUtils.messageAsText(message);
-
 			String subject = message.getSubject();
 			String fileName = subject == null
 					? "no_subject"
@@ -80,11 +78,17 @@ public class MailArchiver {
 			file = new File(moduleArchiveDirProvider.get(), file.getPath());
 			createParentDirs(file);
 			log.debug("Archiving e-mail: {}", file);
-			write(messageText, file, Charsets.UTF_8);
+
+			StrBuilder sb = new StrBuilder(500);
+			for (Entry<String, String> header : message.getHeaders().entries()) {
+				sb.append(header.getKey()).append('=').appendln(header.getValue());
+			}
+			sb.appendln("");
+			sb.append(message.getText());
+
+			write(sb.toString(), file, Charsets.UTF_8);
 			counter.increment();
 		} catch (IOException ex) {
-			throw new MailException("Error archiving mail.", ex);
-		} catch (MessagingException ex) {
 			throw new MailException("Error archiving mail.", ex);
 		}
 	}

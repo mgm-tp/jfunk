@@ -15,16 +15,12 @@
  */
 package com.mgmtp.jfunk.core.mail;
 
+import java.util.List;
 import java.util.regex.Pattern;
-
-import javax.mail.Header;
-import javax.mail.Message;
-import javax.mail.MessagingException;
 
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.base.Predicate;
-import com.mgmtp.jfunk.core.exception.MailException;
 
 /**
  * Predicates for mail messages.
@@ -40,33 +36,28 @@ public class MessagePredicates {
 	 * for the given header name this Predicate returns true if at least one header value matches
 	 * the given header value.
 	 * 
-	 * @param header
-	 *            the header to match
+	 * @param headerName
+	 *            the header name to match
+	 * @param headerValue
+	 *            the header value to match
 	 * @return the predicate
 	 */
-	public static Predicate<Message> forHeader(final Header header) {
-		return new Predicate<Message>() {
+	public static Predicate<MailMessage> forHeader(final String headerName, final String headerValue) {
+		return new Predicate<MailMessage>() {
 			@Override
-			public boolean apply(final Message input) {
-				try {
-					String[] headers = input.getHeader(header.getName());
-					if (headers.length == 0) {
-						return false;
+			public boolean apply(final MailMessage input) {
+				List<String> headers = input.getHeaders().get(headerName);
+				for (String singleHeader : headers) {
+					if (StringUtils.equals(singleHeader, headerValue)) {
+						return true;
 					}
-					for (String singleHeader : headers) {
-						if (StringUtils.equals(singleHeader, header.getValue())) {
-							return true;
-						}
-					}
-					return false;
-				} catch (MessagingException ex) {
-					throw new MailException(ex.getMessage(), ex);
 				}
+				return false;
 			}
 
 			@Override
 			public String toString() {
-				return String.format("headers to include header '%s'", header.toString());
+				return String.format("headers to include header '%s=%s'", headerName, headerValue);
 			}
 		};
 	}
@@ -76,37 +67,34 @@ public class MessagePredicates {
 	 * are present for the given header name this Predicate returns true if at least one header
 	 * value matches the given header value.
 	 * 
-	 * @param header
-	 *            the header to match
 	 * @param subjectPattern
 	 *            the regex pattern to match
+	 * @param headerName
+	 *            the header name to match
+	 * @param headerValue
+	 *            the header value to match
 	 * @return the predicate
 	 */
-	public static Predicate<Message> forHeaderAndSubject(final Header header, final Pattern subjectPattern) {
-		return new Predicate<Message>() {
+	public static Predicate<MailMessage> forSubjectAndHeaders(final Pattern subjectPattern, final String headerName,
+			final String headerValue) {
+		return new Predicate<MailMessage>() {
 			@Override
-			public boolean apply(final Message input) {
-				try {
-					boolean result = false;
-					String[] headers = input.getHeader(header.getName());
-					if (headers.length != 0) {
-						for (String singleHeader : headers) {
-							if (StringUtils.equals(singleHeader, header.getValue())) {
-								result = true;
-								break;
-							}
-						}
+			public boolean apply(final MailMessage input) {
+				boolean result = false;
+				List<String> headers = input.getHeaders().get(headerName);
+				for (String singleHeader : headers) {
+					if (StringUtils.equals(singleHeader, headerValue)) {
+						result = true;
+						break;
 					}
-					return result && subjectPattern.matcher(input.getSubject()).matches();
-				} catch (MessagingException ex) {
-					throw new MailException(ex.getMessage(), ex);
 				}
+				return result && subjectPattern.matcher(input.getSubject()).matches();
 			}
 
 			@Override
 			public String toString() {
-				return String.format("headers to include header '%s=%s' and subject to match pattern '%s'",
-						header.getName(), header.getValue(), subjectPattern);
+				return String.format("subject to match pattern '%s' and headers to include header '%s=%s'",
+						subjectPattern, headerName, headerValue);
 			}
 		};
 	}
@@ -118,7 +106,7 @@ public class MessagePredicates {
 	 *            the regex pattern to match
 	 * @return the predicate
 	 */
-	public static Predicate<Message> forSubject(final String subjectPattern) {
+	public static Predicate<MailMessage> forSubject(final String subjectPattern) {
 		return forSubject(Pattern.compile(subjectPattern));
 	}
 
@@ -129,15 +117,11 @@ public class MessagePredicates {
 	 *            the regex pattern to match
 	 * @return the predicate
 	 */
-	public static Predicate<Message> forSubject(final Pattern subjectPattern) {
-		return new Predicate<Message>() {
+	public static Predicate<MailMessage> forSubject(final Pattern subjectPattern) {
+		return new Predicate<MailMessage>() {
 			@Override
-			public boolean apply(final Message input) {
-				try {
-					return subjectPattern.matcher(input.getSubject()).matches();
-				} catch (MessagingException ex) {
-					throw new MailException(ex.getMessage(), ex);
-				}
+			public boolean apply(final MailMessage input) {
+				return subjectPattern.matcher(input.getSubject()).matches();
 			}
 
 			@Override
@@ -156,7 +140,7 @@ public class MessagePredicates {
 	 *            the regex pattern the body must match
 	 * @return the predicate
 	 */
-	public static Predicate<Message> forSubjectAndBody(final String subjectPattern, final String bodyPattern) {
+	public static Predicate<MailMessage> forSubjectAndBody(final String subjectPattern, final String bodyPattern) {
 		return forSubjectAndBody(Pattern.compile(subjectPattern), Pattern.compile(bodyPattern));
 	}
 
@@ -169,16 +153,12 @@ public class MessagePredicates {
 	 *            the regex pattern the body must match
 	 * @return the predicate
 	 */
-	public static Predicate<Message> forSubjectAndBody(final Pattern subjectPattern, final Pattern bodyPattern) {
-		return new Predicate<Message>() {
+	public static Predicate<MailMessage> forSubjectAndBody(final Pattern subjectPattern, final Pattern bodyPattern) {
+		return new Predicate<MailMessage>() {
 			@Override
-			public boolean apply(final Message input) {
-				try {
-					boolean result = subjectPattern.matcher(input.getSubject()).matches();
-					return result && bodyPattern.matcher(MessageUtils.messageAsText(input, false)).matches();
-				} catch (MessagingException ex) {
-					throw new MailException(ex.getMessage(), ex);
-				}
+			public boolean apply(final MailMessage input) {
+				boolean result = subjectPattern.matcher(input.getSubject()).matches();
+				return result && bodyPattern.matcher(input.getText()).matches();
 			}
 
 			@Override
