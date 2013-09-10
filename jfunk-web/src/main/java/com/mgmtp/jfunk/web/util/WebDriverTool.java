@@ -26,7 +26,6 @@ import java.util.UUID;
 
 import javax.inject.Inject;
 
-import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NotFoundException;
@@ -43,12 +42,13 @@ import org.slf4j.LoggerFactory;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Sets.SetView;
+import com.mgmtp.jfunk.common.util.JFunkUtils;
 import com.mgmtp.jfunk.data.DataSet;
 
 /**
  * <p>
- * Utility class for enhancing {@link WebDriver} functionality. Uses {@link WebElementFinder} and
- * {@link FormInputHandler} internally and thus can handle timeouts implicitly.
+ * Utility class for enhancing {@link WebDriver} functionality. Uses {@link WebElementFinder} and {@link FormInputHandler}
+ * internally and thus can handle timeouts implicitly.
  * </p>
  * <p>
  * An script-scoped instance of this class can be retrieve via dependency injection.
@@ -120,8 +120,8 @@ public class WebDriverTool implements SearchContext {
 	}
 
 	/**
-	 * Finds the first element. Uses the internal {@link WebElementFinder}, which tries to apply the
-	 * specified {@code condition} until it times out.
+	 * Finds the first element. Uses the internal {@link WebElementFinder}, which tries to apply the specified {@code condition}
+	 * until it times out.
 	 * 
 	 * @param by
 	 *            the {@link By} used to locate the element
@@ -136,8 +136,8 @@ public class WebDriverTool implements SearchContext {
 	}
 
 	/**
-	 * Finds the first element. Uses the internal {@link WebElementFinder}, which tries to apply the
-	 * specified {@code condition} until it times out.
+	 * Finds the first element. Uses the internal {@link WebElementFinder}, which tries to apply the specified {@code condition}
+	 * until it times out.
 	 * 
 	 * @param by
 	 *            the {@link By} used to locate the element
@@ -175,8 +175,8 @@ public class WebDriverTool implements SearchContext {
 	}
 
 	/**
-	 * Finds all elements. Uses the internal {@link WebElementFinder}, which tries to apply the
-	 * specified {@code condition} until it times out.
+	 * Finds all elements. Uses the internal {@link WebElementFinder}, which tries to apply the specified {@code condition} until
+	 * it times out.
 	 * 
 	 * @param by
 	 *            the {@link By} used to locate the element
@@ -191,8 +191,8 @@ public class WebDriverTool implements SearchContext {
 	}
 
 	/**
-	 * Finds all elements. Uses the internal {@link WebElementFinder}, which tries to apply the
-	 * specified {@code condition} until it times out.
+	 * Finds all elements. Uses the internal {@link WebElementFinder}, which tries to apply the specified {@code condition} until
+	 * it times out.
 	 * 
 	 * @param by
 	 *            the {@link By} used to locate the element
@@ -205,9 +205,7 @@ public class WebDriverTool implements SearchContext {
 	}
 
 	/**
-	 * Repeatedly applies the current {@link WebDriver} instance to the specifed function until one
-	 * of the following occurs:
-	 * 
+	 * Repeatedly applies the current {@link WebDriver} instance to the specifed function until one of the following occurs:
 	 * <ol>
 	 * <li>the function returns neither null nor false,</li>
 	 * <li>the function throws an unignored exception,</li>
@@ -219,8 +217,8 @@ public class WebDriverTool implements SearchContext {
 	 *            the function
 	 * @param <V>
 	 *            the function's expected return type
-	 * @return the function's return value if the function returned something different from null or
-	 *         false before the timeout expired
+	 * @return the function's return value if the function returned something different from null or false before the timeout
+	 *         expired
 	 * @throws TimeoutException
 	 *             if the timeout expires.
 	 */
@@ -229,9 +227,7 @@ public class WebDriverTool implements SearchContext {
 	}
 
 	/**
-	 * Repeatedly applies the current {@link WebDriver} instance to the specifed function until one
-	 * of the following occurs:
-	 * 
+	 * Repeatedly applies the current {@link WebDriver} instance to the specifed function until one of the following occurs:
 	 * <ol>
 	 * <li>the function returns neither null nor false,</li>
 	 * <li>the function throws an unignored exception,</li>
@@ -245,8 +241,8 @@ public class WebDriverTool implements SearchContext {
 	 *            the timeout in seconds
 	 * @param <V>
 	 *            the function's expected return type
-	 * @return the function's return value if the function returned something different from null or
-	 *         false before the timeout expired
+	 * @return the function's return value if the function returned something different from null or false before the timeout
+	 *         expired
 	 * @throws TimeoutException
 	 *             if the timeout expires.
 	 */
@@ -255,18 +251,15 @@ public class WebDriverTool implements SearchContext {
 	}
 
 	/**
-	 * Repeatedly applies the current {@link WebDriver} instance to the specifed function until one
-	 * of the following occurs:
-	 * 
+	 * Repeatedly applies the current {@link WebDriver} instance to the specifed function until one of the following occurs:
 	 * <ol>
 	 * <li>the function returns neither null nor false,</li>
 	 * <li>the function throws an unignored exception,</li>
 	 * <li>the timeout expires,
 	 * <li>the current thread is interrupted</li>
 	 * </ol>
-	 * 
-	 * The method uses the same timeout and milliseconds to sleep between polls as the internally
-	 * used default {@link WebElementFinder} instance
+	 * The method uses the same timeout and milliseconds to sleep between polls as the internally used default
+	 * {@link WebElementFinder} instance
 	 * 
 	 * @param function
 	 *            the function
@@ -276,8 +269,8 @@ public class WebDriverTool implements SearchContext {
 	 *            the time in milliseconds to sleep between polls
 	 * @param <V>
 	 *            the function's expected return type
-	 * @return the function's return value if the function returned something different from null or
-	 *         false before the timeout expired
+	 * @return the function's return value if the function returned something different from null or false before the timeout
+	 *         expired
 	 * @throws TimeoutException
 	 *             if the timeout expires.
 	 */
@@ -286,8 +279,8 @@ public class WebDriverTool implements SearchContext {
 	}
 
 	/**
-	 * Repeatedly applies the current {@link WebDriver} instance to the specified predicate until
-	 * the timeout expires or the predicate evaluates to true.
+	 * Repeatedly applies the current {@link WebDriver} instance to the specified predicate until the timeout expires or the
+	 * predicate evaluates to true.
 	 * 
 	 * @param predicate
 	 *            the predicate to wait on
@@ -299,8 +292,8 @@ public class WebDriverTool implements SearchContext {
 	}
 
 	/**
-	 * Repeatedly applies the current {@link WebDriver} instance to the specified predicate until
-	 * the timeout expires or the predicate evaluates to true.
+	 * Repeatedly applies the current {@link WebDriver} instance to the specified predicate until the timeout expires or the
+	 * predicate evaluates to true.
 	 * 
 	 * @param predicate
 	 *            the predicate to wait on
@@ -314,8 +307,8 @@ public class WebDriverTool implements SearchContext {
 	}
 
 	/**
-	 * Repeatedly applies the current {@link WebDriver} instance to the specified predicate until
-	 * the timeout expires or the predicate evaluates to true.
+	 * Repeatedly applies the current {@link WebDriver} instance to the specified predicate until the timeout expires or the
+	 * predicate evaluates to true.
 	 * 
 	 * @param predicate
 	 *            the predicate to wait on
@@ -331,8 +324,8 @@ public class WebDriverTool implements SearchContext {
 	}
 
 	/**
-	 * Creates a new {@link WebDriverWait} with the same timeout and milliseconds to sleep between
-	 * polls as the internally used default {@link WebElementFinder} instance.
+	 * Creates a new {@link WebDriverWait} with the same timeout and milliseconds to sleep between polls as the internally used
+	 * default {@link WebElementFinder} instance.
 	 * 
 	 * @return the newly created {@link WebDriverWait} instance
 	 */
@@ -347,7 +340,6 @@ public class WebDriverTool implements SearchContext {
 	 * 
 	 * @param timeoutSeconds
 	 *            the timeout in seconds
-	 * 
 	 * @return the newly created {@link WebDriverWait} instance
 	 */
 	public WebDriverWait newWebDriverWait(final long timeoutSeconds) {
@@ -355,14 +347,12 @@ public class WebDriverTool implements SearchContext {
 	}
 
 	/**
-	 * Creates a new {@link WebDriverWait} with the specified timeout and milliseconds to sleep
-	 * between polls.
+	 * Creates a new {@link WebDriverWait} with the specified timeout and milliseconds to sleep between polls.
 	 * 
 	 * @param timeoutSeconds
 	 *            the timeout in seconds
 	 * @param sleepMillis
 	 *            the time in milliseconds to sleep between polls
-	 * 
 	 * @return the newly created {@link WebDriverWait} instance
 	 */
 	public WebDriverWait newWebDriverWait(final long timeoutSeconds, final long sleepMillis) {
@@ -389,8 +379,8 @@ public class WebDriverTool implements SearchContext {
 	}
 
 	/**
-	 * Delegates to {@link #findElement(By)} and calls {@link WebElement#sendKeys(CharSequence...)
-	 * sendKeys(CharSequence...)} on the returned element.
+	 * Delegates to {@link #findElement(By)} and calls {@link WebElement#sendKeys(CharSequence...) sendKeys(CharSequence...)} on
+	 * the returned element.
 	 * 
 	 * @param by
 	 *            the {@link By} used to locate the element
@@ -402,8 +392,7 @@ public class WebDriverTool implements SearchContext {
 	}
 
 	/**
-	 * Delegates to {@link #findElement(By)} and calls {@link WebElement#clear() clear()} on the
-	 * returned element.
+	 * Delegates to {@link #findElement(By)} and calls {@link WebElement#clear() clear()} on the returned element.
 	 * 
 	 * @param by
 	 *            the {@link By} used to locate the element
@@ -413,8 +402,7 @@ public class WebDriverTool implements SearchContext {
 	}
 
 	/**
-	 * Delegates to {@link #findElement(By)} and calls {@link WebElement#click() click()} on the
-	 * returned element.
+	 * Delegates to {@link #findElement(By)} and calls {@link WebElement#click() click()} on the returned element.
 	 * 
 	 * @param by
 	 *            the {@link By} used to locate the element
@@ -424,8 +412,7 @@ public class WebDriverTool implements SearchContext {
 	}
 
 	/**
-	 * Delegates to {@link #findElement(By)} and then performs a context-click using the
-	 * {@link Actions} class.
+	 * Delegates to {@link #findElement(By)} and then performs a context-click using the {@link Actions} class.
 	 * 
 	 * @param by
 	 *            the {@link By} used to locate the element
@@ -436,8 +423,7 @@ public class WebDriverTool implements SearchContext {
 	}
 
 	/**
-	 * Delegates to {@link #findElement(By)} and then performs a double-click using the
-	 * {@link Actions} class.
+	 * Delegates to {@link #findElement(By)} and then performs a double-click using the {@link Actions} class.
 	 * 
 	 * @param by
 	 *            the {@link By} used to locate the element
@@ -448,8 +434,7 @@ public class WebDriverTool implements SearchContext {
 	}
 
 	/**
-	 * Delegates to {@link #findElement(By)} and then moves the mouse to the returned element using
-	 * the {@link Actions} class.
+	 * Delegates to {@link #findElement(By)} and then moves the mouse to the returned element using the {@link Actions} class.
 	 * 
 	 * @param by
 	 *            the {@link By} used to locate the element
@@ -460,16 +445,14 @@ public class WebDriverTool implements SearchContext {
 	}
 
 	/**
-	 * Delegates to {@link #findElement(By)}, moves the mouse to the returned element using the
-	 * {@link Actions} class and then tries to find and element using {@code byToAppear} with a
-	 * timeout of 1 seconds, retrying up to ten times because hovers sometimes do not work very
-	 * reliably.
+	 * Delegates to {@link #findElement(By)}, moves the mouse to the returned element using the {@link Actions} class and then
+	 * tries to find and element using {@code byToAppear} with a timeout of 1 seconds, retrying up to ten times because hovers
+	 * sometimes do not work very reliably.
 	 * 
 	 * @param by
 	 *            the {@link By} used to locate the element
 	 * @param byToAppear
-	 *            the {@link By} used to locate the element that is supposed to appear after
-	 *            hovering
+	 *            the {@link By} used to locate the element that is supposed to appear after hovering
 	 */
 	public WebElement hover(final By by, final By byToAppear) {
 		WebElementFinder finder = wef.timeout(1L, 200L).by(byToAppear);
@@ -492,8 +475,8 @@ public class WebDriverTool implements SearchContext {
 	}
 
 	/**
-	 * Delegates to {@link #findElement(By)} and then calls {@link WebElement#getAttribute(String)
-	 * getAttribute(String)} on the returned element.
+	 * Delegates to {@link #findElement(By)} and then calls {@link WebElement#getAttribute(String) getAttribute(String)} on the
+	 * returned element.
 	 * 
 	 * @param by
 	 *            the {@link By} used to locate the element
@@ -507,8 +490,8 @@ public class WebDriverTool implements SearchContext {
 	}
 
 	/**
-	 * Delegates to {@link #findElement(By)} and then calls {@link WebElement#getCssValue(String)
-	 * getAttribute(String)} on the returned element.
+	 * Delegates to {@link #findElement(By)} and then calls {@link WebElement#getCssValue(String) getAttribute(String)} on the
+	 * returned element.
 	 * 
 	 * @param by
 	 *            the {@link By} used to locate the element
@@ -522,9 +505,8 @@ public class WebDriverTool implements SearchContext {
 	}
 
 	/**
-	 * Delegates to {@link #findElement(By)} and then calls {@link WebElement#getText() getText()}
-	 * on the returned element. The element's text is passed to
-	 * {@link StringUtils#normalizeSpace(String)}.
+	 * Delegates to {@link #findElement(By)} and then calls {@link WebElement#getText() getText()} on the returned element. The
+	 * element's text is passed to {@link JFunkUtils#normalizeSpace(String)}.
 	 * 
 	 * @param by
 	 *            the {@link By} used to locate the element
@@ -535,9 +517,8 @@ public class WebDriverTool implements SearchContext {
 	}
 
 	/**
-	 * Delegates to {@link #findElement(By)} and then calls {@link WebElement#getText() getText()}
-	 * on the returned element. If {@code normalizeSpace} is {@code true}, the element's text is
-	 * passed to {@link StringUtils#normalizeSpace(String)}.
+	 * Delegates to {@link #findElement(By)} and then calls {@link WebElement#getText() getText()} on the returned element. If
+	 * {@code normalizeSpace} is {@code true}, the element's text is passed to {@link JFunkUtils#normalizeSpace(String)}.
 	 * 
 	 * @param by
 	 *            the {@link By} used to locate the element
@@ -548,7 +529,48 @@ public class WebDriverTool implements SearchContext {
 	public String getElementText(final By by, final boolean normalizeSpace) {
 		WebElement element = findElement(by);
 		String text = element.getText();
-		return normalizeSpace ? StringUtils.normalizeSpace(text) : text;
+		return normalizeSpace ? JFunkUtils.normalizeSpace(text) : text;
+	}
+
+	/**
+	 * <p>
+	 * Delegates to {@link #findElement(By)} and then calls {@link WebElement#getAttribute(String) getAttribute("innerText")} on
+	 * the returned element. The element's text is passed to {@link JFunkUtils#normalizeSpace(String)}.
+	 * </p>
+	 * <p>
+	 * The difference to {@link #getElementText(By)} is that this method returns the complete inner text of the element, not only
+	 * the visible (i. e. not hidden by CSS) one.
+	 * </p>
+	 * 
+	 * @param by
+	 *            the {@link By} used to locate the element
+	 * @return the text
+	 */
+	public String getInnerText(final By by) {
+		return getInnerText(by, true);
+	}
+
+	/**
+	 * <p>
+	 * Delegates to {@link #findElement(By)} and then calls {@link WebElement#getAttribute(String) getAttribute("innerText")} on
+	 * the returned element. If {@code normalizeSpace} is {@code true}, the element's text is passed to
+	 * {@link JFunkUtils#normalizeSpace(String)}.
+	 * </p>
+	 * <p>
+	 * The difference to {@link #getElementText(By, boolean)} is that this method returns the complete inner text of the element,
+	 * not only the visible (i. e. not hidden by CSS) one.
+	 * </p>
+	 * 
+	 * @param by
+	 *            the {@link By} used to locate the element
+	 * @param normalizeSpace
+	 *            specifies whether whitespace in the element text are to be normalized
+	 * @return the text
+	 */
+	public String getInnerText(final By by, final boolean normalizeSpace) {
+		WebElement element = findElement(by);
+		String text = element.getAttribute("innerText");
+		return normalizeSpace ? JFunkUtils.normalizeSpace(text) : text;
 	}
 
 	/**
@@ -559,8 +581,7 @@ public class WebDriverTool implements SearchContext {
 	 * @param dataSetKey
 	 *            the data set key
 	 * @param dataKey
-	 *            the key used to retrieve the value for the field from the data set with the
-	 *            specifies data set key
+	 *            the key used to retrieve the value for the field from the data set with the specifies data set key
 	 */
 	public void processField(final By by, final String dataSetKey, final String dataKey) {
 		fih.by(by).dataSet(dataSets.get(dataSetKey)).dataKey(dataKey).perform();
@@ -574,8 +595,7 @@ public class WebDriverTool implements SearchContext {
 	 * @param dataSetKey
 	 *            the data set key
 	 * @param dataKey
-	 *            the key used to retrieve the value for the field from the data set with the
-	 *            specifies data set key
+	 *            the key used to retrieve the value for the field from the data set with the specifies data set key
 	 * @param dataIndex
 	 *            the index for looking up dat value in the data set
 	 */
@@ -584,8 +604,7 @@ public class WebDriverTool implements SearchContext {
 	}
 
 	/**
-	 * Uses the internal {@link FormInputHandler} to set form field. This method does not use a data
-	 * set to retrieve the value.
+	 * Uses the internal {@link FormInputHandler} to set form field. This method does not use a data set to retrieve the value.
 	 * 
 	 * @param by
 	 *            the {@link By} used to locate the element representing an HTML input or textarea
@@ -597,9 +616,9 @@ public class WebDriverTool implements SearchContext {
 	}
 
 	/**
-	 * Opens a new window and switches to it. The window to switch to is determined by diffing the
-	 * given {@code existingWindowHandles} with the current ones. The difference must be exactly one
-	 * window handle which is then used to switch to.
+	 * Opens a new window and switches to it. The window to switch to is determined by diffing the given
+	 * {@code existingWindowHandles} with the current ones. The difference must be exactly one window handle which is then used to
+	 * switch to.
 	 * 
 	 * @param openClickBy
 	 *            identifies the element to click on in order to open the new window
@@ -617,9 +636,9 @@ public class WebDriverTool implements SearchContext {
 	}
 
 	/**
-	 * Opens a new window blank window ({@code about:blank}) and switches to it. The new window is
-	 * opened by inserting a new link with {@code target='_blank'} and {@code href='about:blank'} at
-	 * the end of the page, which is then clicked and removed again afterwards.
+	 * Opens a new window blank window ({@code about:blank}) and switches to it. The new window is opened by inserting a new link
+	 * with {@code target='_blank'} and {@code href='about:blank'} at the end of the page, which is then clicked and removed again
+	 * afterwards.
 	 * 
 	 * @return the handle of the window that opened the new window
 	 */
@@ -628,9 +647,9 @@ public class WebDriverTool implements SearchContext {
 	}
 
 	/**
-	 * Opens a new window, switches to it, and loads the given URL in the new window. The new window
-	 * is opened by inserting a new link with {@code target='_blank'} and {@code href='about:blank'}
-	 * at the end of the page, which is then clicked and removed again afterwards.
+	 * Opens a new window, switches to it, and loads the given URL in the new window. The new window is opened by inserting a new
+	 * link with {@code target='_blank'} and {@code href='about:blank'} at the end of the page, which is then clicked and removed
+	 * again afterwards.
 	 * 
 	 * @param url
 	 *            the url to open
@@ -652,9 +671,9 @@ public class WebDriverTool implements SearchContext {
 	}
 
 	/**
-	 * Opens a new window and switches to it. The window to switch to is determined by diffing the
-	 * given {@code existingWindowHandles} with the current ones. The difference must be exactly one
-	 * window handle which is then used to switch to.
+	 * Opens a new window and switches to it. The window to switch to is determined by diffing the given
+	 * {@code existingWindowHandles} with the current ones. The difference must be exactly one window handle which is then used to
+	 * switch to.
 	 * 
 	 * @param openCommand
 	 *            logic for opening the new window
