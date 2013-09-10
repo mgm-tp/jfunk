@@ -53,10 +53,9 @@ import com.mgmtp.jfunk.core.mail.TransportSession;
 
 /**
  * <p>
- * Generates a report email containing in HTML format.
+ * Generates a report email in HTML format.
  * </p>
  * <p>
- * 
  */
 @ThreadSafe
 public final class EmailReporter implements Reporter {
@@ -154,7 +153,7 @@ public final class EmailReporter implements Reporter {
 			rowContent = replacePlaceholderToken(rowContent, "finish", TIME_FORMAT.format(data.getStopMillis()));
 			rowContent = replacePlaceholderToken(rowContent, "duration",
 					DurationFormatUtils.formatDurationHMS(data.getStopMillis() - data.getStartMillis()));
-			rowContent = replacePlaceholderToken(rowContent, "testobject", data.getTestObject().getName());
+			rowContent = replacePlaceholderToken(rowContent, "testobject", data.getTestObjectName());
 
 			Throwable th = data.getThrowable();
 			if (th == null) {

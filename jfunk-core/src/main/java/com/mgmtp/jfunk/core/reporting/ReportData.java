@@ -15,27 +15,34 @@
  */
 package com.mgmtp.jfunk.core.reporting;
 
-import com.mgmtp.jfunk.common.util.NamedObject;
-
 /**
  * @author rnaegele
  */
 public class ReportData {
 
-	private final NamedObject testObject;
+	private final String testObjectName;
 	private long startMillis;
 	private long stopMillis;
 	private Throwable throwable;
+	private final ReportDataType reportDataType;
 
-	public ReportData(final NamedObject testObject) {
-		this.testObject = testObject;
+	public ReportData(final String testObjectName, final ReportDataType reportDataType) {
+		this.testObjectName = testObjectName;
+		this.reportDataType = reportDataType;
 	}
 
 	/**
-	 * @return the testObject
+	 * @return the testObjectName
 	 */
-	public NamedObject getTestObject() {
-		return testObject;
+	public String getTestObjectName() {
+		return testObjectName;
+	}
+
+	/**
+	 * @return the reportDataType
+	 */
+	public ReportDataType getReportDataType() {
+		return reportDataType;
 	}
 
 	/**

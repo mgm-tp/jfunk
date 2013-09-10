@@ -31,6 +31,7 @@ import com.mgmtp.jfunk.core.event.AfterRunEvent;
 import com.mgmtp.jfunk.core.event.AfterScriptEvent;
 import com.mgmtp.jfunk.core.module.TestModule;
 import com.mgmtp.jfunk.core.reporting.ReportData;
+import com.mgmtp.jfunk.core.reporting.ReportDataType;
 import com.mgmtp.jfunk.core.reporting.Reported;
 import com.mgmtp.jfunk.core.reporting.Reporter;
 import com.mgmtp.jfunk.core.step.base.Step;
@@ -50,8 +51,7 @@ class InternalEventHandler {
 	@Inject
 	InternalEventHandler(final Provider<ModuleArchiver> moduleArchiverProvider,
 			final Provider<ScriptContext> scriptContextProvider,
-			final Provider<Deque<ReportData>> reportDataStackProvider,
-			final Set<Reporter> globalReporters) {
+			final Provider<Deque<ReportData>> reportDataStackProvider, final Set<Reporter> globalReporters) {
 		this.moduleArchiverProvider = moduleArchiverProvider;
 		this.scriptContextProvider = scriptContextProvider;
 		this.reportDataStackProvider = reportDataStackProvider;
@@ -64,10 +64,10 @@ class InternalEventHandler {
 		TestModule module = event.getModule();
 		moduleArchiverProvider.get().startArchiving(module);
 
-		// if not explititly disablewd, module are always reported
+		// if not explititly disabled, module are always reported
 		Reported reported = module.getClass().getAnnotation(Reported.class);
 		if (reported == null || reported.value()) {
-			ReportData reportData = new ReportData(module);
+			ReportData reportData = new ReportData(module.getName(), ReportDataType.TEST_MODULE);
 			reportData.setStartMillis(System.currentTimeMillis());
 			reportDataStackProvider.get().push(reportData);
 		}
@@ -79,7 +79,7 @@ class InternalEventHandler {
 		TestModule module = event.getModule();
 
 		try {
-			// if not explititly disablewd, module are always reported
+			// if not explititly disabled, module are always reported
 			Reported reported = module.getClass().getAnnotation(Reported.class);
 			if (reported == null || reported.value()) {
 				ReportData reportData = reportDataStackProvider.get().pop();
@@ -98,7 +98,7 @@ class InternalEventHandler {
 		Step step = event.getStep();
 		Reported reported = step.getClass().getAnnotation(Reported.class);
 		if (reported != null && reported.value()) {
-			ReportData reportData = new ReportData(event.getStep());
+			ReportData reportData = new ReportData(event.getStep().getName(), ReportDataType.STEP);
 			reportData.setStartMillis(System.currentTimeMillis());
 			reportDataStackProvider.get().push(reportData);
 		}

@@ -34,14 +34,12 @@ import org.apache.commons.lang3.text.StrBuilder;
 
 import com.google.common.collect.ImmutableList;
 import com.mgmtp.jfunk.common.JFunkConstants;
-import com.mgmtp.jfunk.core.module.TestModule;
 import com.mgmtp.jfunk.data.DataSet;
 
 /**
- * Reporter for writing test data and/or configuration properties to a CSV file. This reporter only
- * reports on module level. Steps are not reported, even if annotated with {@link Reported}. An
- * additional 'result' column is always written as the last column with values {@code OK} or
- * {@code ERROR}.
+ * Reporter for writing test data and/or configuration properties to a CSV file. This reporter only reports on module level. Steps
+ * are not reported, even if annotated with {@link Reported}. An additional 'result' column is always written as the last column
+ * with values {@code OK} or {@code ERROR}.
  * 
  * @author rnaegele
  */
@@ -69,14 +67,12 @@ public class CsvReporter extends AbstractFileReporter {
 	 * Creates a new instance.
 	 * 
 	 * @param fileName
-	 *            the name of the file to write the report to (relative to the archive base
-	 *            directory); if {@code null} it is computed from the reporter's class name and the
-	 *            reporter's key
+	 *            the name of the file to write the report to (relative to the archive base directory); if {@code null} it is
+	 *            computed from the reporter's class name and the reporter's key
 	 * @param headers
-	 *            the header for the CSV report; if this param's value is {@code null}, all entries
-	 *            from the data set specified by parameter {@code dataSetKey} are written to the
-	 *            report with the header being the data set key plus the entry key seperated by a
-	 *            space character
+	 *            the header for the CSV report; if this param's value is {@code null}, all entries from the data set specified by
+	 *            parameter {@code dataSetKey} are written to the report with the header being the data set key plus the entry key
+	 *            seperated by a space character
 	 * @param delimiter
 	 *            the column delimiter
 	 * @param quoteChar
@@ -159,7 +155,7 @@ public class CsvReporter extends AbstractFileReporter {
 
 	@Override
 	public void addResult(final ReportData data) {
-		if (!(data.getTestObject() instanceof TestModule)) {
+		if (!(data.getReportDataType() == ReportDataType.TEST_MODULE)) {
 			// we are only interested in the data for each module
 			return;
 		}
@@ -193,7 +189,7 @@ public class CsvReporter extends AbstractFileReporter {
 			}
 
 			// additional result column
-			appendEscapedAndQuoted(sb, i++, data.getTestObject().getName());
+			appendEscapedAndQuoted(sb, i++, data.getTestObjectName());
 			appendEscapedAndQuoted(sb, i++, data.isSuccess() ? JFunkConstants.OK : JFunkConstants.ERROR);
 
 			if (data.isSuccess()) {
@@ -290,8 +286,7 @@ public class CsvReporter extends AbstractFileReporter {
 	}
 
 	/**
-	 * Creates a {@link CsvReporterBuilder} for a CSV report based on the {@link DataSet} with the
-	 * specified key.
+	 * Creates a {@link CsvReporterBuilder} for a CSV report based on the {@link DataSet} with the specified key.
 	 * 
 	 * @param dataSetKey
 	 *            the data set key
@@ -374,9 +369,8 @@ public class CsvReporter extends AbstractFileReporter {
 		 * Sets the file name and returns the underlining builder instance.
 		 * 
 		 * @param aFileName
-		 *            the name of the file to write the report to (relative to the archive base
-		 *            directory); if {@code null} it is computed from the reporter's class name and
-		 *            the reporter's key
+		 *            the name of the file to write the report to (relative to the archive base directory); if {@code null} it is
+		 *            computed from the reporter's class name and the reporter's key
 		 * @return the builder
 		 */
 		public CsvReporterBuilder writtenTo(final String aFileName) {

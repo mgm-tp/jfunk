@@ -30,8 +30,8 @@ import com.mgmtp.jfunk.core.step.base.Step;
 
 /**
  * <p>
- * Creates a semi-colon-delimited report containing information on reported {@link TestModule}s and
- * {@link Step}s. Report columns are quoted.
+ * Creates a semi-colon-delimited report containing information on reported {@link TestModule}s and {@link Step}s. Report columns
+ * are quoted.
  * </p>
  * <p>
  * The report contains the following columns:
@@ -131,8 +131,9 @@ public class SimpleReporter extends AbstractFileReporter {
 		appendEscapedAndQuoted(sb, DATE_FORMAT.format(reportData.getStartMillis()));
 		appendEscapedAndQuoted(sb, TIME_FORMAT.format(reportData.getStartMillis()));
 		appendEscapedAndQuoted(sb, TIME_FORMAT.format(reportData.getStopMillis()));
-		appendEscapedAndQuoted(sb, DurationFormatUtils.formatDurationHMS(reportData.getStopMillis() - reportData.getStartMillis()));
-		appendEscapedAndQuoted(sb, reportData.getTestObject().getName());
+		appendEscapedAndQuoted(sb,
+				DurationFormatUtils.formatDurationHMS(reportData.getStopMillis() - reportData.getStartMillis()));
+		appendEscapedAndQuoted(sb, reportData.getTestObjectName());
 		appendEscapedAndQuoted(sb, reportData.isSuccess() ? JFunkConstants.OK : JFunkConstants.ERROR);
 
 		Throwable th = reportData.getThrowable();
@@ -165,9 +166,8 @@ public class SimpleReporter extends AbstractFileReporter {
 
 	/**
 	 * <p>
-	 * Encloses the given value into double-quotes. Quote characters are escaped with an additional
-	 * quote character. Line breaks are replaced with a space character. Multiple line breaks are
-	 * collapsed to a single space.
+	 * Encloses the given value into double-quotes. Quote characters are escaped with an additional quote character. Line breaks
+	 * are replaced with a space character. Multiple line breaks are collapsed to a single space.
 	 * </p>
 	 * <p>
 	 * If the specified StringBuilder is non-empty, a semi-colon is appended first.
