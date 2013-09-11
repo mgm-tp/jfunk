@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.nio.charset.Charset;
 import java.util.ArrayDeque;
+import java.util.Date;
 import java.util.Deque;
 import java.util.Set;
 
@@ -51,7 +52,7 @@ import com.mgmtp.jfunk.core.event.AfterCommandEvent;
 import com.mgmtp.jfunk.core.event.BeforeCommandEvent;
 import com.mgmtp.jfunk.core.event.EventHandlers;
 import com.mgmtp.jfunk.core.mail.EmailModule;
-import com.mgmtp.jfunk.core.reporting.ReportData;
+import com.mgmtp.jfunk.core.reporting.ReportContext;
 import com.mgmtp.jfunk.core.scripting.BreakIndex;
 import com.mgmtp.jfunk.core.scripting.Cmd;
 import com.mgmtp.jfunk.core.scripting.ExecutionMode;
@@ -63,10 +64,8 @@ import com.mgmtp.jfunk.core.util.CsvDataProcessor;
 import com.mgmtp.jfunk.data.DataSourceModule;
 
 /**
- * Guice module for jFunk which is always needed. It is loaded automatically by the
- * {@link ModulesLoader}. Additional modules need to be configured in a properties file (see
- * {@link ModulesLoader}.
- * 
+ * Guice module for jFunk which is always needed. It is loaded automatically by the {@link ModulesLoader}. Additional modules need
+ * to be configured in a properties file (see {@link ModulesLoader}.
  */
 public final class JFunkBaseModule extends BaseJFunkGuiceModule {
 
@@ -159,14 +158,21 @@ public final class JFunkBaseModule extends BaseJFunkGuiceModule {
 
 	@Provides
 	@ScriptScoped
-	Deque<ReportData> provideReportDataStack() {
-		return new ArrayDeque<ReportData>();
+	Deque<ReportContext> provideReportContextStack() {
+		return new ArrayDeque<ReportContext>();
 	}
 
 	@Provides
 	@ScriptScoped
 	Configuration provideConfiguration(final DataSetAdapter dsAdapter, final Charset charset) {
 		return new Configuration(dsAdapter, charset);
+	}
+
+	@Provides
+	@ModuleStartDate
+	@ModuleScoped
+	Date provideTestStartDate() {
+		return new Date();
 	}
 
 	@Provides

@@ -13,12 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mgmtp.jfunk.core.reporting;
+package com.mgmtp.jfunk.core.config;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+import javax.inject.Qualifier;
 
 /**
+ * Qualifier annotation for the start timestamp of a module.
+ * 
  * @author rnaegele
  * @since 3.1.0
  */
-public enum ReportDataType {
-	TEST_MODULE, STEP
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER })
+@Qualifier
+public @interface ModuleStartDate {
+	//
 }

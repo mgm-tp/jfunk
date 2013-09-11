@@ -15,20 +15,28 @@
  */
 package com.mgmtp.jfunk.core.reporting;
 
+import static com.google.common.collect.Maps.newHashMapWithExpectedSize;
+
+import java.util.Map;
+
+import com.google.common.collect.ImmutableMap;
+
 /**
  * @author rnaegele
  */
-public class ReportData {
+public class ReportContext {
 
 	private final String testObjectName;
-	private long startMillis;
+	private final long startMillis;
 	private long stopMillis;
 	private Throwable throwable;
-	private final ReportDataType reportDataType;
+	private final ReportObjectType reportObjectType;
+	private final Map<String, Object> reportData = newHashMapWithExpectedSize(2);
 
-	public ReportData(final String testObjectName, final ReportDataType reportDataType) {
+	public ReportContext(final String testObjectName, final ReportObjectType reportObjectType, final long startMillis) {
 		this.testObjectName = testObjectName;
-		this.reportDataType = reportDataType;
+		this.reportObjectType = reportObjectType;
+		this.startMillis = startMillis;
 	}
 
 	/**
@@ -39,10 +47,10 @@ public class ReportData {
 	}
 
 	/**
-	 * @return the reportDataType
+	 * @return the reportObjectType
 	 */
-	public ReportDataType getReportDataType() {
-		return reportDataType;
+	public ReportObjectType getReportObjectType() {
+		return reportObjectType;
 	}
 
 	/**
@@ -50,14 +58,6 @@ public class ReportData {
 	 */
 	public long getStartMillis() {
 		return startMillis;
-	}
-
-	/**
-	 * @param startMillis
-	 *            the startMillis to set
-	 */
-	public void setStartMillis(final long startMillis) {
-		this.startMillis = startMillis;
 	}
 
 	/**
@@ -92,5 +92,37 @@ public class ReportData {
 	 */
 	public void setThrowable(final Throwable throwable) {
 		this.throwable = throwable;
+	}
+
+	/**
+	 * Adds some data item to be used in the report.
+	 * 
+	 * @param key
+	 *            the item key
+	 * @param value
+	 *            the item value
+	 */
+	public void putReportDataItem(final String key, final Object value) {
+		reportData.put(key, value);
+	}
+
+	/**
+	 * Returns the data item with the specified key.
+	 * 
+	 * @param key
+	 *            the item key
+	 * @return the data item
+	 */
+	public Object getReportDataItem(final String key) {
+		return reportData.get(key);
+	}
+
+	/**
+	 * Returns an immutable copy of the report data map.
+	 * 
+	 * @return the reportData
+	 */
+	public Map<String, Object> getReportData() {
+		return ImmutableMap.copyOf(reportData);
 	}
 }

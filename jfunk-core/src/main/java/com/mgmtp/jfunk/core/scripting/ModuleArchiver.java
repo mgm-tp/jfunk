@@ -57,6 +57,7 @@ import com.mgmtp.jfunk.common.random.MathRandom;
 import com.mgmtp.jfunk.common.util.Configuration;
 import com.mgmtp.jfunk.common.util.ExtendedProperties;
 import com.mgmtp.jfunk.core.config.ArchiveDir;
+import com.mgmtp.jfunk.core.config.ModuleStartDate;
 import com.mgmtp.jfunk.core.module.TestModule;
 import com.mgmtp.jfunk.data.DataSet;
 import com.mgmtp.jfunk.data.source.DataSource;
@@ -64,11 +65,10 @@ import com.mgmtp.jfunk.data.source.DataSource;
 /**
  * Handles archiving of {@link TestModule}s. There are three different archiving modes:
  * <ul>
- * <li>{@link JFunkConstants#ARCHIVING_MODE_ALL ALL} - archiving happens always, i. e an archive
- * directory is created and zipped up after a {@link TestModule} has finished</li>
- * <li>{@link JFunkConstants#ARCHIVING_MODE_ERROR ERROR} - archiving happens during the execution of
- * a {@link TestModule}, but the archive is only zipped up when an eror occurs and otherwise deleted
- * </li>
+ * <li>{@link JFunkConstants#ARCHIVING_MODE_ALL ALL} - archiving happens always, i. e an archive directory is created and zipped
+ * up after a {@link TestModule} has finished</li>
+ * <li>{@link JFunkConstants#ARCHIVING_MODE_ERROR ERROR} - archiving happens during the execution of a {@link TestModule}, but the
+ * archive is only zipped up when an eror occurs and otherwise deleted</li>
  * <li>{@link JFunkConstants#ARCHIVING_MODE_NONE NONE} - no archiving happens at all</li>
  * </ul>
  * 
@@ -76,7 +76,7 @@ import com.mgmtp.jfunk.data.source.DataSource;
  */
 @ModuleScoped
 public class ModuleArchiver {
-	private static final Format FORMAT = FastDateFormat.getInstance("yyyyMMdd_HHmmss,SSS", Locale.GERMANY);
+	private static final Format FORMAT = FastDateFormat.getInstance("yyyyMMdd_HHmmss", Locale.GERMANY);
 	private static final String DIR_PATTERN = "%s_%s_[%s]";
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
@@ -92,6 +92,7 @@ public class ModuleArchiver {
 	private FileAppender<ILoggingEvent> moduleAppender;
 	private final MathRandom random;
 	private final ArchivingMode archivingMode;
+	private final Date moduleStartDate;
 
 	/**
 	 * Creates a new instance.
@@ -105,13 +106,15 @@ public class ModuleArchiver {
 	 */
 	@Inject
 	ModuleArchiver(final Configuration configuration, final DataSource dataSource, @ArchiveDir final File archiveDir,
-			final Charset charset, final MathRandom random, final ArchivingMode archivingMode) {
+			final Charset charset, final MathRandom random, final ArchivingMode archivingMode,
+			@ModuleStartDate final Date moduleStartDate) {
 		this.configuration = configuration;
 		this.dataSource = dataSource;
 		this.archiveDir = archiveDir;
 		this.charset = charset;
 		this.random = random;
 		this.archivingMode = archivingMode;
+		this.moduleStartDate = moduleStartDate;
 	}
 
 	/**
@@ -128,7 +131,7 @@ public class ModuleArchiver {
 		String archiveName = configuration.get(JFunkConstants.ARCHIVE_FILE);
 		if (StringUtils.isBlank(archiveName)) {
 			archiveName = String.format(DIR_PATTERN, testModule.getName(), Thread.currentThread().getName(),
-					FORMAT.format(new Date()));
+					FORMAT.format(moduleStartDate));
 		}
 
 		moduleArchiveDir = new File(archiveDir, archiveName);
@@ -237,12 +240,10 @@ public class ModuleArchiver {
 	}
 
 	/**
-	 * Adds a file or directory (recursively) to the archive directory if it is not already present
-	 * in the archive directory.
+	 * Adds a file or directory (recursively) to the archive directory if it is not already present in the archive directory.
 	 * 
 	 * @param relativeDir
-	 *            the directory relative to the archive root directory which the specified file or
-	 *            directory is added to
+	 *            the directory relative to the archive root directory which the specified file or directory is added to
 	 * @param fileOrDirToAdd
 	 *            the file or directory to add
 	 * @throws IOException
@@ -271,8 +272,8 @@ public class ModuleArchiver {
 
 	private void saveConfiguration(final Configuration config) {
 		/*
-		 * If the execution mode is set to "start" it will be set to "finish" so that the archived
-		 * run will be continued upon the next execution.
+		 * If the execution mode is set to "start" it will be set to "finish" so that the archived run will be continued upon the
+		 * next execution.
 		 */
 		if (JFunkConstants.EXECUTION_MODE_START.equals(config.get(JFunkConstants.EXECUTION_MODE))) {
 			config.put(JFunkConstants.EXECUTION_MODE, JFunkConstants.EXECUTION_MODE_FINISH);

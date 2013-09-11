@@ -154,8 +154,8 @@ public class CsvReporter extends AbstractFileReporter {
 	}
 
 	@Override
-	public void addResult(final ReportData data) {
-		if (!(data.getReportDataType() == ReportDataType.TEST_MODULE)) {
+	public void addResult(final ReportContext context) {
+		if (!(context.getReportObjectType() == ReportObjectType.TEST_MODULE)) {
 			// we are only interested in the data for each module
 			return;
 		}
@@ -189,13 +189,13 @@ public class CsvReporter extends AbstractFileReporter {
 			}
 
 			// additional result column
-			appendEscapedAndQuoted(sb, i++, data.getTestObjectName());
-			appendEscapedAndQuoted(sb, i++, data.isSuccess() ? JFunkConstants.OK : JFunkConstants.ERROR);
+			appendEscapedAndQuoted(sb, i++, context.getTestObjectName());
+			appendEscapedAndQuoted(sb, i++, context.isSuccess() ? JFunkConstants.OK : JFunkConstants.ERROR);
 
-			if (data.isSuccess()) {
+			if (context.isSuccess()) {
 				appendEscapedAndQuoted(sb, i++, "");
 			} else {
-				Throwable th = data.getThrowable();
+				Throwable th = context.getThrowable();
 				String msg = th.getMessage();
 
 				Throwable root = th;

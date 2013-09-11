@@ -59,13 +59,11 @@ import com.mgmtp.jfunk.core.mail.TransportSession;
  */
 @ThreadSafe
 public final class EmailReporter implements Reporter {
-	private static final FastDateFormat DATE_FORMAT = FastDateFormat.getInstance("yyyy-MM-dd");
-	private static final FastDateFormat TIME_FORMAT = FastDateFormat.getInstance("HH:mm:ss.SSS");
 	private static final FastDateFormat TIMESTAMP_FORMAT = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss");
 
 	private final Logger log = Logger.getLogger(getClass());
 
-	private final List<ReportData> reportDataList = newArrayList();
+	private final List<ReportContext> reportContextList = newArrayList();
 	private final Provider<String> recipientsProvider;
 	private final Provider<SmtpClient> smtpClientProvider;
 	private final Provider<Session> sessionProvider;
@@ -85,8 +83,8 @@ public final class EmailReporter implements Reporter {
 	}
 
 	@Override
-	public synchronized void addResult(final ReportData reportData) {
-		reportDataList.add(reportData);
+	public synchronized void addResult(final ReportContext reportContext) {
+		reportContextList.add(reportContext);
 	}
 
 	@Override
@@ -96,10 +94,10 @@ public final class EmailReporter implements Reporter {
 			return;
 		}
 
-		if (!reportDataList.isEmpty()) {
+		if (!reportContextList.isEmpty()) {
 			String content = createEmailContent();
 			sendMessage(content);
-			reportDataList.clear();
+			reportContextList.clear();
 		}
 	}
 
@@ -139,23 +137,22 @@ public final class EmailReporter implements Reporter {
 	}
 
 	private String createEmailContent() throws IOException {
-		int size = reportDataList.size();
+		int size = reportContextList.size();
 		List<String> rowData = newArrayListWithCapacity(size);
 
 		String reportRowTemplate = Resources.toString(getClass().getResource("email-report-row-template.html"),
 				Charset.forName("UTF-8"));
 		for (int i = 0; i < size; ++i) {
-			ReportData data = reportDataList.get(i);
+			ReportContext context = reportContextList.get(i);
 
 			String rowContent = replacePlaceholderToken(reportRowTemplate, "counter", String.valueOf(i));
-			rowContent = replacePlaceholderToken(rowContent, "date", DATE_FORMAT.format(data.getStartMillis()));
-			rowContent = replacePlaceholderToken(rowContent, "start", TIME_FORMAT.format(data.getStartMillis()));
-			rowContent = replacePlaceholderToken(rowContent, "finish", TIME_FORMAT.format(data.getStopMillis()));
+			rowContent = replacePlaceholderToken(rowContent, "start", TIMESTAMP_FORMAT.format(context.getStartMillis()));
+			rowContent = replacePlaceholderToken(rowContent, "finish", TIMESTAMP_FORMAT.format(context.getStopMillis()));
 			rowContent = replacePlaceholderToken(rowContent, "duration",
-					DurationFormatUtils.formatDurationHMS(data.getStopMillis() - data.getStartMillis()));
-			rowContent = replacePlaceholderToken(rowContent, "testobject", data.getTestObjectName());
+					DurationFormatUtils.formatDurationHMS(context.getStopMillis() - context.getStartMillis()));
+			rowContent = replacePlaceholderToken(rowContent, "testobject", context.getTestObjectName());
 
-			Throwable th = data.getThrowable();
+			Throwable th = context.getThrowable();
 			if (th == null) {
 				rowContent = replacePlaceholderToken(rowContent, "image", "check");
 				rowContent = replacePlaceholderToken(rowContent, "errormsg", "");

@@ -37,10 +37,10 @@ public interface Reporter {
 	/**
 	 * Adds a result to the report.
 	 * 
-	 * @param reportData
+	 * @param reportContext
 	 *            the report data to add
 	 */
-	void addResult(ReportData reportData);
+	void addResult(ReportContext reportContext);
 
 	/**
 	 * Creates the report, e. g. writes the report to a file or sends it as e-mail.

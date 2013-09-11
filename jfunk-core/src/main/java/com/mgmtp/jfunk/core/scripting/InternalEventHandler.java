@@ -16,6 +16,7 @@
 package com.mgmtp.jfunk.core.scripting;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.Deque;
 import java.util.Set;
 
@@ -26,12 +27,16 @@ import javax.inject.Singleton;
 import org.apache.log4j.Logger;
 
 import com.google.common.eventbus.AllowConcurrentEvents;
+import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
+import com.mgmtp.jfunk.core.config.ModuleStartDate;
 import com.mgmtp.jfunk.core.event.AfterRunEvent;
 import com.mgmtp.jfunk.core.event.AfterScriptEvent;
+import com.mgmtp.jfunk.core.event.ModuleReportedEvent;
+import com.mgmtp.jfunk.core.event.StepReportedEvent;
 import com.mgmtp.jfunk.core.module.TestModule;
-import com.mgmtp.jfunk.core.reporting.ReportData;
-import com.mgmtp.jfunk.core.reporting.ReportDataType;
+import com.mgmtp.jfunk.core.reporting.ReportContext;
+import com.mgmtp.jfunk.core.reporting.ReportObjectType;
 import com.mgmtp.jfunk.core.reporting.Reported;
 import com.mgmtp.jfunk.core.reporting.Reporter;
 import com.mgmtp.jfunk.core.step.base.Step;
@@ -43,19 +48,24 @@ import com.mgmtp.jfunk.core.step.base.Step;
 class InternalEventHandler {
 	private final Logger log = Logger.getLogger(getClass());
 
+	private final Provider<EventBus> eventBusProvider;
 	private final Provider<ModuleArchiver> moduleArchiverProvider;
 	private final Provider<ScriptContext> scriptContextProvider;
-	private final Provider<Deque<ReportData>> reportDataStackProvider;
+	private final Provider<Deque<ReportContext>> reportContextStackProvider;
 	private final Set<Reporter> globalReporters;
+	private final Provider<Date> moduleStartDateProvider;
 
 	@Inject
-	InternalEventHandler(final Provider<ModuleArchiver> moduleArchiverProvider,
+	InternalEventHandler(final Provider<EventBus> eventBusProvider, final Provider<ModuleArchiver> moduleArchiverProvider,
 			final Provider<ScriptContext> scriptContextProvider,
-			final Provider<Deque<ReportData>> reportDataStackProvider, final Set<Reporter> globalReporters) {
+			final Provider<Deque<ReportContext>> reportContextStackProvider, final Set<Reporter> globalReporters,
+			@ModuleStartDate final Provider<Date> moduleStartDateProvider) {
+		this.eventBusProvider = eventBusProvider;
 		this.moduleArchiverProvider = moduleArchiverProvider;
 		this.scriptContextProvider = scriptContextProvider;
-		this.reportDataStackProvider = reportDataStackProvider;
+		this.reportContextStackProvider = reportContextStackProvider;
 		this.globalReporters = globalReporters;
+		this.moduleStartDateProvider = moduleStartDateProvider;
 	}
 
 	@Subscribe
@@ -67,9 +77,9 @@ class InternalEventHandler {
 		// if not explititly disabled, module are always reported
 		Reported reported = module.getClass().getAnnotation(Reported.class);
 		if (reported == null || reported.value()) {
-			ReportData reportData = new ReportData(module.getName(), ReportDataType.TEST_MODULE);
-			reportData.setStartMillis(System.currentTimeMillis());
-			reportDataStackProvider.get().push(reportData);
+			ReportContext reportContext = new ReportContext(module.getName(), ReportObjectType.TEST_MODULE,
+					moduleStartDateProvider.get().getTime());
+			reportContextStackProvider.get().push(reportContext);
 		}
 	}
 
@@ -82,10 +92,10 @@ class InternalEventHandler {
 			// if not explititly disabled, module are always reported
 			Reported reported = module.getClass().getAnnotation(Reported.class);
 			if (reported == null || reported.value()) {
-				ReportData reportData = reportDataStackProvider.get().pop();
-				reportData.setStopMillis(System.currentTimeMillis());
-				reportData.setThrowable(event.getThrowable());
-				addReportResults(reportData);
+				ReportContext reportContext = reportContextStackProvider.get().pop();
+				reportContext.setStopMillis(System.currentTimeMillis());
+				reportContext.setThrowable(event.getThrowable());
+				addReportResults(module, reportContext);
 			}
 		} finally {
 			moduleArchiverProvider.get().finishArchiving(module, event.getThrowable());
@@ -98,9 +108,9 @@ class InternalEventHandler {
 		Step step = event.getStep();
 		Reported reported = step.getClass().getAnnotation(Reported.class);
 		if (reported != null && reported.value()) {
-			ReportData reportData = new ReportData(event.getStep().getName(), ReportDataType.STEP);
-			reportData.setStartMillis(System.currentTimeMillis());
-			reportDataStackProvider.get().push(reportData);
+			ReportContext reportContext = new ReportContext(event.getStep().getName(), ReportObjectType.STEP,
+					System.currentTimeMillis());
+			reportContextStackProvider.get().push(reportContext);
 		}
 	}
 
@@ -110,21 +120,31 @@ class InternalEventHandler {
 		Step step = event.getStep();
 		Reported reported = step.getClass().getAnnotation(Reported.class);
 		if (reported != null && reported.value()) {
-			ReportData reportData = reportDataStackProvider.get().pop();
-			reportData.setStopMillis(System.currentTimeMillis());
-			reportData.setThrowable(event.getThrowable());
-			addReportResults(reportData);
+			ReportContext reportContext = reportContextStackProvider.get().pop();
+			reportContext.setStopMillis(System.currentTimeMillis());
+			reportContext.setThrowable(event.getThrowable());
+			addReportResults(step, reportContext);
 		}
 	}
 
-	private void addReportResults(final ReportData reportData) {
+	private void addReportResults(final TestModule testModule, final ReportContext reportContext) {
+		eventBusProvider.get().post(new ModuleReportedEvent(testModule, reportContext));
+		addReportResults(reportContext);
+	}
+
+	private void addReportResults(final Step step, final ReportContext reportContext) {
+		eventBusProvider.get().post(new StepReportedEvent(step, reportContext));
+		addReportResults(reportContext);
+	}
+
+	private void addReportResults(final ReportContext reportContext) {
 		Set<Reporter> scriptReporters = scriptContextProvider.get().getReporters();
 		for (Reporter reporter : scriptReporters) {
-			reporter.addResult(reportData);
+			reporter.addResult(reportContext);
 		}
 
 		for (Reporter reporter : globalReporters) {
-			reporter.addResult(reportData);
+			reporter.addResult(reportContext);
 		}
 	}
 

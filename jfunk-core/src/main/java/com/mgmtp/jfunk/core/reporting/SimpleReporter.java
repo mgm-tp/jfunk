@@ -123,20 +123,20 @@ public class SimpleReporter extends AbstractFileReporter {
 	}
 
 	@Override
-	public void addResult(final ReportData reportData) {
+	public void addResult(final ReportContext reportContext) {
 		log.debug("Adding result to reporter '{}'", getName());
 
 		StringBuilder sb = new StringBuilder(255);
 
-		appendEscapedAndQuoted(sb, DATE_FORMAT.format(reportData.getStartMillis()));
-		appendEscapedAndQuoted(sb, TIME_FORMAT.format(reportData.getStartMillis()));
-		appendEscapedAndQuoted(sb, TIME_FORMAT.format(reportData.getStopMillis()));
+		appendEscapedAndQuoted(sb, DATE_FORMAT.format(reportContext.getStartMillis()));
+		appendEscapedAndQuoted(sb, TIME_FORMAT.format(reportContext.getStartMillis()));
+		appendEscapedAndQuoted(sb, TIME_FORMAT.format(reportContext.getStopMillis()));
 		appendEscapedAndQuoted(sb,
-				DurationFormatUtils.formatDurationHMS(reportData.getStopMillis() - reportData.getStartMillis()));
-		appendEscapedAndQuoted(sb, reportData.getTestObjectName());
-		appendEscapedAndQuoted(sb, reportData.isSuccess() ? JFunkConstants.OK : JFunkConstants.ERROR);
+				DurationFormatUtils.formatDurationHMS(reportContext.getStopMillis() - reportContext.getStartMillis()));
+		appendEscapedAndQuoted(sb, reportContext.getTestObjectName());
+		appendEscapedAndQuoted(sb, reportContext.isSuccess() ? JFunkConstants.OK : JFunkConstants.ERROR);
 
-		Throwable th = reportData.getThrowable();
+		Throwable th = reportContext.getThrowable();
 		if (th != null) {
 			String msg = th.getMessage();
 
