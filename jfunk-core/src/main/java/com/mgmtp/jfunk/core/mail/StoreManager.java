@@ -120,7 +120,7 @@ class StoreManager {
 				case 1:
 					return getOnlyElement(result);
 				default:
-					throw new MailException("Multiple messages (" + result.size() + ") match the specified condition.");
+					throw new MailException("Multiple messages (" + result.size() + ") found for " + condition);
 			}
 		} catch (MessagingException e) {
 			throw new MailException("Error while retrieving mails from folder " + folder.getName(), e);
@@ -160,7 +160,7 @@ class StoreManager {
 				message.setFlag(Flag.DELETED, true);
 			}
 			Message[] expungedMessages = folder.expunge();
-			log.info("Expunged {} messages", expungedMessages.length);
+			log.info("Expunged {} message(s)", expungedMessages.length);
 		} catch (MessagingException ex) {
 			throw new MailException("Error deleting e-mail message");
 		}
