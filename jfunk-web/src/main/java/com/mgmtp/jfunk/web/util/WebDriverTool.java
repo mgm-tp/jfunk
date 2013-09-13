@@ -700,7 +700,7 @@ public class WebDriverTool implements SearchContext {
 
 			@Override
 			public String toString() {
-				return "to open new window";
+				return "new window to open";
 			}
 		};
 
