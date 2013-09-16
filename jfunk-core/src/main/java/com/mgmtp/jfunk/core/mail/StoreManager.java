@@ -19,6 +19,7 @@ import static com.google.common.collect.Iterables.getOnlyElement;
 import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Arrays.asList;
 
+import java.io.File;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -56,7 +57,7 @@ class StoreManager {
 	private final String folderName;
 	private final MailAccount mailAccount;
 	private final MailArchiver mailArchiver;
-	private final Table<String, String, MailMessage> mailMessageCache;
+	private final Table<String, String, FileMessageWrapper> mailMessageCache;
 
 	static interface Factory {
 		StoreManager create(MailAccount mailAccount);
@@ -65,7 +66,7 @@ class StoreManager {
 	@Inject
 	StoreManager(@StoreSession final Properties sessionProperties, @MailFolder final String folderName,
 			final MailArchiver mailArchiver, @Assisted final MailAccount mailAccount,
-			final Table<String, String, MailMessage> mailMessageCache) {
+			final Table<String, String, FileMessageWrapper> mailMessageCache) {
 		this.sessionProperties = sessionProperties;
 		this.folderName = folderName;
 		this.mailArchiver = mailArchiver;
@@ -90,11 +91,12 @@ class StoreManager {
 
 			for (MailMessage message : mailMessages) {
 				// archive all messages
-				mailArchiver.archiveMessage(message);
+				File mailFile = mailArchiver.archiveMessage(message);
 
 				// add messages to cache
 				String messageId = getOnlyElement(message.getHeaders().get("Message-ID"));
-				mailMessageCache.put(mailAccount.getAccountId(), messageId, message);
+				FileMessageWrapper wrapper = new FileMessageWrapper(mailFile, message);
+				mailMessageCache.put(mailAccount.getAccountId(), messageId, wrapper);
 			}
 
 			if (deleteAfterFetch) {
@@ -104,13 +106,21 @@ class StoreManager {
 			List<MailMessage> result = newArrayList();
 
 			// Iterate over the cache, which include messages just fetched now and those already cached by previous fetches
-			for (Iterator<MailMessage> it = mailMessageCache.row(mailAccount.getAccountId()).values().iterator(); it.hasNext();) {
-				MailMessage message = it.next();
+			for (Iterator<FileMessageWrapper> it = mailMessageCache.row(mailAccount.getAccountId()).values().iterator(); it
+					.hasNext();) {
+				FileMessageWrapper wrapper = it.next();
+				MailMessage message = wrapper.message;
 				if (condition.apply(message)) {
 					// message matching the condition are removed from the cache
 					// and added to the result
 					it.remove();
 					result.add(message);
+
+					// rename archive file, so it can be seen if a mail has been processed
+					File mailFile = wrapper.file;
+					File readDir = new File(mailFile.getParentFile().getParentFile(), "read");
+					readDir.mkdir();
+					mailFile.renameTo(new File(readDir, mailFile.getName()));
 				}
 			}
 
@@ -224,5 +234,15 @@ class StoreManager {
 			return new String[] { folder };
 		}
 		return folder.split(FOLDER_SEP);
+	}
+
+	static class FileMessageWrapper {
+		File file;
+		MailMessage message;
+
+		public FileMessageWrapper(final File file, final MailMessage message) {
+			this.file = file;
+			this.message = message;
+		}
 	}
 }

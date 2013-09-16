@@ -53,6 +53,7 @@ import com.mgmtp.jfunk.common.config.ScriptScoped;
 import com.mgmtp.jfunk.common.exception.JFunkException;
 import com.mgmtp.jfunk.common.util.Configuration;
 import com.mgmtp.jfunk.core.config.BaseJFunkGuiceModule;
+import com.mgmtp.jfunk.core.mail.StoreManager.FileMessageWrapper;
 
 /**
  * Guice module for e-mail handling. This module must be installed when e-mail support is necessary.
@@ -184,7 +185,7 @@ public class EmailModule extends BaseJFunkGuiceModule {
 
 	@Provides
 	@ScriptScoped
-	Table<String, String, MailMessage> provideMailMessageCache() {
+	Table<String, String, FileMessageWrapper> provideMailMessageCache() {
 		return HashBasedTable.create();
 	}
 }

@@ -22,6 +22,7 @@ import javax.inject.Singleton;
 import com.google.common.collect.Table;
 import com.google.common.eventbus.AllowConcurrentEvents;
 import com.google.common.eventbus.Subscribe;
+import com.mgmtp.jfunk.core.mail.StoreManager.FileMessageWrapper;
 
 /**
  * Purges a mail account on account reservation. Subscribes to {@link MailAccountReservationEvent}s.
@@ -34,12 +35,12 @@ public class MailboxPurger {
 
 	private final Provider<MailService> emailServiceProvider;
 	private final Provider<Boolean> deleteOnStartupProvider;
-	private final Provider<Table<String, String, MailMessage>> mailAccountCacheProvider;
+	private final Provider<Table<String, String, FileMessageWrapper>> mailAccountCacheProvider;
 
 	@Inject
 	MailboxPurger(final Provider<MailService> emailServiceProvider,
 			@MailDeleteOnReservation final Provider<Boolean> deleteOnStartupProvider,
-			final Provider<Table<String, String, MailMessage>> mailAccountCacheProvider) {
+			final Provider<Table<String, String, FileMessageWrapper>> mailAccountCacheProvider) {
 		this.emailServiceProvider = emailServiceProvider;
 		this.deleteOnStartupProvider = deleteOnStartupProvider;
 		this.mailAccountCacheProvider = mailAccountCacheProvider;

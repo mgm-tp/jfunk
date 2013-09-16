@@ -59,14 +59,14 @@ public class MailArchiver {
 	}
 
 	/**
-	 * Saves a message's test content (including headers) in the current module archive in the
-	 * specified sub-directory relative to the archive root. File names are prefixed with a
-	 * left-padded four-digit integer counter (format: {@code %04d_%s.txt}).
+	 * Saves a message's test content (including headers) in the current module archive in the specified sub-directory relative to
+	 * the archive root. File names are prefixed with a left-padded four-digit integer counter (format: {@code %04d_%s.txt}).
 	 * 
 	 * @param message
 	 *            the message
+	 * @return the file the e-mail was written to
 	 */
-	public void archiveMessage(final MailMessage message) {
+	public File archiveMessage(final MailMessage message) {
 		try {
 			String subject = message.getSubject();
 			String fileName = subject == null
@@ -74,7 +74,8 @@ public class MailArchiver {
 					: INVALID_FILE_NAME_CHARS.matcher(subject).replaceAll("_");
 
 			MutableInt counter = counterProvider.get();
-			File file = new File("e-mails", String.format(FILE_NAME_FORMAT, counter.intValue(), fileName));
+			File dir = new File("e-mails", "unread");
+			File file = new File(dir, String.format(FILE_NAME_FORMAT, counter.intValue(), fileName));
 			file = new File(moduleArchiveDirProvider.get(), file.getPath());
 			createParentDirs(file);
 			log.debug("Archiving e-mail: {}", file);
@@ -88,6 +89,8 @@ public class MailArchiver {
 
 			write(sb.toString(), file, Charsets.UTF_8);
 			counter.increment();
+
+			return file;
 		} catch (IOException ex) {
 			throw new MailException("Error archiving mail.", ex);
 		}
