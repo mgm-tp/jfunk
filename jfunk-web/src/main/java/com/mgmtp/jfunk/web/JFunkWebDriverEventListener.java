@@ -50,7 +50,6 @@ import com.mgmtp.jfunk.web.util.WebDriverUtils;
 
 /**
  * Default implementation for WebDriverEventListener.
- * 
  */
 @ScriptScoped
 public class JFunkWebDriverEventListener implements WebDriverEventListener {
@@ -173,11 +172,9 @@ public class JFunkWebDriverEventListener implements WebDriverEventListener {
 	}
 
 	/**
-	 * Saves the currently displayed browser window. The page title is used for the filename -
-	 * preceded by some identifying information (thread, counter). Pages of the same type are
-	 * collected inside the same subdirectory. The subdirectory uses
-	 * {@link SaveOutput#getIdentifier()} for its name. If an alert is present, saving is not
-	 * supported and thus skipped.
+	 * Saves the currently displayed browser window. The page title is used for the filename - preceded by some identifying
+	 * information (thread, counter). Pages of the same type are collected inside the same subdirectory. The subdirectory uses
+	 * {@link SaveOutput#getIdentifier()} for its name. If an alert is present, saving is not supported and thus skipped.
 	 * 
 	 * @param action
 	 *            the event which triggered to save the page. Will be included in the filename.
@@ -201,6 +198,8 @@ public class JFunkWebDriverEventListener implements WebDriverEventListener {
 			} catch (UnsupportedOperationException ex) {
 				// ignore
 				// HtmlUnit does not support alerts
+			} catch (Exception ex) {
+				// ignore
 			}
 		}
 
@@ -246,10 +245,9 @@ public class JFunkWebDriverEventListener implements WebDriverEventListener {
 						break;
 					case HTML_VALIDATION:
 						/*
-						 * JFunkWebDriver.getPageSource() doesn't return the complete page source
-						 * e.g. DOCTYPE is missing. Therefore we are using a more complicated way to
-						 * retrieve the "real" page source. However, this only works when using
-						 * HtmlUnitDriver.
+						 * JFunkWebDriver.getPageSource() doesn't return the complete page source e.g. DOCTYPE is missing.
+						 * Therefore we are using a more complicated way to retrieve the "real" page source. However, this only
+						 * works when using HtmlUnitDriver.
 						 */
 						if (WebDriverUtils.isHtmlUnitDriver(driver)) {
 							String content = ((HtmlPage) WebDriverUtils.getHtmlUnitDriverWebClient(driver).getCurrentWindow()
