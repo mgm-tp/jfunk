@@ -33,6 +33,7 @@ import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriver.TargetLocator;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -707,5 +708,23 @@ public class WebDriverTool implements SearchContext {
 		String newHandle = waitFor(function);
 		webDriver.switchTo().window(newHandle);
 		return oldHandle;
+	}
+
+	/**
+	 * Issues a log message before executing {@link WebDriver#switchTo()}.
+	 * 
+	 * @return A TargetLocator which can be used to select a frame or window
+	 */
+	public TargetLocator switchTo() {
+		logger.info("Switching WebDriver...");
+		return webDriver.switchTo();
+	}
+
+	/**
+	 * Issues a log message before executing {@link WebDriver#close()}.
+	 */
+	public void close() {
+		logger.info("Closing window: {}", webDriver.getTitle());
+		webDriver.close();
 	}
 }
