@@ -50,7 +50,6 @@ import com.google.inject.Provides;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
 import com.mgmtp.jfunk.common.config.ModuleScoped;
 import com.mgmtp.jfunk.common.config.ScriptScoped;
-import com.mgmtp.jfunk.common.exception.JFunkException;
 import com.mgmtp.jfunk.common.util.Configuration;
 import com.mgmtp.jfunk.core.config.BaseJFunkGuiceModule;
 import com.mgmtp.jfunk.core.mail.StoreManager.FileMessageWrapper;
@@ -77,13 +76,7 @@ public class EmailModule extends BaseJFunkGuiceModule {
 		install(new PrivateModule() {
 			@Override
 			protected void configure() {
-				try {
-					bind(MutableInt.class).toConstructor(MutableInt.class.getConstructor()).in(ModuleScoped.class);
-				} catch (SecurityException ex) {
-					throw new JFunkException("Cannot access constructor", ex);
-				} catch (NoSuchMethodException ex) {
-					throw new JFunkException("Constructor not found", ex);
-				}
+				bind(MutableInt.class).in(ModuleScoped.class);
 				bind(MailArchiver.class);
 				// expose only MailArchiver
 				expose(MailArchiver.class);
