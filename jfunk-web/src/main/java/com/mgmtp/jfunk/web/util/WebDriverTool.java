@@ -705,7 +705,7 @@ public class WebDriverTool implements SearchContext {
 			}
 		};
 
-		String newHandle = waitFor(function);
+		String newHandle = waitFor(function, timeoutSeconds);
 		webDriver.switchTo().window(newHandle);
 		return oldHandle;
 	}
