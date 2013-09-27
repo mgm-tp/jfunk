@@ -351,6 +351,11 @@
 				<artifactId>mockito-core</artifactId>
 				<version>1.9.5</version>
 			</dependency>
+			<dependency>
+				<groupId>org.codehaus.plexus</groupId>
+				<artifactId>plexus-utils</artifactId>
+				<version>3.0.10</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 

@@ -21,6 +21,10 @@ From: 'an unknown organization'
   - Objenesis (http://objenesis.googlecode.com/svn/docs/index.html) org.objenesis:objenesis:jar:1.0
     License: MIT License  (http://objenesis.googlecode.com/svn/docs/license.html)
 
+From: 'Codehaus' (http://www.codehaus.org/)
+  - Plexus Common Utilities (http://plexus.codehaus.org/plexus-utils) org.codehaus.plexus:plexus-utils:jar:3.0.10
+    License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+
 From: 'Google, Inc.' (http://www.google.com)
   - Google Guice - Core Library (http://code.google.com/p/google-guice/guice/) com.google.inject:guice:jar:3.0
     License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
