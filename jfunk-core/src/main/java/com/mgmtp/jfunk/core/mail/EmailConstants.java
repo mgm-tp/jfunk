@@ -72,6 +72,7 @@ public final class EmailConstants {
 	public static final String MAIL_SLEEP_MILLIS = "mail.sleep.millis";
 	public static final String MAIL_TIMEOUT_SECONDS = "mail.timeout.seconds";
 	public static final String MAIL_CHECK_MAXIMAL = "mail.check.maximal";
+	public static final String MAIL_CHECK_ACTIVE = "mail.check.active";
 
 	public static final String REPORT_MAIL_RECIPIENTS = "report_email.recipients";
 
