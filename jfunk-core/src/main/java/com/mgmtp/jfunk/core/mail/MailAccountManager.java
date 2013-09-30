@@ -88,7 +88,7 @@ import com.mgmtp.jfunk.common.util.Configuration;
  * 
  * <p>
  * It is possible to configure fixed e-mail accounts. If an e-mail account is reserved, the
- * configuration is checked for the existance of a pre-configured fixed e-mail account under the key
+ * configuration is checked for the existence of a pre-configured fixed e-mail account under the key
  * {@code mail.<accountReservationKey>.accountId}. The configured {@code accountId} must match a
  * potentially already reserved one. If the pre-configured account is already used by another
  * thread, the reservation call blocks until the account is released.
@@ -149,8 +149,8 @@ public class MailAccountManager {
 	}
 
 	/**
-	 * Reserves an available mail account under the specified reservation key. The method blocks
-	 * until an account is available.
+	 * Reserves an available mail account from the single configured pool under the specified
+	 * reservation key. The method blocks until an account is available.
 	 * 
 	 * @param accountReservationKey
 	 *            the key under which to reserve the account
