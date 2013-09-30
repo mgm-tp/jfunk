@@ -67,7 +67,7 @@ public abstract class BaseJFunkGuiceModule extends AbstractModule {
 
 	/**
 	 * Binds a {@link Disposable} for script scope. The method {@link Disposable#dispose(Object)} is
-	 * called on all bound {@link Disposable}s whenever a script has finished.
+	 * called on all bound {@link Disposable}s whenever a scope is exited.
 	 * 
 	 * @see Multibinder#addBinding()
 	 * @return a binding build used to add a {@link Disposable}
