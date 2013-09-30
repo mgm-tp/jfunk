@@ -56,10 +56,6 @@ class FormInputHandlerProvider implements Provider<FormInputHandler> {
 		if (value != null) {
 			fih = fih.displayed(Boolean.parseBoolean(value));
 		}
-		value = trimToNull(config.get(WebConstants.FIH_SELECTED));
-		if (value != null) {
-			fih = fih.selected(Boolean.parseBoolean(value));
-		}
 		long timeout = config.getLong(WebConstants.FIH_TIMEOUT_SECONDS, 0L);
 		if (timeout > 0L) {
 			long sleepMillis = config.getLong(WebConstants.FIH_SLEEP_MILLIS, 0L);

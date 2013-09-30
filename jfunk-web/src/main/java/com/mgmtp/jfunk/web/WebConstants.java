@@ -72,7 +72,6 @@ public final class WebConstants {
 	 */
 	public static final String WEF_ENABLED = "wef.enabled";
 	public static final String WEF_DISPLAYED = "wef.displayed";
-	public static final String WEF_SELECTED = "wef.selected";
 	public static final String WEF_TIMEOUT_SECONDS = "wef.timeoutSeconds";
 	public static final String WEF_SLEEP_MILLIS = "wef.sleepMillis";
 
@@ -81,7 +80,6 @@ public final class WebConstants {
 	 */
 	public static final String FIH_ENABLED = "fih.enabled";
 	public static final String FIH_DISPLAYED = "fih.displayed";
-	public static final String FIH_SELECTED = "fih.selected";
 	public static final String FIH_TIMEOUT_SECONDS = "fih.timeoutSeconds";
 	public static final String FIH_SLEEP_MILLIS = "fih.sleepMillis";
 
