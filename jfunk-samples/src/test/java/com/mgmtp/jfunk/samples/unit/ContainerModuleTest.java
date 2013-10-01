@@ -22,7 +22,7 @@ import org.testng.annotations.Test;
 
 import com.mgmtp.jfunk.core.module.ContainerModule;
 import com.mgmtp.jfunk.core.module.TestModule;
-import com.mgmtp.jfunk.samples.google.GoogleModule;
+import com.mgmtp.jfunk.samples.google.GoogleSearchModule;
 import com.mgmtp.jfunk.unit.JFunkRunner;
 import com.mgmtp.jfunk.unit.JFunkTestNGSupport;
 
@@ -48,8 +48,8 @@ public class ContainerModuleTest {
 		};
 
 		TestModule testModule = ContainerModule.forName("container")
-				.addTestModule(prepareDataCallback, new GoogleModule())
-				.addTestModule(prepareDataCallback, new GoogleModule())
+				.addTestModule(prepareDataCallback, new GoogleSearchModule())
+				.addTestModule(prepareDataCallback, new GoogleSearchModule())
 				.build();
 
 		jFunkRunner.run(testModule);

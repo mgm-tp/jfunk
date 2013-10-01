@@ -20,6 +20,8 @@ import javax.inject.Inject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.mgmtp.jfunk.samples.google.GoogleAdvancedSearchModule;
+import com.mgmtp.jfunk.samples.google.GoogleSearchModule;
 import com.mgmtp.jfunk.unit.JFunkJUnitSupport;
 import com.mgmtp.jfunk.unit.JFunkRunner;
 
@@ -34,9 +36,12 @@ public class JUnitGoogleTest {
 
 	@Test
 	public void testGoogle() {
-		jFunkRunner.generate("google");
 		jFunkRunner.set("archive.dir", "testruns/junit");
-		String searchTerm = jFunkRunner.get("${google searchTerm}");
-		jFunkRunner.run(new UnitTestModule(searchTerm));
+
+		jFunkRunner.prepareNextDataSet("google");
+		jFunkRunner.run(new GoogleSearchModule());
+
+		jFunkRunner.prepareNextDataSet("google");
+		jFunkRunner.run(new GoogleAdvancedSearchModule());
 	}
 }

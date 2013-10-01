@@ -21,6 +21,8 @@ import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 import com.mgmtp.jfunk.core.reporting.CsvReporter;
+import com.mgmtp.jfunk.samples.google.GoogleAdvancedSearchModule;
+import com.mgmtp.jfunk.samples.google.GoogleSearchModule;
 import com.mgmtp.jfunk.unit.JFunkRunner;
 import com.mgmtp.jfunk.unit.JFunkTestNGSupport;
 
@@ -36,9 +38,12 @@ public class TestNGGoogleTest {
 	@Test
 	public void testForminput() {
 		jFunkRunner.registerReporter(CsvReporter.forDataSet("google").writtenTo("google.csv").create());
-		jFunkRunner.generate("google");
 		jFunkRunner.set("archive.dir", "testruns/testng");
-		String searchTerm = jFunkRunner.get("${google searchTerm}");
-		jFunkRunner.run(new UnitTestModule(searchTerm));
+
+		jFunkRunner.prepareNextDataSet("google");
+		jFunkRunner.run(new GoogleSearchModule());
+
+		jFunkRunner.prepareNextDataSet("google");
+		jFunkRunner.run(new GoogleAdvancedSearchModule());
 	}
 }

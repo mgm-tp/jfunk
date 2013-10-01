@@ -14,7 +14,7 @@
 @REM limitations under the License.
 @REM
 
-@ECHO OFF
+rem @ECHO OFF
 
 CALL setenv.bat
 

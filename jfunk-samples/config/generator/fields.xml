@@ -16,22 +16,22 @@
 
 -->
 <fields>
-	<field id="text" class="InverseExpression">
-		<control_ref id="default.control" />
-		<expression>[A-Z][a-züöä]*</expression>
-	</field>
-	<field id="integerNumber" class="InverseExpression">
-		<control_ref id="default.control" />
-		<expression>[0-9]*</expression>
-	</field>
-	<field id="doubleNumber" class="InverseExpression">
-		<control_ref id="default.control" />
-		<expression>[0-9]*[.][0-9]*</expression>
-	</field>
-	<field id="select">
+	<field id="searchTerms">
 		<control_ref id="linear.control" />
 		<value>red</value>
 		<value>green</value>
 		<value>blue</value>
+	</field>
+	<field id="languageIds">
+		<control_ref id="linear.control" />
+		<value>:d</value> <!-- French -->
+		<value>:8</value><!--  German -->
+		<value>:9</value><!--  English -->
+	</field>
+	<field id="countryIds">
+		<control_ref id="linear.control" />
+		<value>:7p</value> <!-- United States -->
+		<value>:2n</value><!--  German -->
+		<value>:2z</value><!--  France -->
 	</field>
 </fields>
