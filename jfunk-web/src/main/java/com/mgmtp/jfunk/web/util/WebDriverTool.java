@@ -689,18 +689,30 @@ public class WebDriverTool implements SearchContext {
 	 * @return the handle of the window that opened the new window
 	 */
 	public String openNewWindow(final String url) {
-		String id = UUID.randomUUID().toString();
-		// add link
-		((JavascriptExecutor) webDriver).executeScript(String.format(APPEND_OPEN_WINDOW_LINK_SCRIPT_TEMPLATE, id, url));
-		String oldHandle = openNewWindow(By.id(id), 2L);
-		String newHandle = webDriver.getWindowHandle();
+		Function<WebDriver, String> function = new Function<WebDriver, String>() {
+			@Override
+			public String apply(final WebDriver input) {
+				String id = UUID.randomUUID().toString();
+				// add link
+				((JavascriptExecutor) webDriver).executeScript(String.format(APPEND_OPEN_WINDOW_LINK_SCRIPT_TEMPLATE, id, url));
+				String oldHandle = openNewWindow(By.id(id), 2L);
+				String newHandle = webDriver.getWindowHandle();
 
-		// remove link again
-		webDriver.switchTo().window(oldHandle);
-		((JavascriptExecutor) webDriver).executeScript(String.format(REMOVE_OPEN_WINDOW_LINK_SCRIPT_TEMPLATE, id));
+				// remove link again
+				webDriver.switchTo().window(oldHandle);
+				((JavascriptExecutor) webDriver).executeScript(String.format(REMOVE_OPEN_WINDOW_LINK_SCRIPT_TEMPLATE, id));
 
-		webDriver.switchTo().window(newHandle);
-		return oldHandle;
+				webDriver.switchTo().window(newHandle);
+				return oldHandle;
+			}
+
+			@Override
+			public String toString() {
+				return "new window to open";
+			}
+		};
+
+		return waitFor(function, 10L);
 	}
 
 	/**
@@ -718,11 +730,11 @@ public class WebDriverTool implements SearchContext {
 		String oldHandle = webDriver.getWindowHandle();
 		final Set<String> existingWindowHandles = webDriver.getWindowHandles();
 
-		openCommand.run();
-
 		Function<WebDriver, String> function = new Function<WebDriver, String>() {
 			@Override
 			public String apply(final WebDriver input) {
+				openCommand.run();
+
 				Set<String> newWindowHandles = webDriver.getWindowHandles();
 				SetView<String> newWindows = difference(newWindowHandles, existingWindowHandles);
 				if (newWindows.isEmpty()) {
