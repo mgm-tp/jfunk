@@ -15,7 +15,6 @@
  */
 package com.mgmtp.jfunk.unit;
 
-import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.inject.Inject;
@@ -77,8 +76,8 @@ class UnitSupport {
 			JFunkProps props = testClass.getAnnotation(JFunkProps.class);
 
 			String propsFileName = props != null ? props.value() : JFunkConstants.JFUNK_PROPERTIES;
-			List<Module> modules = ModulesLoader.loadModulesFromProperties(new UnitModule(), propsFileName);
-			injector = Guice.createInjector(modules);
+			Module module = ModulesLoader.loadModulesFromProperties(new UnitModule(), propsFileName);
+			injector = Guice.createInjector(module);
 
 			// load config only in order to set global properties as system properties
 			// specifying "true" as the last parameter

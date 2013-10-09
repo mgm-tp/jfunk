@@ -15,84 +15,74 @@
  */
 package com.mgmtp.jfunk.core.reporting;
 
-import static com.google.common.collect.Maps.newHashMapWithExpectedSize;
-
 import java.util.Map;
 
-import com.google.common.collect.ImmutableMap;
+import com.mgmtp.jfunk.common.util.NamedObject;
 
 /**
+ * Encapsulates report data.
+ * 
  * @author rnaegele
+ * @since 3.1.0
  */
-public class ReportContext {
-
-	private final String testObjectName;
-	private final long startMillis;
-	private long stopMillis;
-	private Throwable throwable;
-	private final ReportObjectType reportObjectType;
-	private final Map<String, Object> reportData = newHashMapWithExpectedSize(2);
-
-	public ReportContext(final String testObjectName, final ReportObjectType reportObjectType, final long startMillis) {
-		this.testObjectName = testObjectName;
-		this.reportObjectType = reportObjectType;
-		this.startMillis = startMillis;
-	}
+public interface ReportContext {
 
 	/**
 	 * @return the testObjectName
 	 */
-	public String getTestObjectName() {
-		return testObjectName;
-	}
+	public String getTestObjectName();
 
 	/**
-	 * @return the reportObjectType
+	 * @param testObjectName
+	 *            the testObjectName to set
 	 */
-	public ReportObjectType getReportObjectType() {
-		return reportObjectType;
-	}
+	public void setTestObjectName(final String testObjectName);
+
+	/**
+	 * @return the testObjectType
+	 */
+	public Class<? extends NamedObject> getTestObjectType();
+
+	/**
+	 * @param testObjectType
+	 *            the testObjectType to set
+	 */
+	public void setTestObjectType(final Class<? extends NamedObject> testObjectType);
 
 	/**
 	 * @return the startMillis
 	 */
-	public long getStartMillis() {
-		return startMillis;
-	}
+	public long getStartMillis();
+
+	/**
+	 * @param startMillis
+	 *            the startMillis to set
+	 */
+	public void setStartMillis(final long startMillis);
 
 	/**
 	 * @return the stopMillis
 	 */
-	public long getStopMillis() {
-		return stopMillis;
-	}
+	public long getStopMillis();
 
 	/**
 	 * @param stopMillis
 	 *            the stopMillis to set
 	 */
-	public void setStopMillis(final long stopMillis) {
-		this.stopMillis = stopMillis;
-	}
+	public void setStopMillis(final long stopMillis);
 
-	public boolean isSuccess() {
-		return throwable == null;
-	}
+	public boolean isSuccess();
 
 	/**
 	 * @return the throwable
 	 */
-	public Throwable getThrowable() {
-		return throwable;
-	}
+	public Throwable getThrowable();
 
 	/**
 	 * @param throwable
 	 *            the throwable to set
 	 */
-	public void setThrowable(final Throwable throwable) {
-		this.throwable = throwable;
-	}
+	public void setThrowable(final Throwable throwable);
 
 	/**
 	 * Adds some data item to be used in the report.
@@ -102,9 +92,7 @@ public class ReportContext {
 	 * @param value
 	 *            the item value
 	 */
-	public void putReportDataItem(final String key, final Object value) {
-		reportData.put(key, value);
-	}
+	public void putReportDataItem(final String key, final Object value);
 
 	/**
 	 * Returns the data item with the specified key.
@@ -113,16 +101,20 @@ public class ReportContext {
 	 *            the item key
 	 * @return the data item
 	 */
-	public Object getReportDataItem(final String key) {
-		return reportData.get(key);
-	}
+	public Object getReportDataItem(final String key);
 
 	/**
 	 * Returns an immutable copy of the report data map.
 	 * 
 	 * @return the reportData
 	 */
-	public Map<String, Object> getReportData() {
-		return ImmutableMap.copyOf(reportData);
-	}
+	public Map<String, Object> getReportData();
+
+	/**
+	 * Updates the report context with data from the pecified object.
+	 * 
+	 * @param object
+	 *            the object to update the context from
+	 */
+	public void update(NamedObject object);
 }

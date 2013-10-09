@@ -52,6 +52,7 @@ import com.mgmtp.jfunk.core.event.AfterCommandEvent;
 import com.mgmtp.jfunk.core.event.BeforeCommandEvent;
 import com.mgmtp.jfunk.core.event.EventHandlers;
 import com.mgmtp.jfunk.core.mail.EmailModule;
+import com.mgmtp.jfunk.core.reporting.DefaultReportContext;
 import com.mgmtp.jfunk.core.reporting.ReportContext;
 import com.mgmtp.jfunk.core.scripting.BreakIndex;
 import com.mgmtp.jfunk.core.scripting.Cmd;
@@ -64,8 +65,9 @@ import com.mgmtp.jfunk.core.util.CsvDataProcessor;
 import com.mgmtp.jfunk.data.DataSourceModule;
 
 /**
- * Guice module for jFunk which is always needed. It is loaded automatically by the {@link ModulesLoader}. Additional modules need
- * to be configured in a properties file (see {@link ModulesLoader}.
+ * Guice module for jFunk which is always needed. It is loaded automatically by the
+ * {@link ModulesLoader}. Additional modules need to be configured in a properties file (see
+ * {@link ModulesLoader}.
  */
 public final class JFunkBaseModule extends BaseJFunkGuiceModule {
 
@@ -92,6 +94,8 @@ public final class JFunkBaseModule extends BaseJFunkGuiceModule {
 			charset = Charsets.UTF_8;
 		}
 		bind(Charset.class).toInstance(charset);
+
+		bind(ReportContext.class).to(DefaultReportContext.class);
 
 		install(new DataSourceModule());
 		install(new ScriptingModule());

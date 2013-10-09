@@ -15,7 +15,6 @@
  */
 package com.mgmtp.jfunk.server;
 
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 
 import org.apache.log4j.Logger;
@@ -101,10 +100,9 @@ public class JFunkServer extends JFunkBase {
 			RESULT_LOG.info("Starting Funk Server...");
 
 			String propsFileName = System.getProperty("jfunk.props.file", "jfunk.properties");
-			Module module = new JFunkServerModule(threadCount, port);
-			List<Module> modules = ModulesLoader.loadModulesFromProperties(module, propsFileName);
+			Module module = ModulesLoader.loadModulesFromProperties(new JFunkServerModule(threadCount, port), propsFileName);
 
-			Injector injector = Guice.createInjector(modules);
+			Injector injector = Guice.createInjector(module);
 			// load config only in order to set global properties as system properties
 			// specifiying "true" as the last parameter
 			injector.getInstance(Configuration.class).load(JFunkConstants.SCRIPT_PROPERTIES, false);

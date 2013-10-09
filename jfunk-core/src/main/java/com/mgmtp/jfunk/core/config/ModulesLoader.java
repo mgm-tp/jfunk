@@ -26,6 +26,7 @@ import org.apache.log4j.Logger;
 
 import com.google.common.collect.Lists;
 import com.google.inject.Module;
+import com.google.inject.util.Modules;
 import com.mgmtp.jfunk.common.util.ResourceLoader;
 
 /**
@@ -50,16 +51,15 @@ public final class ModulesLoader {
 	/**
 	 * Loads Guice modules whose class names are specified as properties. All properties starting
 	 * with "module." are considered to have a fully qualified class name representing a Guice
-	 * module.
+	 * module. The modules are combined and override thespecified jFunkModule.
 	 * 
 	 * @param propertiesFile
 	 *            The properties file
-	 * @return A list of Guice modules
+	 * @return the combined module
 	 */
-	public static List<Module> loadModulesFromProperties(final Module jFunkModule, final String propertiesFile)
+	public static Module loadModulesFromProperties(final Module jFunkModule, final String propertiesFile)
 			throws ClassNotFoundException, InstantiationException, IllegalAccessException, IOException {
 		final List<Module> modules = Lists.newArrayList();
-		modules.add(jFunkModule);
 
 		LOG.debug("Using jfunk.props.file=" + propertiesFile);
 		Properties props = loadProperties(propertiesFile);
@@ -74,7 +74,7 @@ public final class ModulesLoader {
 				modules.add(module);
 			}
 		}
-		return modules;
+		return Modules.override(jFunkModule).with(modules);
 	}
 
 	private static Properties loadProperties(final String propsFileName) throws IOException {

@@ -237,7 +237,7 @@ public final class JFunk extends JFunkBase {
 	 *                                     These parameters are then available in the script as
 	 *                                     Groovy variables.
 	 * &lt;script(s)&gt;             Required    At least one test script must be specified.
-	 * 
+	 *
 	 * Example:
 	 * java -cp &lt;jFunkClasspath&gt; com.mgmtp.jfunk.core.JFunk -Skey=value -threadcount=4 -parallel mytest.script
 	 * </pre>
@@ -292,8 +292,8 @@ public final class JFunk extends JFunkBase {
 			}
 
 			String propsFileName = System.getProperty("jfunk.props.file", "jfunk.properties");
-			List<Module> modules = ModulesLoader.loadModulesFromProperties(new JFunkDefaultModule(), propsFileName);
-			Injector injector = Guice.createInjector(modules);
+			Module module = ModulesLoader.loadModulesFromProperties(new JFunkDefaultModule(), propsFileName);
+			Injector injector = Guice.createInjector(module);
 
 			// load config only in order to set global properties as system properties
 			// specifiying "true" as the last parameter
