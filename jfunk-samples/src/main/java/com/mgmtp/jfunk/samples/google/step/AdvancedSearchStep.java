@@ -15,29 +15,72 @@
  */
 package com.mgmtp.jfunk.samples.google.step;
 
-import javax.inject.Inject;
+import static com.google.common.base.Preconditions.checkState;
 
-import com.mgmtp.jfunk.samples.google.page.AdvancedSearchPage;
-import com.mgmtp.jfunk.samples.google.page.SearchPage;
+import org.openqa.selenium.By;
+
+import com.mgmtp.jfunk.core.config.InjectConfig;
+import com.mgmtp.jfunk.web.step.ComplexWebDriverStep;
 
 /**
  * @author rnaegele
  */
-public class AdvancedSearchStep extends BaseGoogleStep {
+public class AdvancedSearchStep extends ComplexWebDriverStep {
 
-	@Inject
-	private SearchPage searchPage;
+	private static final By BY_SETTINGS_MENU = By.id("fsettl");
+	private static final By BY_ADVANCED_SEARCH_MENU = By.cssSelector("#advsl > a");
+	private static final By BY_SEARCH_INPUT = By.name("as_q");
+	private static final By BY_LANGUAGE_DROPDOWN = By.id("lr_button");
+	private static final By BY_COUNTRY_DROPDOWN = By.id("cr_button");
+	private static final By BY_SUBMIT_BUTTON = By.xpath("//form[@name='f']//input[@type='submit']");
 
-	@Inject
-	private AdvancedSearchPage advancedSearchPage;
+	@InjectConfig(name = "google.url")
+	private String googleUrl;
+
+	public AdvancedSearchStep() {
+		super("google");
+	}
 
 	@Override
-	protected void doExecuteSteps() {
-		searchPage.navigateToAdvancedSearchPage();
+	protected void executeSteps() {
+		openGoogle();
+		navigateToAdvancedSearch();
+		enterSearchTerm();
+		selectLanguage();
+		selectCountry();
+		submitPage();
+		validateSearchResult();
+	}
 
-		advancedSearchPage.enterSearchTerm();
-		advancedSearchPage.selectLanguage();
-		advancedSearchPage.selectCountry();
-		advancedSearchPage.submitPage();
+	private void openGoogle() {
+		wdt.get(googleUrl);
+	}
+
+	private void navigateToAdvancedSearch() {
+		wdt.click(BY_SETTINGS_MENU);
+		wdt.click(BY_ADVANCED_SEARCH_MENU);
+	}
+
+	private void enterSearchTerm() {
+		wdt.processField(BY_SEARCH_INPUT, "google", "searchTerm");
+	}
+
+	private void selectLanguage() {
+		wdt.click(BY_LANGUAGE_DROPDOWN);
+		wdt.click(By.id(getDataSet().getValue("languageId")));
+	}
+
+	private void selectCountry() {
+		wdt.click(BY_COUNTRY_DROPDOWN);
+		wdt.click(By.id(getDataSet().getValue("countryId")));
+	}
+
+	private void submitPage() {
+		wdt.click(BY_SUBMIT_BUTTON);
+	}
+
+	private void validateSearchResult() {
+		String searchTerm = getDataSet().getValue("searchTerm");
+		checkState(webDriver.getPageSource().contains(searchTerm), "Search term '%s' not contained in search result.", searchTerm);
 	}
 }
