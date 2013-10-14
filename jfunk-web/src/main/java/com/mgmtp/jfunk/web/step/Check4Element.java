@@ -86,9 +86,8 @@ public class Check4Element extends WebDriverStep {
 					}
 				}
 			}
+			throw new StepException("All elements matching by=" + by + " were either invisible or disabled");
 		}
-
-		throw new StepException("All elements matching by=" + by + " were either invisible or disabled");
 	}
 
 	@Override
