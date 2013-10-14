@@ -25,11 +25,9 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
 import com.mgmtp.jfunk.core.exception.StepException;
-import com.mgmtp.jfunk.core.module.TestModule;
 
 /**
  * Checks a WebElement for a given pattern.
- * 
  */
 public class CheckElement4Pattern extends WebDriverStep {
 	private final By by;
@@ -40,7 +38,6 @@ public class CheckElement4Pattern extends WebDriverStep {
 	 *            By means of this value the HTML element is searched after
 	 * @param pattern
 	 *            a regular expression pattern which must match the element's content
-	 * 
 	 */
 	public CheckElement4Pattern(final By by, final String pattern) {
 		this.by = by;
@@ -49,8 +46,7 @@ public class CheckElement4Pattern extends WebDriverStep {
 
 	/**
 	 * @throws StepException
-	 *             if element specified by {@link By} object in the constructor cannot be found or
-	 *             the regex does not match
+	 *             if element specified by {@link By} object in the constructor cannot be found or the regex does not match
 	 */
 	@Override
 	public void execute() throws StepException {
@@ -62,9 +58,8 @@ public class CheckElement4Pattern extends WebDriverStep {
 		}
 
 		/*
-		 * If the search using the By object does find more than one matching element we are looping
-		 * through all elements if we find at least one which matches the criteria below. If not, an
-		 * exception is thrown.
+		 * If the search using the By object does find more than one matching element we are looping through all elements if we
+		 * find at least one which matches the criteria below. If not, an exception is thrown.
 		 */
 		for (WebElement element : webElements) {
 			if (element.isDisplayed()) {

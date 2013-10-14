@@ -23,11 +23,9 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
 import com.mgmtp.jfunk.core.exception.StepException;
-import com.mgmtp.jfunk.core.module.TestModule;
 
 /**
  * Checks if a single HTML element is present on the current page.
- * 
  */
 public class Check4Element extends WebDriverStep {
 	protected final By by;
@@ -45,8 +43,7 @@ public class Check4Element extends WebDriverStep {
 	 * @param by
 	 *            By means of this value the HTML element is searched after
 	 * @param mustExist
-	 *            if {@code true} the element has to exist on the page, if {@code false} the element
-	 *            must not exist.
+	 *            if {@code true} the element has to exist on the page, if {@code false} the element must not exist.
 	 */
 	public Check4Element(final By by, final boolean mustExist) {
 		this.by = by;
@@ -76,9 +73,8 @@ public class Check4Element extends WebDriverStep {
 				throw new StepException("Matching element could be found although mustExist=false");
 			}
 			/*
-			 * If the search using the By object does find more than one matching element we are
-			 * looping through all elements if we find at least one which matches the criteria
-			 * below. If not, an exception is thrown.
+			 * If the search using the By object does find more than one matching element we are looping through all elements if
+			 * we find at least one which matches the criteria below. If not, an exception is thrown.
 			 */
 			for (WebElement element : webElements) {
 				if (element.isDisplayed()) {
