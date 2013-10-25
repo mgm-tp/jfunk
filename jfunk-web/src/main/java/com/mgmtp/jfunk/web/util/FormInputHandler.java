@@ -22,7 +22,6 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -40,16 +39,14 @@ import com.mgmtp.jfunk.web.exception.InvalidValueException;
 
 /**
  * <p>
- * A {@link FormInputHandler} facilitates setting and checking values of {@link WebElement}s. The
- * actual action taken depends on the {@link StepMode}.
+ * A {@link FormInputHandler} facilitates setting and checking values of {@link WebElement}s. The actual action taken depends on
+ * the {@link StepMode}.
  * </p>
  * <p>
- * <strong>Warning: {@link FormInputHandler} instances are always immutable</strong>.; Configuration
- * methods have no effect on the instance they are invoked on! You must store and use the new
- * {@link FormInputHandler} instance returned by these methods. This makes {@link FormInputHandler}s
- * thread-safe and safe to store as {@code static final} constants.
+ * <strong>Warning: {@link FormInputHandler} instances are always immutable</strong>.; Configuration methods have no effect on the
+ * instance they are invoked on! You must store and use the new {@link FormInputHandler} instance returned by these methods. This
+ * makes {@link FormInputHandler}s thread-safe and safe to store as {@code static final} constants.
  * </p>
- * 
  * <strong>Usage Example:</strong>
  * 
  * <pre>
@@ -138,8 +135,7 @@ public final class FormInputHandler {
 	}
 
 	/**
-	 * Creates a new {@link FormInputHandler} based on this {@link FormInputHandler} using the
-	 * specified {@link WebDriver}.
+	 * Creates a new {@link FormInputHandler} based on this {@link FormInputHandler} using the specified {@link WebDriver}.
 	 * 
 	 * @param theWebDriver
 	 *            the WebDriver to use
@@ -152,8 +148,7 @@ public final class FormInputHandler {
 	}
 
 	/**
-	 * Creates a new {@link FormInputHandler} based on this {@link FormInputHandler} using the
-	 * specified {@link By}.
+	 * Creates a new {@link FormInputHandler} based on this {@link FormInputHandler} using the specified {@link By}.
 	 * 
 	 * @param theBy
 	 *            locates the element to operate on
@@ -166,8 +161,7 @@ public final class FormInputHandler {
 	}
 
 	/**
-	 * Creates a new {@link FormInputHandler} based on this {@link FormInputHandler} using the
-	 * specified timeout.
+	 * Creates a new {@link FormInputHandler} based on this {@link FormInputHandler} using the specified timeout.
 	 * 
 	 * @param theTimeoutSeconds
 	 *            the timeout in seconds for waiting for an element to be available
@@ -181,8 +175,7 @@ public final class FormInputHandler {
 	}
 
 	/**
-	 * Creates a new {@link FormInputHandler} based on this {@link FormInputHandler} using the
-	 * specified timeout.
+	 * Creates a new {@link FormInputHandler} based on this {@link FormInputHandler} using the specified timeout.
 	 * 
 	 * @param theTimeoutSeconds
 	 *            the timeout in seconds for waiting for an element to be available
@@ -199,8 +192,8 @@ public final class FormInputHandler {
 	}
 
 	/**
-	 * Creates a new {@link FormInputHandler} based on this {@link FormInputHandler} that restricts
-	 * the enabled status of ele.ments
+	 * Creates a new {@link FormInputHandler} based on this {@link FormInputHandler} that restricts the enabled status of
+	 * ele.ments
 	 * 
 	 * @param theEnabled
 	 *            restricts the {@code enabled} status of the element
@@ -213,8 +206,7 @@ public final class FormInputHandler {
 	}
 
 	/**
-	 * Creates a new {@link FormInputHandler} based on this {@link FormInputHandler} that requires
-	 * elements to be displayed.
+	 * Creates a new {@link FormInputHandler} based on this {@link FormInputHandler} that requires elements to be displayed.
 	 * 
 	 * @param theDisplayed
 	 *            restricts the {@code displayed} status of the element
@@ -227,8 +219,7 @@ public final class FormInputHandler {
 	}
 
 	/**
-	 * Creates a new {@link FormInputHandler} based on this {@link FormInputHandler} that requires
-	 * elements to be selected.
+	 * Creates a new {@link FormInputHandler} based on this {@link FormInputHandler} that requires elements to be selected.
 	 * 
 	 * @param theSelected
 	 *            restricts the {@code selected} status of the element
@@ -241,8 +232,7 @@ public final class FormInputHandler {
 	}
 
 	/**
-	 * Creates a new {@link FormInputHandler} based on this {@link FormInputHandler} using the
-	 * specified value to set or check.
+	 * Creates a new {@link FormInputHandler} based on this {@link FormInputHandler} using the specified value to set or check.
 	 * 
 	 * @param theValue
 	 *            the value to set or check
@@ -258,8 +248,8 @@ public final class FormInputHandler {
 	}
 
 	/**
-	 * Creates a new {@link FormInputHandler} based on this {@link FormInputHandler} using the
-	 * specified {@link DataSet} to retrieve values from.
+	 * Creates a new {@link FormInputHandler} based on this {@link FormInputHandler} using the specified {@link DataSet} to
+	 * retrieve values from.
 	 * 
 	 * @param theDataSet
 	 *            the {@link DataSet} to retrieve the value from
@@ -274,9 +264,8 @@ public final class FormInputHandler {
 	}
 
 	/**
-	 * Creates a new {@link FormInputHandler} based on this {@link FormInputHandler} using the
-	 * specified data key for retrieving the value from the {@link DataSet} associated with this
-	 * {@link FormInputHandler}.
+	 * Creates a new {@link FormInputHandler} based on this {@link FormInputHandler} using the specified data key for retrieving
+	 * the value from the {@link DataSet} associated with this {@link FormInputHandler}.
 	 * 
 	 * @param theDataKey
 	 *            the data set key used to retrieve the value from the specified data set
@@ -291,9 +280,8 @@ public final class FormInputHandler {
 	}
 
 	/**
-	 * Creates a new {@link FormInputHandler} based on this {@link FormInputHandler} using the
-	 * specified data key and the specified index for retrieving the value from the {@link DataSet}
-	 * associated with this {@link FormInputHandler}.
+	 * Creates a new {@link FormInputHandler} based on this {@link FormInputHandler} using the specified data key and the
+	 * specified index for retrieving the value from the {@link DataSet} associated with this {@link FormInputHandler}.
 	 * 
 	 * @param theDataKey
 	 *            the data set key used to retrieve the value from the specified data set
@@ -311,8 +299,7 @@ public final class FormInputHandler {
 	}
 
 	/**
-	 * Creates a new {@link FormInputHandler} based on this {@link FormInputHandler} using the
-	 * specifed {@link StepMode}.
+	 * Creates a new {@link FormInputHandler} based on this {@link FormInputHandler} using the specifed {@link StepMode}.
 	 * 
 	 * @param theStepMode
 	 *            the step mode to use; defaults to {@link StepMode#SET_VALUE} if not specified
@@ -325,13 +312,10 @@ public final class FormInputHandler {
 	}
 
 	/**
-	 * Creates a new {@link FormInputHandler} based on this {@link FormInputHandler} using the
-	 * specifed {@link DefaultsProvider}.
+	 * Creates a new {@link FormInputHandler} based on this {@link FormInputHandler} using the specifed {@link DefaultsProvider}.
 	 * 
 	 * @param theDefaultsProvider
-	 *            provides default values to check when {@link StepMode} is
-	 *            {@link StepMode#CHECK_DEFAULT}
-	 * 
+	 *            provides default values to check when {@link StepMode} is {@link StepMode#CHECK_DEFAULT}
 	 * @return the new {@link FormInputHandler} instance
 	 */
 	public FormInputHandler checkDefaults(final DefaultsProvider theDefaultsProvider) {
@@ -341,12 +325,11 @@ public final class FormInputHandler {
 	}
 
 	/**
-	 * Creates a new {@link FormInputHandler} based on this {@link FormInputHandler} using the
-	 * specified {@link ElementTrafo} for transforming the value before it is set.
+	 * Creates a new {@link FormInputHandler} based on this {@link FormInputHandler} using the specified {@link ElementTrafo} for
+	 * transforming the value before it is set.
 	 * 
 	 * @param theSetTrafo
-	 *            the {@link ElementTrafo} to transform a value before it is set when step mode is
-	 *            {@link StepMode#SET_VALUE}
+	 *            the {@link ElementTrafo} to transform a value before it is set when step mode is {@link StepMode#SET_VALUE}
 	 * @return the new {@link FormInputHandler} instance
 	 */
 	public FormInputHandler setTrafo(final ElementTrafo theSetTrafo) {
@@ -356,12 +339,12 @@ public final class FormInputHandler {
 	}
 
 	/**
-	 * Creates a new {@link FormInputHandler} based on this {@link FormInputHandler} using the
-	 * specified {@link ElementTrafo} for transforming the value before it is checked.
+	 * Creates a new {@link FormInputHandler} based on this {@link FormInputHandler} using the specified {@link ElementTrafo} for
+	 * transforming the value before it is checked.
 	 * 
 	 * @param theCheckTrafo
-	 *            the {@link ElementTrafo} to transform a value before it is checked when step mode
-	 *            is {@link StepMode#CHECK_VALUE}
+	 *            the {@link ElementTrafo} to transform a value before it is checked when step mode is
+	 *            {@link StepMode#CHECK_VALUE}
 	 * @return the new {@link FormInputHandler} instance
 	 */
 	public FormInputHandler checkTrafo(final ElementTrafo theCheckTrafo) {
@@ -523,7 +506,7 @@ public final class FormInputHandler {
 
 	@Override
 	public String toString() {
-		ToStringBuilder tsb = new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE);
+		ToStringBuilder tsb = new ToStringBuilder(this, ShortToStringStyle.INSTANCE);
 		tsb.append("by", finder.getBy());
 		tsb.append("value", retrieveValue());
 		tsb.append("dataKey", dataKey);

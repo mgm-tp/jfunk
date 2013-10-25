@@ -23,7 +23,6 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NotFoundException;
 import org.openqa.selenium.StaleElementReferenceException;
@@ -40,19 +39,16 @@ import com.google.common.collect.ImmutableList;
 
 /**
  * <p>
- * Provides a fluent interface for finding elements, optionally with timeout and constraints
- * (enabled, displayed, selected).
+ * Provides a fluent interface for finding elements, optionally with timeout and constraints (enabled, displayed, selected).
  * </p>
  * <p>
- * <strong>Warning: {@link WebElementFinder} instances are always immutable</strong>.; Configuration
- * methods have no effect on the instance they are invoked on! You must store and use the new
- * {@link WebElementFinder} instance returned by these methods. This makes {@link WebElementFinder}s
- * thread-safe and safe to store as {@code static final} constants.
+ * <strong>Warning: {@link WebElementFinder} instances are always immutable</strong>.; Configuration methods have no effect on the
+ * instance they are invoked on! You must store and use the new {@link WebElementFinder} instance returned by these methods. This
+ * makes {@link WebElementFinder}s thread-safe and safe to store as {@code static final} constants.
  * </p>
  * <p>
  * This class follows the same mechanisms as {@link FormInputHandler}.
  * </p>
- * 
  * <string>Usage Example:</strong>
  * 
  * <pre>
@@ -108,8 +104,7 @@ public final class WebElementFinder {
 	}
 
 	/**
-	 * Creates an new {@link WebElementFinder} based on this {@link WebElementFinder} using the
-	 * specified timeout.
+	 * Creates an new {@link WebElementFinder} based on this {@link WebElementFinder} using the specified timeout.
 	 * 
 	 * @param theTimeoutSeconds
 	 *            the timeout in seconds for the internal {@link WebDriverWait}
@@ -123,8 +118,7 @@ public final class WebElementFinder {
 	}
 
 	/**
-	 * Creates an new {@link WebElementFinder} based on this {@link WebElementFinder} using the
-	 * specified timeout.
+	 * Creates an new {@link WebElementFinder} based on this {@link WebElementFinder} using the specified timeout.
 	 * 
 	 * @param theTimeoutSeconds
 	 *            the timeout in seconds for the internal {@link WebDriverWait}
@@ -142,12 +136,10 @@ public final class WebElementFinder {
 	}
 
 	/**
-	 * Creates an new {@link WebElementFinder} based on this {@link WebElementFinder} restricting
-	 * the enabled status of elements.
+	 * Creates an new {@link WebElementFinder} based on this {@link WebElementFinder} restricting the enabled status of elements.
 	 * 
 	 * @param theEnabled
-	 *            {@code true} if elements must be enabled, {@code false} if elements must not be
-	 *            enabled
+	 *            {@code true} if elements must be enabled, {@code false} if elements must not be enabled
 	 * @return the new {@link WebElementFinder} instance
 	 * @see WebElement#isEnabled()
 	 */
@@ -158,12 +150,11 @@ public final class WebElementFinder {
 	}
 
 	/**
-	 * Creates an new {@link WebElementFinder} based on this {@link WebElementFinder} restricting
-	 * the displayed status of elements.
+	 * Creates an new {@link WebElementFinder} based on this {@link WebElementFinder} restricting the displayed status of
+	 * elements.
 	 * 
 	 * @param theDisplayed
-	 *            {@code true} if elements must be displayed, {@code false} if elements must not be
-	 *            displayed
+	 *            {@code true} if elements must be displayed, {@code false} if elements must not be displayed
 	 * @return the new {@link WebElementFinder} instance
 	 * @see WebElement#isDisplayed()
 	 */
@@ -174,13 +165,12 @@ public final class WebElementFinder {
 	}
 
 	/**
-	 * Creates an new {@link WebElementFinder} based on this {@link WebElementFinder} restricting
-	 * the selected status of elements. This method should only be called if elements are indeed
-	 * selectable, such as checkboxes, options in a select, and radio buttons.
+	 * Creates an new {@link WebElementFinder} based on this {@link WebElementFinder} restricting the selected status of elements.
+	 * This method should only be called if elements are indeed selectable, such as checkboxes, options in a select, and radio
+	 * buttons.
 	 * 
 	 * @param theSelected
-	 *            {@code true} if elements must be selected, {@code false} if elements must not be
-	 *            selected
+	 *            {@code true} if elements must be selected, {@code false} if elements must not be selected
 	 * @return the new {@link WebElementFinder} instance
 	 * @see WebElement#isSelected()
 	 */
@@ -191,12 +181,10 @@ public final class WebElementFinder {
 	}
 
 	/**
-	 * Creates an new {@link WebElementFinder} based on this {@link WebElementFinder} specifying a
-	 * condition elements must meet.
+	 * Creates an new {@link WebElementFinder} based on this {@link WebElementFinder} specifying a condition elements must meet.
 	 * 
 	 * @param theCondition
 	 *            the condition
-	 * 
 	 * @return the new {@link WebElementFinder} instance
 	 */
 	public WebElementFinder condition(final Predicate<WebElement> theCondition) {
@@ -206,8 +194,7 @@ public final class WebElementFinder {
 	}
 
 	/**
-	 * Creates a new {@link WebElementFinder} based on this {@link WebElementFinder} using the
-	 * specified element locator.
+	 * Creates a new {@link WebElementFinder} based on this {@link WebElementFinder} using the specified element locator.
 	 * 
 	 * @param theBy
 	 *            locates the element to operate on
@@ -220,8 +207,7 @@ public final class WebElementFinder {
 	}
 
 	/**
-	 * Creates a new {@link WebElementFinder} based on this {@link WebElementFinder} using the
-	 * specified {@link WebDriver}.
+	 * Creates a new {@link WebElementFinder} based on this {@link WebElementFinder} using the specified {@link WebDriver}.
 	 * 
 	 * @param theWebDriver
 	 *            the {@link WebDriver} to use
@@ -234,9 +220,8 @@ public final class WebElementFinder {
 	}
 
 	/**
-	 * Creates a new {@link WebElementFinder} based on this {@link WebElementFinder} with logging
-	 * disabled. This is useful when a {@link WebElementFinder} is using by a
-	 * {@link FormInputHandler} which logs on its own.
+	 * Creates a new {@link WebElementFinder} based on this {@link WebElementFinder} with logging disabled. This is useful when a
+	 * {@link WebElementFinder} is using by a {@link FormInputHandler} which logs on its own.
 	 * 
 	 * @param theNoLogging
 	 *            the {@link WebDriver} to use
@@ -311,16 +296,7 @@ public final class WebElementFinder {
 				wait.until(new Function<WebDriver, List<WebElement>>() {
 					@Override
 					public List<WebElement> apply(final WebDriver input) {
-						List<WebElement> elList = input.findElements(by);
-						for (WebElement element : elList) {
-							if (!checkElementForList(element)) {
-								continue;
-							}
-							if (condition != null && !condition.apply(element)) {
-								continue;
-							}
-							result.add(element);
-						}
+						doFindElements(result, input);
 						if (result.isEmpty()) {
 							// this means, we try again until the timeout occurs
 							throw new WebElementException("No matching element found.");
@@ -334,16 +310,7 @@ public final class WebElementFinder {
 					}
 				});
 			} else {
-				List<WebElement> elList = webDriver.findElements(by);
-				for (WebElement element : elList) {
-					if (!checkElementForList(element)) {
-						continue;
-					}
-					if (condition != null && !condition.apply(element)) {
-						continue;
-					}
-					result.add(element);
-				}
+				doFindElements(result, webDriver);
 			}
 			return result;
 		} catch (TimeoutException ex) {
@@ -354,6 +321,19 @@ public final class WebElementFinder {
 				}
 			}
 			throw new WebElementException(ex);
+		}
+	}
+
+	private void doFindElements(final List<WebElement> result, final WebDriver searchContext) {
+		List<WebElement> elList = searchContext.findElements(by);
+		for (WebElement element : elList) {
+			if (!checkElementForList(element)) {
+				continue;
+			}
+			if (condition != null && !condition.apply(element)) {
+				continue;
+			}
+			result.add(element);
 		}
 	}
 
@@ -480,7 +460,7 @@ public final class WebElementFinder {
 
 	@Override
 	public String toString() {
-		ToStringBuilder tsb = new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE);
+		ToStringBuilder tsb = new ToStringBuilder(this, ShortToStringStyle.INSTANCE);
 		tsb.append("by", by);
 		if (timeoutSeconds > 0L) {
 			tsb.append("timeoutSeconds", timeoutSeconds);
