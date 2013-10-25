@@ -206,38 +206,6 @@ public class WebDriverTool implements SearchContext {
 	}
 
 	/**
-	 * Checks whether exactly one element exists that can be identified by the specified locator. Uses a timeout of two seconds.
-	 * 
-	 * @param by
-	 *            the {@link By} used to locate the element
-	 * @return {@code true} if the element exists exactly once, {@code false} otherwise
-	 * @throws IllegalStateException
-	 *             if the element is found more than once; use {@link #elementsExists(By)} if this is acceptable
-	 */
-	public boolean elementExists(final By by) {
-		int size = wef.timeout(2L).by(by).findAll().size();
-		switch (size) {
-			case 0:
-				return false;
-			case 1:
-				return true;
-			default:
-				throw new IllegalStateException("Found more than one elements using " + by);
-		}
-	}
-
-	/**
-	 * Checks whether at least one element exists that can be identified by the specified locator. Uses a timeout of two seconds.
-	 * 
-	 * @param by
-	 *            the {@link By} used to locate the element
-	 * @return {@code true} if at least element exists, {@code false} otherwise
-	 */
-	public boolean elementsExists(final By by) {
-		return !wef.timeout(2L).by(by).findAll().isEmpty();
-	}
-
-	/**
 	 * Repeatedly applies the current {@link WebDriver} instance to the specifed function until one of the following occurs:
 	 * <ol>
 	 * <li>the function returns neither null nor false,</li>
