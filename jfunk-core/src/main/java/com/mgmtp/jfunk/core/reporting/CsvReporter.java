@@ -38,10 +38,9 @@ import com.mgmtp.jfunk.core.module.TestModule;
 import com.mgmtp.jfunk.data.DataSet;
 
 /**
- * Reporter for writing test data and/or configuration properties to a CSV file. This reporter only
- * reports on module level. Steps are not reported, even if annotated with {@link Reported}. An
- * additional 'result' column is always written as the last column with values {@code OK} or
- * {@code ERROR}.
+ * Reporter for writing test data and/or configuration properties to a CSV file. This reporter only reports on module level. Steps
+ * are not reported, even if annotated with {@link Reported}. An additional 'result' column is always written as the last column
+ * with values {@code OK} or {@code ERROR}.
  * 
  * @author rnaegele
  */
@@ -69,14 +68,12 @@ public class CsvReporter extends AbstractFileReporter {
 	 * Creates a new instance.
 	 * 
 	 * @param fileName
-	 *            the name of the file to write the report to (relative to the archive base
-	 *            directory); if {@code null} it is computed from the reporter's class name and the
-	 *            reporter's key
+	 *            the name of the file to write the report to (relative to the archive base directory); if {@code null} it is
+	 *            computed from the reporter's class name and the reporter's key
 	 * @param headers
-	 *            the header for the CSV report; if this param's value is {@code null}, all entries
-	 *            from the data set specified by parameter {@code dataSetKey} are written to the
-	 *            report with the header being the data set key plus the entry key seperated by a
-	 *            space character
+	 *            the header for the CSV report; if this param's value is {@code null}, all entries from the data set specified by
+	 *            parameter {@code dataSetKey} are written to the report with the header being the data set key plus the entry key
+	 *            seperated by a space character
 	 * @param delimiter
 	 *            the column delimiter
 	 * @param quoteChar
@@ -115,7 +112,6 @@ public class CsvReporter extends AbstractFileReporter {
 
 	private void initColumns() {
 		StrBuilder sb = new StrBuilder(256);
-		int i = 0;
 
 		if (headers == null) {
 
@@ -127,8 +123,7 @@ public class CsvReporter extends AbstractFileReporter {
 			columns = newArrayListWithCapacity(keysSet.size());
 			for (String key : keysSet) {
 				columns.add(new Column(key, dataSetKey));
-				appendEscapedAndQuoted(sb, i, dataSetKey + ' ' + key);
-				i++;
+				appendEscapedAndQuoted(sb, dataSetKey + ' ' + key);
 			}
 
 		} else {
@@ -136,15 +131,14 @@ public class CsvReporter extends AbstractFileReporter {
 			columns = newArrayListWithCapacity(headers.size());
 			for (String h : headers) {
 				columns.add(new Column(h));
-				appendEscapedAndQuoted(sb, i, h);
-				i++;
+				appendEscapedAndQuoted(sb, h);
 			}
 		}
 
 		// additional default columns
-		appendEscapedAndQuoted(sb, i++, JFunkConstants.CURRENT_MODULE_NAME);
-		appendEscapedAndQuoted(sb, i++, JFunkConstants.CURRENT_MODULE_RESULT);
-		appendEscapedAndQuoted(sb, i++, JFunkConstants.CURRENT_MODULE_ERROR);
+		appendEscapedAndQuoted(sb, JFunkConstants.CURRENT_MODULE_NAME);
+		appendEscapedAndQuoted(sb, JFunkConstants.CURRENT_MODULE_RESULT);
+		appendEscapedAndQuoted(sb, JFunkConstants.CURRENT_MODULE_ERROR);
 
 		header = sb.toString();
 	}
@@ -173,7 +167,6 @@ public class CsvReporter extends AbstractFileReporter {
 
 			Map<String, DataSet> dataSets = currentDataSetsProvider.get();
 			StrBuilder sb = new StrBuilder(256);
-			int i = 0;
 			for (Column column : columns) {
 				String dsKey = column.dataSetKey;
 				String value;
@@ -188,16 +181,15 @@ public class CsvReporter extends AbstractFileReporter {
 					value = configProvider.get().get(column.key);
 				}
 
-				appendEscapedAndQuoted(sb, i, value);
-				i++;
+				appendEscapedAndQuoted(sb, value);
 			}
 
 			// additional result column
-			appendEscapedAndQuoted(sb, i++, context.getTestObjectName());
-			appendEscapedAndQuoted(sb, i++, context.isSuccess() ? JFunkConstants.OK : JFunkConstants.ERROR);
+			appendEscapedAndQuoted(sb, context.getTestObjectName());
+			appendEscapedAndQuoted(sb, context.isSuccess() ? JFunkConstants.OK : JFunkConstants.ERROR);
 
 			if (context.isSuccess()) {
-				appendEscapedAndQuoted(sb, i++, "");
+				appendEscapedAndQuoted(sb, "");
 			} else {
 				Throwable th = context.getThrowable();
 				String msg = th.getMessage();
@@ -215,7 +207,7 @@ public class CsvReporter extends AbstractFileReporter {
 				if (isBlank(msg)) {
 					msg = th.getClass().getName();
 				}
-				appendEscapedAndQuoted(sb, i++, msg);
+				appendEscapedAndQuoted(sb, msg);
 			}
 
 			if (sb.isEmpty()) {
@@ -227,10 +219,10 @@ public class CsvReporter extends AbstractFileReporter {
 		}
 	}
 
-	private void appendEscapedAndQuoted(final StrBuilder sb, final int colIndex, final String value) {
+	private void appendEscapedAndQuoted(final StrBuilder sb, final String value) {
 		boolean foundLineBreak = false;
 
-		sb.appendSeparator(delimiter, colIndex);
+		sb.appendSeparator(delimiter);
 
 		if (quoted) {
 			sb.append(quoteChar);
@@ -249,7 +241,7 @@ public class CsvReporter extends AbstractFileReporter {
 							sb.append(' ');
 							foundLineBreak = false;
 						}
-						if (quoted) { // can't have this as case because it is no constant expression
+						if (quoted && c == quoteChar) { // can't have this as case because it is no constant expression
 							sb.append(c); // escape double quote, i. e. add quote character again
 						}
 						break;
@@ -290,8 +282,7 @@ public class CsvReporter extends AbstractFileReporter {
 	}
 
 	/**
-	 * Creates a {@link CsvReporterBuilder} for a CSV report based on the {@link DataSet} with the
-	 * specified key.
+	 * Creates a {@link CsvReporterBuilder} for a CSV report based on the {@link DataSet} with the specified key.
 	 * 
 	 * @param dataSetKey
 	 *            the data set key
@@ -374,9 +365,8 @@ public class CsvReporter extends AbstractFileReporter {
 		 * Sets the file name and returns the underlining builder instance.
 		 * 
 		 * @param aFileName
-		 *            the name of the file to write the report to (relative to the archive base
-		 *            directory); if {@code null} it is computed from the reporter's class name and
-		 *            the reporter's key
+		 *            the name of the file to write the report to (relative to the archive base directory); if {@code null} it is
+		 *            computed from the reporter's class name and the reporter's key
 		 * @return the builder
 		 */
 		public CsvReporterBuilder writtenTo(final String aFileName) {
