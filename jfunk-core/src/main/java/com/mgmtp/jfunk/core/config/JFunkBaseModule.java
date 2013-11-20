@@ -163,13 +163,15 @@ public final class JFunkBaseModule extends BaseJFunkGuiceModule {
 	@Provides
 	@ScriptScoped
 	Deque<ReportContext> provideReportContextStack() {
-		return new ArrayDeque<ReportContext>();
+		return new ArrayDeque<>();
 	}
 
 	@Provides
 	@ScriptScoped
 	Configuration provideConfiguration(final DataSetAdapter dsAdapter, final Charset charset) {
-		return new Configuration(dsAdapter, charset);
+		Configuration configuration = new Configuration(dsAdapter, charset);
+		configuration.load(JFunkConstants.SCRIPT_PROPERTIES, false);
+		return configuration;
 	}
 
 	@Provides

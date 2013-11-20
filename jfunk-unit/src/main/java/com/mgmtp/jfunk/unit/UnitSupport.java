@@ -30,7 +30,6 @@ import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.mgmtp.jfunk.common.JFunkConstants;
 import com.mgmtp.jfunk.common.config.ThreadScope;
-import com.mgmtp.jfunk.common.util.Configuration;
 import com.mgmtp.jfunk.core.config.ModulesLoader;
 import com.mgmtp.jfunk.core.event.AfterRunEvent;
 import com.mgmtp.jfunk.core.event.AfterScriptEvent;
@@ -71,11 +70,6 @@ class UnitSupport {
 						Injector injector = Guice.createInjector(module);
 
 						instance = injector.getInstance(UnitSupport.class);
-
-						// load config only in order to set global properties as system properties
-						// specifying "true" as the last parameter
-						injector.getInstance(Configuration.class).load(JFunkConstants.SCRIPT_PROPERTIES, false);
-
 						instance.eventBus.post(new BeforeRunEvent());
 
 						Runtime.getRuntime().addShutdownHook(new Thread() {

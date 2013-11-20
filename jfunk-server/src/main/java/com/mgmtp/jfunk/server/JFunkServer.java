@@ -27,8 +27,6 @@ import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Module;
-import com.mgmtp.jfunk.common.JFunkConstants;
-import com.mgmtp.jfunk.common.util.Configuration;
 import com.mgmtp.jfunk.core.JFunk;
 import com.mgmtp.jfunk.core.JFunkBase;
 import com.mgmtp.jfunk.core.config.ModulesLoader;
@@ -103,10 +101,6 @@ public class JFunkServer extends JFunkBase {
 			Module module = ModulesLoader.loadModulesFromProperties(new JFunkServerModule(threadCount, port), propsFileName);
 
 			Injector injector = Guice.createInjector(module);
-			// load config only in order to set global properties as system properties
-			// specifiying "true" as the last parameter
-			injector.getInstance(Configuration.class).load(JFunkConstants.SCRIPT_PROPERTIES, false);
-
 			JFunkBase jFunk = injector.getInstance(JFunkBase.class);
 			jFunk.execute();
 
