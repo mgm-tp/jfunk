@@ -12,7 +12,7 @@
 	<parent>
 		<artifactId>jfunk</artifactId>
 		<groupId>com.mgmtp.jfunk</groupId>
-		<version>3.1.0-SNAPSHOT</version>
+		<version>3.1.0-rc-1</version>
 	</parent>
 	<artifactId>jfunk-data-generator</artifactId>
 	<packaging>jar</packaging>
