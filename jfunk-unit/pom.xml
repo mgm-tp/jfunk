@@ -15,7 +15,7 @@
 		<version>3.1.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>jfunk-unit</artifactId>
-	<name>jfunk-unit</name>
+	<name>jFunk Unit Test Integration</name>
 	<description>jFunk Unit Test Integration</description>
 
 	<dependencies>
