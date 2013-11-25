@@ -57,10 +57,8 @@
 		<module>jfunk-data-generator</module>
 		<module>jfunk-data-excel</module>
 		<module>jfunk-samples</module>
-		<module>jfunk-server</module>
 		<module>jfunk-unit</module>
 		<module>jfunk-web</module>
-		<module>jfunk-archetype</module>
 	</modules>
 	<build>
 		<pluginManagement>
