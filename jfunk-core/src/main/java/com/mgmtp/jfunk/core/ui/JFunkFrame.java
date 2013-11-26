@@ -257,7 +257,8 @@ public final class JFunkFrame extends JFrame {
 		testSystemsComboBox = new JComboBox(testSystemsModel);
 		testSystemsComboBox.setBorder(BorderFactory.createTitledBorder("Test system"));
 		// Multi-line tooltip
-		testSystemsComboBox.setToolTipText("<html>List of test systems" + "<br>Defined by all files in directory 'config/system'</br></html>");
+		testSystemsComboBox.setToolTipText("<html>List of test systems"
+				+ "<br>Defined by all files in directory 'config/system'</br></html>");
 		testSystemsComboBox.setSelectedItem(0);
 		toolBarFirstLine.add(testSystemsComboBox);
 
@@ -286,7 +287,8 @@ public final class JFunkFrame extends JFrame {
 		parallelComboBox.setSelectedIndex(1);
 		parallelComboBox.setBorder(BorderFactory.createTitledBorder("Parallel?"));
 		parallelComboBox
-				.setToolTipText("If set to 'yes', a single script will be executed " + "multiple times using the specified number of threads");
+				.setToolTipText("If set to 'yes', a single script will be executed "
+						+ "multiple times using the specified number of threads");
 		toolBarSecondLine.add(parallelComboBox);
 
 		jPanelUtilities = new JPanel();
@@ -442,7 +444,7 @@ public final class JFunkFrame extends JFrame {
 
 		public FileOpenScriptsAction() {
 			super("Open script(s)");
-			final URL url = getClass().getResource("/toolbarButtonGraphics/general/Open16.gif");
+			final URL url = getClass().getResource("/Open16.gif");
 			putValue(SMALL_ICON, new ImageIcon(url));
 			putValue(SHORT_DESCRIPTION, "Open script(s)");
 			putValue(MNEMONIC_KEY, KeyEvent.VK_S);
@@ -481,7 +483,7 @@ public final class JFunkFrame extends JFrame {
 
 		public FileEditPropertiesAction() {
 			super("Edit properties file");
-			final URL url = getClass().getResource("/toolbarButtonGraphics/general/Edit16.gif");
+			final URL url = getClass().getResource("/Edit16.gif");
 			putValue(SMALL_ICON, new ImageIcon(url));
 			putValue(SHORT_DESCRIPTION, "Edit properties file");
 			putValue(MNEMONIC_KEY, KeyEvent.VK_E);
@@ -527,7 +529,7 @@ public final class JFunkFrame extends JFrame {
 
 		public ToolsRunAction() {
 			super("Run script(s)");
-			final URL url = getClass().getResource("/toolbarButtonGraphics/media/Play16.gif");
+			final URL url = getClass().getResource("/Play16.gif");
 			putValue(SMALL_ICON, new ImageIcon(url));
 			putValue(SHORT_DESCRIPTION, "Run script(s)");
 			putValue(MNEMONIC_KEY, KeyEvent.VK_R);

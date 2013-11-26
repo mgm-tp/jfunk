@@ -77,10 +77,6 @@
 			<artifactId>jsr305</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>jlfgr</groupId>
-			<artifactId>jlfgr</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 		</dependency>
