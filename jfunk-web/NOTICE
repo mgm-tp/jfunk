@@ -18,7 +18,6 @@ From: 'an unknown organization'
     License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
   - javax.inject (http://code.google.com/p/atinject/) javax.inject:javax.inject:jar:1
     License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
-  - jlfgr  jlfgr:jlfgr:jar:1.0
   - Java Native Access (https://github.com/twall/jna) net.java.dev.jna:jna:jar:3.4.0
     License: LGPL, version 2.1  (http://creativecommons.org/licenses/LGPL/2.1/)
   - Java Native Access Platform (https://github.com/twall/jna) net.java.dev.jna:platform:jar:3.4.0
