@@ -46,20 +46,17 @@ class InternalEventHandler {
 
 	private final Provider<ModuleArchiver> moduleArchiverProvider;
 	private final Provider<ScriptContext> scriptContextProvider;
-	private final Provider<ReportContext> reportContextProvider;
 	private final Provider<Deque<ReportContext>> reportContextStackProvider;
 	private final Set<Reporter> globalReporters;
 	private final Provider<Date> moduleStartDateProvider;
 
 	@Inject
 	InternalEventHandler(final Provider<ModuleArchiver> moduleArchiverProvider,
-			final Provider<ScriptContext> scriptContextProvider, final Provider<ReportContext> reportContextProvider,
-			final Provider<Deque<ReportContext>> reportContextStackProvider, final Set<Reporter> globalReporters,
-			@ModuleStartDate final Provider<Date> moduleStartDateProvider) {
+			final Provider<ScriptContext> scriptContextProvider, final Provider<Deque<ReportContext>> reportContextStackProvider,
+			final Set<Reporter> globalReporters, @ModuleStartDate final Provider<Date> moduleStartDateProvider) {
 		this.moduleArchiverProvider = moduleArchiverProvider;
 		this.scriptContextProvider = scriptContextProvider;
 		this.reportContextStackProvider = reportContextStackProvider;
-		this.reportContextProvider = reportContextProvider;
 		this.globalReporters = globalReporters;
 		this.moduleStartDateProvider = moduleStartDateProvider;
 	}
@@ -73,7 +70,7 @@ class InternalEventHandler {
 		// if not explititly disabled, module are always reported
 		Reported reported = module.getClass().getAnnotation(Reported.class);
 		if (reported == null || reported.value()) {
-			ReportContext reportContext = reportContextProvider.get();
+			ReportContext reportContext = new ReportContext();
 			reportContext.setTestObjectName(module.getName());
 			reportContext.setTestObjectType(module.getClass());
 			reportContext.setStartMillis(moduleStartDateProvider.get().getTime());
@@ -93,7 +90,6 @@ class InternalEventHandler {
 				ReportContext reportContext = reportContextStackProvider.get().pop();
 				reportContext.setStopMillis(System.currentTimeMillis());
 				reportContext.setThrowable(event.getThrowable());
-				reportContext.update(module);
 				addReportResults(reportContext);
 			}
 		} finally {
@@ -108,7 +104,7 @@ class InternalEventHandler {
 		Class<? extends Step> stepClass = step.getClass();
 		Reported reported = stepClass.getAnnotation(Reported.class);
 		if (reported != null && reported.value()) {
-			ReportContext reportContext = reportContextProvider.get();
+			ReportContext reportContext = new ReportContext();
 			reportContext.setTestObjectName(step.getName());
 			reportContext.setTestObjectType(stepClass);
 			reportContext.setStartMillis(System.currentTimeMillis());
@@ -125,7 +121,6 @@ class InternalEventHandler {
 			ReportContext reportContext = reportContextStackProvider.get().pop();
 			reportContext.setStopMillis(System.currentTimeMillis());
 			reportContext.setThrowable(event.getThrowable());
-			reportContext.update(step);
 			addReportResults(reportContext);
 		}
 	}
