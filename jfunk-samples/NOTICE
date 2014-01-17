@@ -4,7 +4,7 @@
 // ------------------------------------------------------------------
 
 jFunk Samples
-Copyright 2013 mgm technology partners GmbH
+Copyright 2014 mgm technology partners GmbH
 
 From: 'an unknown organization'
   - AntLR Parser Generator (http://www.antlr.org/) antlr:antlr:jar:2.7.7
@@ -18,41 +18,40 @@ From: 'an unknown organization'
     License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
   - javax.inject (http://code.google.com/p/atinject/) javax.inject:javax.inject:jar:1
     License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
-  - jlfgr  jlfgr:jlfgr:jar:1.0
   - Java Native Access (https://github.com/twall/jna) net.java.dev.jna:jna:jar:3.4.0
     License: LGPL, version 2.1  (http://creativecommons.org/licenses/LGPL/2.1/)
   - Java Native Access Platform (https://github.com/twall/jna) net.java.dev.jna:platform:jar:3.4.0
     License: LGPL, version 2.1  (http://creativecommons.org/licenses/LGPL/2.1/)
-  - CSS Parser (http://cssparser.sourceforge.net/) net.sourceforge.cssparser:cssparser:jar:0.9.9
+  - CSS Parser (http://cssparser.sourceforge.net/) net.sourceforge.cssparser:cssparser:jar:0.9.11
     License: GNU Lesser General Public License  (http://www.gnu.org/licenses/lgpl.txt)
-  - HtmlUnit Core JS (http://htmlunit.sourceforge.net) net.sourceforge.htmlunit:htmlunit-core-js:jar:2.12
+  - HtmlUnit Core JS (http://htmlunit.sourceforge.net) net.sourceforge.htmlunit:htmlunit-core-js:jar:2.13
     License: Mozilla Public License version 2.0  (http://www.mozilla.org/MPL/2.0/)
-  - Neko HTML (http://nekohtml.sourceforge.net/) net.sourceforge.nekohtml:nekohtml:jar:1.9.18
+  - Neko HTML (http://nekohtml.sourceforge.net/) net.sourceforge.nekohtml:nekohtml:jar:1.9.19
     License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
   - JDOM (http://www.jdom.org/) org.jdom:jdom:jar:1.1
   - Mockito (http://www.mockito.org) org.mockito:mockito-core:jar:1.9.5
     License: The MIT License  (http://code.google.com/p/mockito/wiki/License)
   - Objenesis (http://objenesis.googlecode.com/svn/docs/index.html) org.objenesis:objenesis:jar:1.0
     License: MIT License  (http://objenesis.googlecode.com/svn/docs/license.html)
-  - selenium-api (http://selenium.googlecode.com/selenium-api/) org.seleniumhq.selenium:selenium-api:jar:2.35.0
+  - selenium-api (http://selenium.googlecode.com/selenium-api/) org.seleniumhq.selenium:selenium-api:jar:2.39.0
     License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
-  - selenium-chrome-driver (http://selenium.googlecode.com/selenium-chrome-driver/) org.seleniumhq.selenium:selenium-chrome-driver:jar:2.35.0
+  - selenium-chrome-driver (http://selenium.googlecode.com/selenium-chrome-driver/) org.seleniumhq.selenium:selenium-chrome-driver:jar:2.39.0
     License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
-  - selenium-firefox-driver (http://selenium.googlecode.com/selenium-firefox-driver/) org.seleniumhq.selenium:selenium-firefox-driver:jar:2.35.0
+  - selenium-firefox-driver (http://selenium.googlecode.com/selenium-firefox-driver/) org.seleniumhq.selenium:selenium-firefox-driver:jar:2.39.0
     License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
-  - selenium-htmlunit-driver (http://selenium.googlecode.com/selenium-htmlunit-driver/) org.seleniumhq.selenium:selenium-htmlunit-driver:jar:2.35.0
+  - selenium-htmlunit-driver (http://selenium.googlecode.com/selenium-htmlunit-driver/) org.seleniumhq.selenium:selenium-htmlunit-driver:jar:2.39.0
     License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
-  - selenium-ie-driver (http://selenium.googlecode.com/selenium-ie-driver/) org.seleniumhq.selenium:selenium-ie-driver:jar:2.35.0
+  - selenium-ie-driver (http://selenium.googlecode.com/selenium-ie-driver/) org.seleniumhq.selenium:selenium-ie-driver:jar:2.39.0
     License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
-  - selenium-java (http://selenium.googlecode.com/selenium-java/) org.seleniumhq.selenium:selenium-java:jar:2.35.0
+  - selenium-java (http://selenium.googlecode.com/selenium-java/) org.seleniumhq.selenium:selenium-java:jar:2.39.0
     License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
-  - selenium-remote-driver (http://selenium.googlecode.com/selenium-remote-driver/) org.seleniumhq.selenium:selenium-remote-driver:jar:2.35.0
+  - selenium-remote-driver (http://selenium.googlecode.com/selenium-remote-driver/) org.seleniumhq.selenium:selenium-remote-driver:jar:2.39.0
     License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
-  - selenium-support (http://selenium.googlecode.com/selenium-support/) org.seleniumhq.selenium:selenium-support:jar:2.35.0
+  - selenium-support (http://selenium.googlecode.com/selenium-support/) org.seleniumhq.selenium:selenium-support:jar:2.39.0
     License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
   - webbit (http://webbitserver.org/) org.webbitserver:webbit:jar:0.4.14
     License: BSD License  (http://www.opensource.org/licenses/bsd-license)
-  - Xerces2-j (https://xerces.apache.org/xerces2-j/) xerces:xercesImpl:jar:2.10.0
+  - Xerces2-j (https://xerces.apache.org/xerces2-j/) xerces:xercesImpl:jar:2.11.0
     License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
   - XML Commons External Components XML APIs (http://xml.apache.org/commons/components/external/) xml-apis:xml-apis:jar:1.4.01
     License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -64,7 +63,7 @@ From: 'Codehaus' (http://www.codehaus.org/)
     License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 From: 'Gargoyle Software Inc.' (http://www.GargoyleSoftware.com/)
-  - HtmlUnit (http://htmlunit.sourceforge.net) net.sourceforge.htmlunit:htmlunit:jar:2.12
+  - HtmlUnit (http://htmlunit.sourceforge.net) net.sourceforge.htmlunit:htmlunit:jar:2.13
     License: Apache License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 From: 'Google, Inc.' (http://www.google.com)
@@ -85,16 +84,16 @@ From: 'JSON' (http://json.org/)
 
 
 From: 'Mort Bay Consulting' (http://www.mortbay.com)
-  - Jetty :: Http Utility (http://www.eclipse.org/jetty/jetty-http) org.eclipse.jetty:jetty-http:jar:8.1.9.v20130131
+  - Jetty :: Http Utility (http://www.eclipse.org/jetty) org.eclipse.jetty:jetty-http:jar:8.1.12.v20130726
     License: Apache Software License - Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0)
     License: Eclipse Public License - Version 1.0  (http://www.eclipse.org/org/documents/epl-v10.php)
-  - Jetty :: IO Utility (http://www.eclipse.org/jetty/jetty-io) org.eclipse.jetty:jetty-io:jar:8.1.9.v20130131
+  - Jetty :: IO Utility (http://www.eclipse.org/jetty) org.eclipse.jetty:jetty-io:jar:8.1.12.v20130726
     License: Apache Software License - Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0)
     License: Eclipse Public License - Version 1.0  (http://www.eclipse.org/org/documents/epl-v10.php)
-  - Jetty :: Utilities (http://www.eclipse.org/jetty/jetty-util) org.eclipse.jetty:jetty-util:jar:8.1.9.v20130131
+  - Jetty :: Utilities (http://www.eclipse.org/jetty) org.eclipse.jetty:jetty-util:jar:8.1.12.v20130726
     License: Apache Software License - Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0)
     License: Eclipse Public License - Version 1.0  (http://www.eclipse.org/org/documents/epl-v10.php)
-  - Jetty :: Websocket (http://www.eclipse.org/jetty/jetty-websocket) org.eclipse.jetty:jetty-websocket:jar:8.1.9.v20130131
+  - Jetty :: Websocket (http://www.eclipse.org/jetty) org.eclipse.jetty:jetty-websocket:jar:8.1.12.v20130726
     License: Apache Software License - Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0)
     License: Eclipse Public License - Version 1.0  (http://www.eclipse.org/org/documents/epl-v10.php)
 
@@ -132,7 +131,7 @@ From: 'QOS.ch' (http://www.qos.ch)
     License: MIT License  (http://www.opensource.org/licenses/mit-license.php)
 
 From: 'The Apache Software Foundation' (http://www.apache.org/)
-  - Commons Codec (http://commons.apache.org/codec/) commons-codec:commons-codec:jar:1.7
+  - Commons Codec (http://commons.apache.org/proper/commons-codec/) commons-codec:commons-codec:jar:1.8
     License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
   - Commons Collections (http://commons.apache.org/collections/) commons-collections:commons-collections:jar:3.2.1
     License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -142,11 +141,11 @@ From: 'The Apache Software Foundation' (http://www.apache.org/)
     License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
   - Commons Lang (http://commons.apache.org/lang/) org.apache.commons:commons-lang3:jar:3.1
     License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
-  - HttpClient (http://hc.apache.org/httpcomponents-client) org.apache.httpcomponents:httpclient:jar:4.2.1
+  - Apache HttpClient (http://hc.apache.org/httpcomponents-client) org.apache.httpcomponents:httpclient:jar:4.3.1
     License: Apache License  (LICENSE.txt)
-  - HttpCore (http://hc.apache.org/httpcomponents-core-ga) org.apache.httpcomponents:httpcore:jar:4.2.1
+  - Apache HttpCore (http://hc.apache.org/httpcomponents-core-ga) org.apache.httpcomponents:httpcore:jar:4.3
     License: Apache License  (LICENSE.txt)
-  - HttpMime (http://hc.apache.org/httpcomponents-client) org.apache.httpcomponents:httpmime:jar:4.2.3
+  - Apache HttpClient Mime (http://hc.apache.org/httpcomponents-client) org.apache.httpcomponents:httpmime:jar:4.3.1
     License: Apache License  (LICENSE.txt)
   - Xalan Java Serializer (http://xml.apache.org/xalan-j/) xalan:serializer:jar:2.7.1
     License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)

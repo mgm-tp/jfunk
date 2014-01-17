@@ -4,7 +4,7 @@
 // ------------------------------------------------------------------
 
 jFunk Unit Test Integration
-Copyright 2013 mgm technology partners GmbH
+Copyright 2014 mgm technology partners GmbH
 
 From: 'an unknown organization'
   - AntLR Parser Generator (http://www.antlr.org/) antlr:antlr:jar:2.7.7
@@ -19,7 +19,6 @@ From: 'an unknown organization'
     License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
   - javax.inject (http://code.google.com/p/atinject/) javax.inject:javax.inject:jar:1
     License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
-  - jlfgr  jlfgr:jlfgr:jar:1.0
   - JDOM (http://www.jdom.org/) org.jdom:jdom:jar:1.1
   - Mockito (http://www.mockito.org) org.mockito:mockito-core:jar:1.9.5
     License: The MIT License  (http://code.google.com/p/mockito/wiki/License)
