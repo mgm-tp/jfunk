@@ -110,11 +110,11 @@ public class JFunkHtmlUnitDriverImpl extends HtmlUnitDriver implements Incorrect
 	}
 
 	protected final void configureWebClient(final WebClient client) {
-		client.setTimeout(webDriverParams.getConnectionTimeout());
+		client.getOptions().setTimeout(webDriverParams.getConnectionTimeout());
 		client.getCookieManager().setCookiesEnabled(!webDriverParams.isRefuseCookies());
-		client.setRedirectEnabled(webDriverParams.isRedirect());
-		client.setThrowExceptionOnScriptError(webDriverParams.isValidateJavascript());
-		client.setThrowExceptionOnFailingStatusCode(!webDriverParams.isIgnoreResponseCode());
+		client.getOptions().setRedirectEnabled(webDriverParams.isRedirect());
+		client.getOptions().setThrowExceptionOnScriptError(webDriverParams.isValidateJavascript());
+		client.getOptions().setThrowExceptionOnFailingStatusCode(!webDriverParams.isIgnoreResponseCode());
 		client.setAjaxController(ajaxController);
 		client.getOptions().setCssEnabled(webDriverParams.isCssEnabled());
 
