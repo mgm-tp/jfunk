@@ -27,6 +27,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CompletionService;
+import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
@@ -53,6 +56,7 @@ import com.mgmtp.jfunk.common.util.FixedSizeThreadExecutor;
 import com.mgmtp.jfunk.core.config.JFunkDefaultModule;
 import com.mgmtp.jfunk.core.config.ModulesLoader;
 import com.mgmtp.jfunk.core.event.BeforeRunEvent;
+import com.mgmtp.jfunk.core.exception.JFunkExecutionException;
 import com.mgmtp.jfunk.core.scripting.ScriptExecutor;
 
 /**
@@ -165,12 +169,13 @@ public final class JFunk extends JFunkBase {
 	@Override
 	protected void doExecute() throws Exception {
 		ExecutorService execService = createExecutorService();
+		CompletionService<Boolean> completionService = new ExecutorCompletionService<>(execService);
 
 		for (final File script : scripts) {
-			execService.submit(new Runnable() {
+			completionService.submit(new Callable<Boolean>() {
 				@Override
-				public void run() {
-					boolean success;
+				public Boolean call() {
+					boolean success = false;
 					StopWatch stopWatch = new StopWatch();
 					stopWatch.start();
 
@@ -180,21 +185,32 @@ public final class JFunk extends JFunkBase {
 					try {
 						success = scriptExecutor.executeScript(script, scriptProperties);
 					} catch (Throwable th) {
-						success = false;
 						LOG.error(th.getMessage(), th);
+					} finally {
+
+						LOG.info("SCRIPT EXECUTION " + (success ? "SUCCESSFUL" : "FAILED") + " (" + script + ")");
+
+						RESULT_LOG.info("Thread " + Thread.currentThread().getName() + ": finished execution of script "
+								+ script.getName() + " (took "
+								+ stopWatch + " H:mm:ss.SSS)");
 					}
-
-					LOG.info("SCRIPT EXECUTION " + (success ? "SUCCESSFUL" : "FAILED") + " (" + script + ")");
-
-					RESULT_LOG.info("Thread " + Thread.currentThread().getName() + ": finished execution of script "
-							+ script.getName() + " (took "
-							+ stopWatch + " H:mm:ss.SSS)");
-
+					return success;
 				}
 			});
 		}
 
+		boolean overallResult = true;
+		for (int i = 0, size = scripts.size(); i < size; ++i) {
+			if (!completionService.take().get()) {
+				overallResult = false;
+			}
+		}
+
 		shutDownExecutorService(execService);
+
+		if (!overallResult) {
+			throw new JFunkExecutionException();
+		}
 	}
 
 	private ExecutorService createExecutorService() {
@@ -299,6 +315,8 @@ public final class JFunk extends JFunkBase {
 			jFunk.execute();
 
 			exitWithError = false;
+		} catch (JFunkExecutionException ex) {
+			// no logging necessary
 		} catch (Exception ex) {
 			Logger.getLogger(JFunk.class).error("jFunk terminated unexpectedly.", ex);
 		} finally {
