@@ -15,9 +15,11 @@
  */
 package com.mgmtp.jfunk.unit;
 
+import java.util.Date;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -37,6 +39,7 @@ import com.mgmtp.jfunk.core.event.BeforeRunEvent;
 import com.mgmtp.jfunk.core.event.BeforeScriptEvent;
 import com.mgmtp.jfunk.core.reporting.SimpleReporter;
 import com.mgmtp.jfunk.core.scripting.ModuleExecutionException;
+import com.mgmtp.jfunk.core.scripting.ScriptMetaData;
 
 /**
  * Provides support for integrating jFunk into a unit test framework.
@@ -59,6 +62,8 @@ class UnitSupport {
 	private final EventBus eventBus;
 	private final ThreadScope scriptScope;
 	private final Injector injector;
+
+	private final Provider<ScriptMetaData> scriptMetaDataProvider;
 
 	public static UnitSupport getInstance() {
 		if (instance == null) {
@@ -89,11 +94,13 @@ class UnitSupport {
 	}
 
 	@Inject
-	UnitSupport(final JFunkRunner jFunkRunner, final EventBus eventBus, final ThreadScope scriptScope, final Injector injector) {
+	UnitSupport(final JFunkRunner jFunkRunner, final EventBus eventBus, final ThreadScope scriptScope, final Injector injector,
+			final Provider<ScriptMetaData> scriptMetaDataProvider) {
 		this.jFunkRunner = jFunkRunner;
 		this.eventBus = eventBus;
 		this.scriptScope = scriptScope;
 		this.injector = injector;
+		this.scriptMetaDataProvider = scriptMetaDataProvider;
 	}
 
 	void beforeTest(final Object testClassInstance) {
@@ -113,6 +120,11 @@ class UnitSupport {
 		jFunkRunner.load(JFunkConstants.SCRIPT_PROPERTIES, false);
 		jFunkRunner.registerReporter(new SimpleReporter());
 		jFunkRunner.set(JFunkConstants.UNIT_TEST_METHOD, methodName);
+
+		ScriptMetaData scriptMetaData = scriptMetaDataProvider.get();
+		scriptMetaData.setScriptName(methodName);
+		scriptMetaData.setStartDate(new Date());
+
 		eventBus.post(new BeforeScriptEvent(methodName));
 	}
 
@@ -132,6 +144,10 @@ class UnitSupport {
 					th = th.getCause();
 				}
 			}
+
+			ScriptMetaData scriptMetaData = scriptMetaDataProvider.get();
+			scriptMetaData.setEndDate(new Date());
+			scriptMetaData.setThrowable(throwable);
 
 			eventBus.post(new AfterScriptEvent(methodName, success));
 		} finally {

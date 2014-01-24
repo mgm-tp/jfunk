@@ -20,10 +20,12 @@ import static com.google.common.base.Preconditions.checkState;
 import groovy.util.BuilderSupport;
 
 import java.util.ArrayDeque;
+import java.util.Date;
 import java.util.Deque;
 import java.util.Map;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
 
 import org.apache.log4j.Logger;
 
@@ -35,6 +37,7 @@ import com.mgmtp.jfunk.common.exception.JFunkException;
 import com.mgmtp.jfunk.core.event.AfterModuleEvent;
 import com.mgmtp.jfunk.core.event.BeforeModuleEvent;
 import com.mgmtp.jfunk.core.event.ModuleInitializedEvent;
+import com.mgmtp.jfunk.core.module.TestModule;
 import com.mgmtp.jfunk.core.module.TestModuleImpl;
 import com.mgmtp.jfunk.core.step.base.Step;
 
@@ -46,17 +49,20 @@ import com.mgmtp.jfunk.core.step.base.Step;
 final class ModuleBuilder extends BuilderSupport {
 	private final Logger log = Logger.getLogger(ScriptContext.class);
 
-	private final Deque<TestModuleImpl> moduleStack = new ArrayDeque<TestModuleImpl>(2);
+	private final Deque<TestModule> moduleStack = new ArrayDeque<>(2);
 
 	private final EventBus eventBus;
 	private final StackedScope moduleScope;
 	private final Injector injector;
+	private final Provider<ModuleMetaData> moduleMetaDataProvider;
 
 	@Inject
-	ModuleBuilder(final EventBus eventBus, final StackedScope moduleScope, final Injector injector) {
+	ModuleBuilder(final EventBus eventBus, final StackedScope moduleScope, final Injector injector,
+			final Provider<ModuleMetaData> moduleMetaDataProvider) {
 		this.eventBus = eventBus;
 		this.moduleScope = moduleScope;
 		this.injector = injector;
+		this.moduleMetaDataProvider = moduleMetaDataProvider;
 	}
 
 	@Override
@@ -91,8 +97,11 @@ final class ModuleBuilder extends BuilderSupport {
 		} finally {
 			if (isModule) {
 				try {
-					TestModuleImpl module = moduleStack.pop();
+					TestModule module = moduleStack.pop();
 					module.setError(throwable != null);
+					ModuleMetaData moduleMetaData = moduleMetaDataProvider.get();
+					moduleMetaData.setEndDate(new Date());
+					moduleMetaData.setThrowable(throwable);
 					eventBus.post(new AfterModuleEvent(module, throwable));
 					eventBus.post(new InternalAfterModuleEvent(module, throwable));
 				} finally {
@@ -104,7 +113,7 @@ final class ModuleBuilder extends BuilderSupport {
 
 	private void handleThrowable(final String messagePrefix, final boolean isModule, final Throwable th) {
 		if (isModule) {
-			TestModuleImpl module = moduleStack.peek();
+			TestModule module = moduleStack.peek();
 
 			// We need to log the exception here on module level,
 			// so it makes it into the log file in the module's archive
@@ -138,6 +147,10 @@ final class ModuleBuilder extends BuilderSupport {
 			ScriptModule scriptModule = new ScriptModule(value.toString(), (String) attrs.get("dataSetKey"));
 			injector.injectMembers(scriptModule);
 			scriptModule.setExecuting(true);
+			ModuleMetaData moduleMetaData = moduleMetaDataProvider.get();
+			moduleMetaData.setStartDate(new Date());
+			moduleMetaData.setModuleClass(scriptModule.getClass());
+			moduleMetaData.setModuleName(scriptModule.getName());
 			moduleStack.push(scriptModule);
 			eventBus.post(new ModuleInitializedEvent(scriptModule));
 			eventBus.post(new InternalBeforeModuleEvent(scriptModule));

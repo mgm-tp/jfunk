@@ -30,6 +30,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.lang.reflect.Constructor;
 import java.nio.charset.Charset;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -101,11 +102,13 @@ public class ScriptContext {
 
 	private File script;
 
+	private final Provider<ModuleMetaData> moduleMetaDataProvider;
+
 	@Inject
 	ScriptContext(final Provider<DataSource> dataSourceProvider, final Configuration config, final MathRandom random,
 			final EventBus eventBus, final Injector injector, final Provider<ModuleBuilder> moduleBuilderProvider,
 			final StackedScope moduleScope, final CsvDataProcessor csvDataProcessor, final Charset charset,
-			final Provider<MailAccountManager> mailAccountManagerProvider) {
+			final Provider<MailAccountManager> mailAccountManagerProvider, final Provider<ModuleMetaData> moduleMetaDataProvider) {
 		this.dataSourceProvider = dataSourceProvider;
 		this.config = config;
 		this.random = random;
@@ -116,6 +119,7 @@ public class ScriptContext {
 		this.csvDataProcessor = csvDataProcessor;
 		this.defaultCharset = charset;
 		this.mailAccountManagerProvider = mailAccountManagerProvider;
+		this.moduleMetaDataProvider = moduleMetaDataProvider;
 	}
 
 	/**
@@ -208,7 +212,7 @@ public class ScriptContext {
 	 */
 	@Cmd
 	public String chooseRandom(final String propertyKey, final List<String> randomValues) {
-		Randomizable<String> choice = new RandomCollection<String>(random, randomValues);
+		Randomizable<String> choice = new RandomCollection<>(random, randomValues);
 		String currentValue = choice.get();
 		if (log.isDebugEnabled()) {
 			log.debug("Chosen value: " + currentValue);
@@ -535,6 +539,11 @@ public class ScriptContext {
 			// perform DI on test module instance
 			injector.injectMembers(moduleToRun);
 
+			ModuleMetaData moduleMetaData = moduleMetaDataProvider.get();
+			moduleMetaData.setStartDate(new Date());
+			moduleMetaData.setModuleClass(moduleToRun.getClass());
+			moduleMetaData.setModuleName(moduleToRun.getName());
+
 			eventBus.post(new ModuleInitializedEvent(moduleToRun));
 			eventBus.post(new InternalBeforeModuleEvent(moduleToRun));
 			eventBus.post(new BeforeModuleEvent(moduleToRun));
@@ -563,6 +572,11 @@ public class ScriptContext {
 		} finally {
 			try {
 				moduleToRun.setError(throwable != null);
+
+				ModuleMetaData moduleMetaData = moduleMetaDataProvider.get();
+				moduleMetaData.setEndDate(new Date());
+				moduleMetaData.setThrowable(throwable);
+
 				eventBus.post(new AfterModuleEvent(moduleToRun, throwable));
 				eventBus.post(new InternalAfterModuleEvent(moduleToRun, throwable));
 			} finally {

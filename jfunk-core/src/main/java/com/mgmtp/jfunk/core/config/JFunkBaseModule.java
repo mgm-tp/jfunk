@@ -23,7 +23,6 @@ import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.nio.charset.Charset;
 import java.util.ArrayDeque;
-import java.util.Date;
 import java.util.Deque;
 import java.util.Set;
 
@@ -58,7 +57,9 @@ import com.mgmtp.jfunk.core.scripting.Cmd;
 import com.mgmtp.jfunk.core.scripting.ExecutionMode;
 import com.mgmtp.jfunk.core.scripting.ModuleArchiver;
 import com.mgmtp.jfunk.core.scripting.ModuleArchiver.ArchivingMode;
+import com.mgmtp.jfunk.core.scripting.ModuleMetaData;
 import com.mgmtp.jfunk.core.scripting.ScriptContext;
+import com.mgmtp.jfunk.core.scripting.ScriptMetaData;
 import com.mgmtp.jfunk.core.scripting.ScriptingModule;
 import com.mgmtp.jfunk.core.util.CsvDataProcessor;
 import com.mgmtp.jfunk.data.DataSourceModule;
@@ -79,6 +80,9 @@ public final class JFunkBaseModule extends BaseJFunkGuiceModule {
 		bindScope(StackedScope.class, new StackedScope(), ModuleScoped.class);
 
 		bindListener(Matchers.any(), new ConfigurationTypeListener(getProvider(Configuration.class)));
+
+		bind(ScriptMetaData.class);
+		bind(ModuleMetaData.class);
 
 		bind(DataSetAdapter.class);
 		bind(CsvDataProcessor.class);
@@ -169,13 +173,6 @@ public final class JFunkBaseModule extends BaseJFunkGuiceModule {
 		Configuration configuration = new Configuration(dsAdapter, charset);
 		configuration.load(JFunkConstants.SCRIPT_PROPERTIES, false);
 		return configuration;
-	}
-
-	@Provides
-	@ModuleStartDate
-	@ModuleScoped
-	Date provideTestStartDate() {
-		return new Date();
 	}
 
 	@Provides

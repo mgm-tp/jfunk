@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.nio.charset.Charset;
+import java.util.Date;
 import java.util.Properties;
 
 import javax.inject.Inject;
@@ -56,6 +57,8 @@ public class ScriptExecutor {
 	private final ThreadScope scriptScope;
 	private final Charset charset;
 
+	private final Provider<ScriptMetaData> scriptMetaDataProvider;
+
 	/**
 	 * Creates a new instance.
 	 * 
@@ -68,12 +71,12 @@ public class ScriptExecutor {
 	 */
 	@Inject
 	public ScriptExecutor(final Provider<ScriptContext> scriptContextProvider, final EventBus eventBus,
-			final ThreadScope scriptScope,
-			final Charset charset) {
+			final ThreadScope scriptScope, final Charset charset, final Provider<ScriptMetaData> scriptMetaDataProvider) {
 		this.scriptContextProvider = scriptContextProvider;
 		this.eventBus = eventBus;
 		this.scriptScope = scriptScope;
 		this.charset = charset;
+		this.scriptMetaDataProvider = scriptMetaDataProvider;
 	}
 
 	/**
@@ -92,7 +95,7 @@ public class ScriptExecutor {
 
 		Reader reader = null;
 		boolean success = false;
-
+		Throwable throwable = null;
 		try {
 			scriptScope.enterScope();
 
@@ -105,13 +108,19 @@ public class ScriptExecutor {
 			ctx.registerReporter(new SimpleReporter());
 			initGroovyCommands(scriptEngine, ctx);
 			initScriptProperties(scriptEngine, scriptProperties);
+			ScriptMetaData scriptMetaData = scriptMetaDataProvider.get();
+			scriptMetaData.setScriptName(script.getPath());
+			scriptMetaData.setStartDate(new Date());
 			eventBus.post(scriptEngine);
 			eventBus.post(new BeforeScriptEvent(script.getAbsolutePath()));
 			scriptEngine.eval(reader);
 			success = true;
 		} catch (IOException ex) {
+			throwable = ex;
 			log.error("Error loading script: " + script, ex);
 		} catch (ScriptException ex) {
+			throwable = ex;
+
 			// Look up the cause hierarchy if we find a ModuleExecutionException.
 			// We only need to log exceptions other than ModuleExecutionException because they
 			// have already been logged and we don't want to pollute the log file any further.
@@ -128,6 +137,9 @@ public class ScriptExecutor {
 			}
 		} finally {
 			try {
+				ScriptMetaData scriptMetaData = scriptMetaDataProvider.get();
+				scriptMetaData.setEndDate(new Date());
+				scriptMetaData.setThrowable(throwable);
 				eventBus.post(new AfterScriptEvent(script.getAbsolutePath(), success));
 			} finally {
 				scriptScope.exitScope();

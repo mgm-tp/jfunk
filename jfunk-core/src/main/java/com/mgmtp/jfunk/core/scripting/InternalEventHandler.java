@@ -16,7 +16,6 @@
 package com.mgmtp.jfunk.core.scripting;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.Deque;
 import java.util.Set;
 
@@ -28,7 +27,6 @@ import org.apache.log4j.Logger;
 
 import com.google.common.eventbus.AllowConcurrentEvents;
 import com.google.common.eventbus.Subscribe;
-import com.mgmtp.jfunk.core.config.ModuleStartDate;
 import com.mgmtp.jfunk.core.event.AfterRunEvent;
 import com.mgmtp.jfunk.core.event.AfterScriptEvent;
 import com.mgmtp.jfunk.core.module.TestModule;
@@ -48,24 +46,22 @@ class InternalEventHandler {
 	private final Provider<ScriptContext> scriptContextProvider;
 	private final Provider<Deque<ReportContext>> reportContextStackProvider;
 	private final Set<Reporter> globalReporters;
-	private final Provider<Date> moduleStartDateProvider;
 
 	@Inject
 	InternalEventHandler(final Provider<ModuleArchiver> moduleArchiverProvider,
 			final Provider<ScriptContext> scriptContextProvider, final Provider<Deque<ReportContext>> reportContextStackProvider,
-			final Set<Reporter> globalReporters, @ModuleStartDate final Provider<Date> moduleStartDateProvider) {
+			final Set<Reporter> globalReporters) {
 		this.moduleArchiverProvider = moduleArchiverProvider;
 		this.scriptContextProvider = scriptContextProvider;
 		this.reportContextStackProvider = reportContextStackProvider;
 		this.globalReporters = globalReporters;
-		this.moduleStartDateProvider = moduleStartDateProvider;
 	}
 
 	@Subscribe
 	@AllowConcurrentEvents
 	public void handleBeforeModule(final InternalBeforeModuleEvent event) {
 		TestModule module = event.getModule();
-		moduleArchiverProvider.get().startArchiving(module);
+		moduleArchiverProvider.get().startArchiving();
 
 		// if not explititly disabled, module are always reported
 		Reported reported = module.getClass().getAnnotation(Reported.class);
@@ -73,7 +69,7 @@ class InternalEventHandler {
 			ReportContext reportContext = new ReportContext();
 			reportContext.setTestObjectName(module.getName());
 			reportContext.setTestObjectType(module.getClass());
-			reportContext.setStartMillis(moduleStartDateProvider.get().getTime());
+			reportContext.setStartMillis(System.currentTimeMillis());
 			reportContextStackProvider.get().push(reportContext);
 		}
 	}
@@ -93,7 +89,7 @@ class InternalEventHandler {
 				addReportResults(reportContext);
 			}
 		} finally {
-			moduleArchiverProvider.get().finishArchiving(module, event.getThrowable());
+			moduleArchiverProvider.get().finishArchiving();
 		}
 	}
 
