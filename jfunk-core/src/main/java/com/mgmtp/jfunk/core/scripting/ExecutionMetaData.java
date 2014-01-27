@@ -19,6 +19,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.concurrent.NotThreadSafe;
+
 import com.google.common.collect.ImmutableMap;
 
 /**
@@ -27,6 +29,7 @@ import com.google.common.collect.ImmutableMap;
  * @author rnaegele
  * @since 3.1.0
  */
+@NotThreadSafe
 abstract class ExecutionMetaData {
 	private Date startDate;
 	private Date endDate;

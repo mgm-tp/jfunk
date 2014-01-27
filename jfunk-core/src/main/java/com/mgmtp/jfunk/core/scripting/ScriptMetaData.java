@@ -15,6 +15,12 @@
  */
 package com.mgmtp.jfunk.core.scripting;
 
+import java.util.LinkedList;
+import java.util.List;
+
+import javax.annotation.concurrent.NotThreadSafe;
+
+import com.google.common.collect.ImmutableList;
 import com.mgmtp.jfunk.common.config.ScriptScoped;
 
 /**
@@ -24,9 +30,11 @@ import com.mgmtp.jfunk.common.config.ScriptScoped;
  * @since 3.1.0
  */
 @ScriptScoped
+@NotThreadSafe
 public class ScriptMetaData extends ExecutionMetaData {
 
 	private String scriptName;
+	private final List<ModuleMetaData> moduleMetaDataList = new LinkedList<>();
 
 	/**
 	 * @return the scriptName
@@ -41,5 +49,24 @@ public class ScriptMetaData extends ExecutionMetaData {
 	 */
 	public void setScriptName(final String scriptName) {
 		this.scriptName = scriptName;
+	}
+
+	/**
+	 * Adds a module meta data object.
+	 * 
+	 * @param moduleMetaData
+	 *            the module meta data
+	 */
+	public void addModuleMetaData(final ModuleMetaData moduleMetaData) {
+		moduleMetaDataList.add(moduleMetaData);
+	}
+
+	/**
+	 * Returns an immutable copy of the list of module meta data.
+	 * 
+	 * @return the list of module meta data
+	 */
+	public List<ModuleMetaData> getModuleMetaDataList() {
+		return ImmutableList.copyOf(moduleMetaDataList);
 	}
 }

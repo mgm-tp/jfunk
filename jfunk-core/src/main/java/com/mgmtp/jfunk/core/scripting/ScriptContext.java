@@ -104,11 +104,14 @@ public class ScriptContext {
 
 	private final Provider<ModuleMetaData> moduleMetaDataProvider;
 
+	private final ScriptMetaData scriptMetaData;
+
 	@Inject
 	ScriptContext(final Provider<DataSource> dataSourceProvider, final Configuration config, final MathRandom random,
 			final EventBus eventBus, final Injector injector, final Provider<ModuleBuilder> moduleBuilderProvider,
 			final StackedScope moduleScope, final CsvDataProcessor csvDataProcessor, final Charset charset,
-			final Provider<MailAccountManager> mailAccountManagerProvider, final Provider<ModuleMetaData> moduleMetaDataProvider) {
+			final Provider<MailAccountManager> mailAccountManagerProvider, final ScriptMetaData scriptMetaData,
+			final Provider<ModuleMetaData> moduleMetaDataProvider) {
 		this.dataSourceProvider = dataSourceProvider;
 		this.config = config;
 		this.random = random;
@@ -119,6 +122,7 @@ public class ScriptContext {
 		this.csvDataProcessor = csvDataProcessor;
 		this.defaultCharset = charset;
 		this.mailAccountManagerProvider = mailAccountManagerProvider;
+		this.scriptMetaData = scriptMetaData;
 		this.moduleMetaDataProvider = moduleMetaDataProvider;
 	}
 
@@ -540,9 +544,11 @@ public class ScriptContext {
 			injector.injectMembers(moduleToRun);
 
 			ModuleMetaData moduleMetaData = moduleMetaDataProvider.get();
+			moduleMetaData.setScriptMetaData(scriptMetaData);
 			moduleMetaData.setStartDate(new Date());
 			moduleMetaData.setModuleClass(moduleToRun.getClass());
 			moduleMetaData.setModuleName(moduleToRun.getName());
+			scriptMetaData.addModuleMetaData(moduleMetaData);
 
 			eventBus.post(new ModuleInitializedEvent(moduleToRun));
 			eventBus.post(new InternalBeforeModuleEvent(moduleToRun));

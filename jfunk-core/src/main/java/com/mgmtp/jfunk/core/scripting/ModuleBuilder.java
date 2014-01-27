@@ -54,14 +54,16 @@ final class ModuleBuilder extends BuilderSupport {
 	private final EventBus eventBus;
 	private final StackedScope moduleScope;
 	private final Injector injector;
+	private final ScriptMetaData scriptMetaData;
 	private final Provider<ModuleMetaData> moduleMetaDataProvider;
 
 	@Inject
 	ModuleBuilder(final EventBus eventBus, final StackedScope moduleScope, final Injector injector,
-			final Provider<ModuleMetaData> moduleMetaDataProvider) {
+			final ScriptMetaData scriptMetaData, final Provider<ModuleMetaData> moduleMetaDataProvider) {
 		this.eventBus = eventBus;
 		this.moduleScope = moduleScope;
 		this.injector = injector;
+		this.scriptMetaData = scriptMetaData;
 		this.moduleMetaDataProvider = moduleMetaDataProvider;
 	}
 
@@ -148,9 +150,11 @@ final class ModuleBuilder extends BuilderSupport {
 			injector.injectMembers(scriptModule);
 			scriptModule.setExecuting(true);
 			ModuleMetaData moduleMetaData = moduleMetaDataProvider.get();
+			moduleMetaData.setScriptMetaData(scriptMetaData);
 			moduleMetaData.setStartDate(new Date());
 			moduleMetaData.setModuleClass(scriptModule.getClass());
 			moduleMetaData.setModuleName(scriptModule.getName());
+			scriptMetaData.addModuleMetaData(moduleMetaData);
 			moduleStack.push(scriptModule);
 			eventBus.post(new ModuleInitializedEvent(scriptModule));
 			eventBus.post(new InternalBeforeModuleEvent(scriptModule));

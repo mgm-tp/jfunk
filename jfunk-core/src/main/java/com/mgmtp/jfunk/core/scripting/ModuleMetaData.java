@@ -15,6 +15,8 @@
  */
 package com.mgmtp.jfunk.core.scripting;
 
+import javax.annotation.concurrent.NotThreadSafe;
+
 import com.mgmtp.jfunk.common.config.ModuleScoped;
 import com.mgmtp.jfunk.core.module.TestModule;
 
@@ -25,10 +27,27 @@ import com.mgmtp.jfunk.core.module.TestModule;
  * @since 3.1.0
  */
 @ModuleScoped
+@NotThreadSafe
 public class ModuleMetaData extends ExecutionMetaData {
 
 	private Class<? extends TestModule> moduleClass;
 	private String moduleName;
+	private ScriptMetaData scriptMetaData;
+
+	/**
+	 * @return the scriptMetaData
+	 */
+	public ScriptMetaData getScriptMetaData() {
+		return scriptMetaData;
+	}
+
+	/**
+	 * @param scriptMetaData
+	 *            the scriptMetaData to set
+	 */
+	public void setScriptMetaData(final ScriptMetaData scriptMetaData) {
+		this.scriptMetaData = scriptMetaData;
+	}
 
 	/**
 	 * @return the moduleClass
