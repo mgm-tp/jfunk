@@ -223,7 +223,6 @@ public final class JFunk extends JFunkBase {
 				String threadName = StringUtils.leftPad(String.valueOf(id), 2, "0");
 				Thread th = new Thread(r);
 				th.setName(threadName);
-				th.setDaemon(false);
 				return th;
 			}
 		});
@@ -231,7 +230,7 @@ public final class JFunk extends JFunkBase {
 
 	private void shutDownExecutorService(final ExecutorService execService) {
 		try {
-			execService.shutdown();
+			execService.shutdownNow();
 			execService.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
 		} catch (InterruptedException ex) {
 			LOG.error("Script execution was interrupted.", ex);
