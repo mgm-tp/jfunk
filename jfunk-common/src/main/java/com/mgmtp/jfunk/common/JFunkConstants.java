@@ -88,6 +88,8 @@ public final class JFunkConstants {
 	public static final String UNIT_TEST_METHOD = "unit.test.method";
 	public static final String SCRIPT_NAME = "script.name";
 	public static final String SCRIPT_DIR = "script.dir";
+	public static final String SCRIPT_START_MILLIS = "script.start.millis";
+	public static final String SCRIPT_END_MILLIS = "script.end.millis";
 
 	/**
 	 * Indexed form entry keys use the following separator preceding the index

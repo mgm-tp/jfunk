@@ -96,13 +96,13 @@ public class ScriptExecutor {
 		Reader reader = null;
 		boolean success = false;
 		Throwable throwable = null;
-		try {
-			scriptScope.enterScope();
 
+		scriptScope.enterScope();
+		ScriptContext ctx = scriptContextProvider.get();
+		try {
 			reader = Files.newReader(script, charset);
 
 			ScriptEngine scriptEngine = new ScriptEngineManager().getEngineByExtension("groovy");
-			ScriptContext ctx = scriptContextProvider.get();
 			ctx.setScript(script);
 			ctx.load(JFunkConstants.SCRIPT_PROPERTIES, false);
 			ctx.registerReporter(new SimpleReporter());
@@ -110,7 +110,11 @@ public class ScriptExecutor {
 			initScriptProperties(scriptEngine, scriptProperties);
 			ScriptMetaData scriptMetaData = scriptMetaDataProvider.get();
 			scriptMetaData.setScriptName(script.getPath());
-			scriptMetaData.setStartDate(new Date());
+
+			Date startDate = new Date();
+			scriptMetaData.setStartDate(startDate);
+			ctx.set(JFunkConstants.SCRIPT_START_MILLIS, String.valueOf(startDate.getTime()));
+
 			eventBus.post(scriptEngine);
 			eventBus.post(new BeforeScriptEvent(script.getAbsolutePath()));
 			scriptEngine.eval(reader);
@@ -138,7 +142,11 @@ public class ScriptExecutor {
 		} finally {
 			try {
 				ScriptMetaData scriptMetaData = scriptMetaDataProvider.get();
-				scriptMetaData.setEndDate(new Date());
+
+				Date endDate = new Date();
+				scriptMetaData.setEndDate(endDate);
+				ctx.set(JFunkConstants.SCRIPT_END_MILLIS, String.valueOf(endDate.getTime()));
+
 				scriptMetaData.setThrowable(throwable);
 				eventBus.post(new AfterScriptEvent(script.getAbsolutePath(), success));
 			} finally {
