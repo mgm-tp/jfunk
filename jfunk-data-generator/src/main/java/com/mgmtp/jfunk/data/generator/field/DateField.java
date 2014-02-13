@@ -16,10 +16,10 @@
 package com.mgmtp.jfunk.data.generator.field;
 
 import java.io.IOException;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Date;
 
+import com.ibm.icu.text.DateFormat;
 import org.apache.commons.lang3.StringUtils;
 import org.jdom.Element;
 
@@ -89,8 +89,8 @@ public final class DateField extends Field {
 	public DateField(final MathRandom random, final Element element, final String characterSetId) {
 		super(random, element, characterSetId);
 		format = FormatFactory.getDateFormat(element);
-		String minString = element.getChildText(XMLTags.MIN);
-		String maxString = element.getChildText(XMLTags.MAX);
+		final String minString = element.getChildText(XMLTags.MIN);
+		final String maxString = element.getChildText(XMLTags.MAX);
 		try {
 			if (StringUtils.isNotBlank(minString)) {
 				min = format.parse(minString).getTime();
@@ -106,8 +106,8 @@ public final class DateField extends Field {
 		} catch (ParseException e) {
 			throw new IllegalStateException("could not parse dates", e);
 		}
-		Element expElement = element.getChild(XMLTags.EXPRESSION);
-		String exp = null;
+		final Element expElement = element.getChild(XMLTags.EXPRESSION);
+		final String exp;
 		if (expElement == null) {
 			exp = "[0-9,.]{10}";
 		} else {

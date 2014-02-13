@@ -15,9 +15,9 @@
  */
 package com.mgmtp.jfunk.data.generator.constraint;
 
-import java.text.NumberFormat;
 import java.text.ParseException;
 
+import com.ibm.icu.text.NumberFormat;
 import org.jdom.Element;
 
 import com.mgmtp.jfunk.common.random.MathRandom;
@@ -52,14 +52,13 @@ public class Multiplier extends SourceConstraint {
 	public Multiplier(final MathRandom random, final Element element, final Generator generator) {
 		super(random, element, generator);
 		format = FormatFactory.getNumberFormat(element);
-		String factorString = element.getChildText(XMLTags.FACTOR);
-		Number number = null;
+		final String factorString = element.getChildText(XMLTags.FACTOR);
 		try {
-			number = format.parse(factorString);
+			final Number number = format.parse(factorString);
+			factor = number.doubleValue();
 		} catch (ParseException e) {
 			throw new IllegalStateException("Could not parse " + factorString + " to a number", e);
 		}
-		factor = number.doubleValue();
 	}
 
 	/**

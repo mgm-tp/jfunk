@@ -15,13 +15,12 @@
  */
 package com.mgmtp.jfunk.data.generator.util;
 
-import java.text.DateFormat;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
-import java.util.Locale;
-
+import com.ibm.icu.text.DateFormat;
+import com.ibm.icu.text.DecimalFormat;
+import com.ibm.icu.text.DecimalFormatSymbols;
+import com.ibm.icu.text.NumberFormat;
+import com.ibm.icu.text.SimpleDateFormat;
+import com.ibm.icu.util.ULocale;
 import org.jdom.Element;
 
 /**
@@ -71,7 +70,7 @@ public final class FormatFactory {
 		Element localeElement = numberFormatElement.getChild(XMLTags.LOCALE);
 		String language = localeElement.getChildText(XMLTags.LANGUAGE);
 		String country = localeElement.getChildText(XMLTags.COUNTRY);
-		Locale locale = new Locale(language, country);
+		ULocale locale = new ULocale(language, country);
 		return new DecimalFormat(pattern, new DecimalFormatSymbols(locale));
 	}
 
@@ -81,7 +80,7 @@ public final class FormatFactory {
 		Element localeElement = numberFormatElement.getChild(XMLTags.LOCALE);
 		String language = localeElement.getChildText(XMLTags.LANGUAGE);
 		String country = localeElement.getChildText(XMLTags.COUNTRY);
-		Locale locale = new Locale(language, country);
+		ULocale locale = new ULocale(language, country);
 		return new SimpleDateFormat(pattern, locale);
 	}
 }

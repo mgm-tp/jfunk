@@ -16,10 +16,10 @@
 package com.mgmtp.jfunk.data.generator.field;
 
 import java.io.IOException;
-import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.regex.Pattern;
 
+import com.ibm.icu.text.NumberFormat;
 import org.jdom.Element;
 
 import com.mgmtp.jfunk.common.random.MathRandom;
@@ -71,12 +71,12 @@ public final class NumberField extends Field {
 		} catch (ParseException e) {
 			throw new IllegalStateException("could not parse numbers", e);
 		}
-		Element notZeroElement = element.getChild(XMLTags.NOTZERO);
+		final Element notZeroElement = element.getChild(XMLTags.NOTZERO);
 		if (notZeroElement != null) {
 			notZero = XMLTags.TRUE.equals(notZeroElement.getText());
 		}
-		Element expElement = element.getChild(XMLTags.EXPRESSION);
-		String exp = null;
+		final Element expElement = element.getChild(XMLTags.EXPRESSION);
+		final String exp;
 		if (expElement == null) {
 			exp = "[\\-\\s0-9,]+";
 		} else {
