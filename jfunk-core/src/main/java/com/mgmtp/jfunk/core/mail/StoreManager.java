@@ -172,7 +172,7 @@ class StoreManager {
 			Message[] expungedMessages = folder.expunge();
 			log.info("Expunged {} message(s)", expungedMessages.length);
 		} catch (MessagingException ex) {
-			throw new MailException("Error deleting e-mail message");
+			throw new MailException("Error deleting e-mail message", ex);
 		}
 	}
 
