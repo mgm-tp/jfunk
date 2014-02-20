@@ -38,14 +38,12 @@ public class ConfigurationTest {
 		config.put("prop2", "oldProp2Value");
 		config.put("prop3", "prop3Value");
 
-		assertEquals(config.size(), 3);
 		assertEquals(config.get("prop1"), "oldProp1Value");
 		assertEquals(config.get("prop2"), "oldProp2Value");
 		assertEquals(config.get("prop3"), "prop3Value");
 
 		config.load("configuration_test.properties", true);
 
-		assertEquals(config.size(), 6);
 		assertEquals(config.get("prop1"), "oldProp1Value");
 		assertEquals(config.get("prop2"), "oldProp2Value");
 		assertEquals(config.get("prop3"), "prop3Value");
@@ -59,14 +57,12 @@ public class ConfigurationTest {
 		config.put("prop2", "oldProp2Value");
 		config.put("prop3", "prop3Value");
 
-		assertEquals(config.size(), 3);
 		assertEquals(config.get("prop1"), "oldProp1Value");
 		assertEquals(config.get("prop2"), "oldProp2Value");
 		assertEquals(config.get("prop3"), "prop3Value");
 
 		config.load("configuration_test.properties");
 
-		assertEquals(config.size(), 6);
 		assertEquals(config.get("prop1"), "newProp1Value");
 		assertEquals(config.get("prop2"), "newProp2Value");
 		assertEquals(config.get("prop3"), "prop3Value");

@@ -127,7 +127,7 @@ public final class Configuration extends ExtendedProperties {
 				// so they can use System properties in placeholders
 				putAll(ExtendedProperties.fromProperties(System.getProperties()));
 				doLoad(is, preserveExisting);
-				loadExtraFiles(JFunkConstants.SYSTEM_PROPERTIES);
+				loadExtraFiles(JFunkConstants.SYSTEM_PROPERTIES, preserveExisting);
 			}
 
 			if (loadingDepth == 1) {
@@ -177,7 +177,7 @@ public final class Configuration extends ExtendedProperties {
 	 * If properties are present which start with {@link JFunkConstants#SYSTEM_PROPERTIES} the
 	 * corresponding values are taken as property files and loaded here.
 	 */
-	private void loadExtraFiles(final String filterPrefix) {
+	private void loadExtraFiles(final String filterPrefix, final boolean preserveExisting) {
 		Map<String, String> view = Maps.filterKeys(this, Predicates.startsWith(filterPrefix));
 		while (true) {
 			if (view.isEmpty()) {
@@ -199,7 +199,7 @@ public final class Configuration extends ExtendedProperties {
 					// not all placeholders were resolved, so we enqueue it again to process another file first
 					fileKeys.offer(fileName);
 				} else {
-					load(fileName);
+					load(fileName, preserveExisting);
 				}
 			}
 		}
