@@ -16,7 +16,6 @@
 package com.mgmtp.jfunk.common.util;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static com.google.common.collect.Queues.newArrayDeque;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -26,7 +25,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
-import java.util.Deque;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -55,7 +53,6 @@ public final class Configuration extends ExtendedProperties {
 
 	private static final Pattern PLACEHOLDER_PATTERN = Pattern.compile("\\$\\{([^},]+)(?:\\s*,[^}]*)?\\}");
 	private static final long serialVersionUID = 1L;
-	private static final Object STACK_OBJECT = new Object();
 
 	private transient ZipFile zipArchive;
 
@@ -63,7 +60,7 @@ public final class Configuration extends ExtendedProperties {
 
 	private final Charset charset;
 
-	private final Deque<Object> loadingStack = newArrayDeque();
+	private int loadingDepth;
 
 	/**
 	 * Creates an empty instance.
@@ -111,7 +108,7 @@ public final class Configuration extends ExtendedProperties {
 
 		InputStream is = null;
 		try {
-			loadingStack.push(STACK_OBJECT);
+			loadingDepth++;
 			if (fileName.endsWith(JFunkConstants.ZIP_FILE_SUFFIX)) {
 				logger.info("Loading zip archive '{}'...", fileName);
 				zipArchive = new ZipFile(fileName);
@@ -126,38 +123,35 @@ public final class Configuration extends ExtendedProperties {
 				is = ResourceLoader.getConfigInputStream(fileName);
 				logger.info("Loading file '{}'...", fileName);
 
-				boolean initiallyEmpty = isEmpty();
+				// System properties must always be loaded before extra properties are,
+				// so they can use System properties in placeholders
+				putAll(ExtendedProperties.fromProperties(System.getProperties()));
 				doLoad(is, preserveExisting);
-
-				if (initiallyEmpty) {
-					// If config was emtpy initially, we add system properties, which always override existing properties.
-					// Extra properties are only loaded afterwards but do not override existing properties.
-					putAll(ExtendedProperties.fromProperties(System.getProperties()));
-
-					// Archiving is always necessary when execution mode is 'start'.
-					// Otherwise continuing after the breakpoint would not be possible.
-					if (JFunkConstants.EXECUTION_MODE_START.equals(get(JFunkConstants.EXECUTION_MODE))) {
-						put(JFunkConstants.ARCHIVING_MODE, JFunkConstants.ARCHIVING_MODE_ALL);
-					}
-				}
-
 				loadExtraFiles(JFunkConstants.SYSTEM_PROPERTIES);
-
-				if (initiallyEmpty) {
-					// copy SSL settings to System properties
-					Properties props = System.getProperties();
-					copyProperty(props, this, JFunkConstants.JAVAX_NET_SSL_KEY_STORE_PASSWORD);
-					copyProperty(props, this, JFunkConstants.JAVAX_NET_SSL_KEY_STORE);
-					copyProperty(props, this, JFunkConstants.JAVAX_NET_SSL_KEY_STORE_TYPE);
-					copyProperty(props, this, JFunkConstants.JAVAX_NET_SSL_TRUST_STORE_PASSWORD);
-					copyProperty(props, this, JFunkConstants.JAVAX_NET_SSL_TRUST_STORE);
-					copyProperty(props, this, JFunkConstants.JAVAX_NET_SSL_TRUST_STORE_TYPE);
-				}
 			}
+
+			if (loadingDepth == 1) {
+				// Add System properties again because they also take precedence over extra properties
+				putAll(ExtendedProperties.fromProperties(System.getProperties()));
+
+				// Archiving is always necessary when execution mode is 'start'.
+				// Otherwise continuing after the breakpoint would not be possible.
+				if (JFunkConstants.EXECUTION_MODE_START.equals(get(JFunkConstants.EXECUTION_MODE))) {
+					put(JFunkConstants.ARCHIVING_MODE, JFunkConstants.ARCHIVING_MODE_ALL);
+				}
+
+				Properties props = System.getProperties();
+				copyProperty(props, this, JFunkConstants.JAVAX_NET_SSL_KEY_STORE_PASSWORD);
+				copyProperty(props, this, JFunkConstants.JAVAX_NET_SSL_KEY_STORE);
+				copyProperty(props, this, JFunkConstants.JAVAX_NET_SSL_KEY_STORE_TYPE);
+				copyProperty(props, this, JFunkConstants.JAVAX_NET_SSL_TRUST_STORE_PASSWORD);
+				copyProperty(props, this, JFunkConstants.JAVAX_NET_SSL_TRUST_STORE);
+				copyProperty(props, this, JFunkConstants.JAVAX_NET_SSL_TRUST_STORE_TYPE);
+			}
+			loadingDepth--;
 		} catch (IOException ex) {
 			throw new JFunkException("Error loading properties: " + fileName, ex);
 		} finally {
-			loadingStack.pop();
 			IOUtils.closeQuietly(is);
 		}
 	}
@@ -205,8 +199,7 @@ public final class Configuration extends ExtendedProperties {
 					// not all placeholders were resolved, so we enqueue it again to process another file first
 					fileKeys.offer(fileName);
 				} else {
-					// preserve existing keys, so e. g. System properties keep precedence
-					load(fileName, true);
+					load(fileName);
 				}
 			}
 		}
@@ -216,7 +209,7 @@ public final class Configuration extends ExtendedProperties {
 	public String put(final String key, final String value) {
 		String result = super.put(key, value);
 
-		if (loadingStack.isEmpty()) {
+		if (loadingDepth == 0) {
 			// put is also called during loading, so we need to exclude this re-loading mechanism there,
 			// it is not necessary and may lead to errors because not all placeholders might have been resolved yet
 			if (!Strings.isNullOrEmpty(value)) {
