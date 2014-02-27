@@ -15,6 +15,10 @@
  */
 package com.mgmtp.jfunk.web.util;
 
+import java.util.List;
+
+import org.openqa.selenium.NotFoundException;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
@@ -22,6 +26,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
+import com.google.common.collect.ImmutableList;
 
 /**
  * {@link WebDriverWait} decendant that writes a log message before {@link #until(Function)} or
@@ -30,15 +35,18 @@ import com.google.common.base.Predicate;
  * @author rnaegele
  */
 public class LoggingWebDriverWait extends WebDriverWait {
+	private static final List<Class<? extends Throwable>> IGNORED_EXCEPTIONS = ImmutableList.<Class<? extends Throwable>>of(
+			NotFoundException.class, WebElementException.class, StaleElementReferenceException.class);
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	public LoggingWebDriverWait(final WebDriver driver, final long timeOutInSeconds) {
-		super(driver, timeOutInSeconds);
+		this(driver, timeOutInSeconds, WebDriverWait.DEFAULT_SLEEP_TIMEOUT);
 	}
 
 	public LoggingWebDriverWait(final WebDriver driver, final long timeOutInSeconds, final long sleepInMillis) {
 		super(driver, timeOutInSeconds, sleepInMillis);
+		ignoreAll(IGNORED_EXCEPTIONS);
 	}
 
 	@Override
