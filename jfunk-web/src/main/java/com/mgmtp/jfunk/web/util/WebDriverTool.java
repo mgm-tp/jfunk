@@ -20,7 +20,6 @@ import static com.google.common.collect.Sets.difference;
 
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.UUID;
 
@@ -30,12 +29,12 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NotFoundException;
 import org.openqa.selenium.SearchContext;
-import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriver.TargetLocator;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -471,9 +470,8 @@ public class WebDriverTool implements SearchContext {
 
 	/**
 	 * Delegates to {@link #findElement(By)}, moves the mouse to the returned element using the
-	 * {@link Actions} class and then tries to find and element using {@code byToAppear} with a
-	 * timeout of 1 seconds, retrying up to ten times because hovers sometimes do not work very
-	 * reliably.
+	 * {@link Actions} class and then tries to find and element using {@code byToAppear}. Default
+	 * timeouts are applied.
 	 * 
 	 * @param by
 	 *            the {@link By} used to locate the element
@@ -482,23 +480,16 @@ public class WebDriverTool implements SearchContext {
 	 *            hovering
 	 */
 	public WebElement hover(final By by, final By byToAppear) {
-		WebElementFinder finder = wef.timeout(1L, 200L).by(byToAppear);
+		final WebElementFinder finder = wef.timeout(2L, 200L).by(byToAppear);
 
-		RuntimeException exception = null;
-		for (int i = 0; i < 10; ++i) {
-			try {
-				WebElement element = findElement(by);
+		return waitFor(new ExpectedCondition<WebElement>() {
+			@Override
+			public WebElement apply(final WebDriver input) {
+				WebElement element = finder.by(by).find();
 				new Actions(webDriver).moveToElement(element).perform();
-				return finder.find();
-			} catch (NoSuchElementException ex) {
-				exception = ex;
-			} catch (TimeoutException ex) {
-				exception = ex;
-			} catch (StaleElementReferenceException ex) {
-				exception = ex;
+				return finder.by(byToAppear).find();
 			}
-		}
-		throw exception;
+		});
 	}
 
 	/**
