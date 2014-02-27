@@ -60,9 +60,6 @@ public class JFunkWebDriverEventListener implements WebDriverEventListener {
 	private final Provider<File> moduleArchiveDirProvider;
 	private final Provider<DumpFileCreator> dumpFileCreatorProvider;
 
-	private String currentUrl;
-	private String currentPageSource;
-
 	@Inject
 	public JFunkWebDriverEventListener(final Configuration config,
 			@ModuleArchiveDir final Provider<File> moduleArchiveDirProvider,
@@ -70,7 +67,7 @@ public class JFunkWebDriverEventListener implements WebDriverEventListener {
 		this.config = config;
 		this.moduleArchiveDirProvider = moduleArchiveDirProvider;
 		this.dumpFileCreatorProvider = dumpFileCreatorProvider;
-		this.saveOutputMap = new EnumMap<>(SaveOutput.class);
+		this.saveOutputMap = new EnumMap<SaveOutput, Boolean>(SaveOutput.class);
 		for (SaveOutput saveOutput : SaveOutput.values()) {
 			// active flag for every output type
 			saveOutputMap.put(saveOutput, config.getBoolean(JFunkConstants.ARCHIVE_INCLUDE + saveOutput.getIdentifier(),
@@ -85,8 +82,6 @@ public class JFunkWebDriverEventListener implements WebDriverEventListener {
 
 	@Override
 	public void afterNavigateTo(final String url, final WebDriver driver) {
-		this.currentUrl = url;
-		this.currentPageSource = driver.getPageSource();
 		savePage(driver, "afterNavigateTo", url);
 
 		if (WebDriverUtils.isHtmlUnitDriver(driver) && config.getBoolean(WebConstants.HTMLUNIT_SAVE_COMPLETE, false)) {
@@ -220,7 +215,7 @@ public class JFunkWebDriverEventListener implements WebDriverEventListener {
 			File f = null;
 			try {
 				f = dumpFileCreatorProvider.get().createDumpFile(new File(moduleArchiveDir, saveOutput.getIdentifier()),
-						saveOutput.getExtension(), currentUrl, action);
+						saveOutput.getExtension(), driver.getCurrentUrl(), action);
 
 				if (f == null) {
 					return;
@@ -230,22 +225,22 @@ public class JFunkWebDriverEventListener implements WebDriverEventListener {
 					case HTML:
 						StringBuilder html = new StringBuilder();
 						html.append("<!-- Requested URL: ");
-						html.append(currentUrl);
+						html.append(driver.getCurrentUrl());
 						html.append(" -->");
 						html.append(IOUtils.LINE_SEPARATOR);
-						html.append(currentPageSource);
+						html.append(driver.getPageSource());
 						writeStringToFile(f, html.toString(), "UTF-8");
 						copyFile(f, new File(moduleArchiveDir, JFunkConstants.LASTPAGE_HTML));
-						log.trace("Saving page: filename={}, action={}, trigger={}, currentUrl={}",
-								f.getName(), action, triggeredBy, currentUrl);
+						log.trace("Saving page: filename={}, action={}, trigger={}, response={}",
+								f.getName(), action, triggeredBy, driver.getCurrentUrl());
 						break;
 					case PNG:
 						if (driver instanceof TakesScreenshot) {
 							File tmpFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
 							if (tmpFile != null) {
 								copyFile(tmpFile, f);
-								log.trace("Saving page: filename={}, action={}, trigger={}, currentUrl={}",
-										f.getName(), action, triggeredBy, currentUrl);
+								log.trace("Saving page: filename={}, action={}, trigger={}, response={}",
+										f.getName(), action, triggeredBy, driver.getCurrentUrl());
 								deleteQuietly(tmpFile);
 							}
 						}
