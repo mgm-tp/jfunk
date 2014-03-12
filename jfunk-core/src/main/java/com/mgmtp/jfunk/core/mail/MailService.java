@@ -17,7 +17,9 @@ package com.mgmtp.jfunk.core.mail;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.collect.Iterables.getOnlyElement;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -71,6 +73,7 @@ public class MailService {
 	 *            the key under which the account has been reserved
 	 * @param condition
 	 *            the condition a message must meet
+	 * @return the mail message
 	 */
 	public MailMessage findMessage(final String accountReservationKey, final Predicate<MailMessage> condition) {
 		return findMessage(accountReservationKey, condition, defaultTimeoutSeconds);
@@ -91,6 +94,7 @@ public class MailService {
 	 *            the mail account
 	 * @param condition
 	 *            the condition a message must meet
+	 * @return the mail message
 	 */
 	public MailMessage findMessage(final MailAccount mailAccount, final Predicate<MailMessage> condition) {
 		return findMessage(mailAccount, condition, defaultTimeoutSeconds);
@@ -107,6 +111,7 @@ public class MailService {
 	 *            the condition a message must meet
 	 * @param timeoutSeconds
 	 *            the timeout in seconds
+	 * @return the mail message
 	 */
 	public MailMessage findMessage(final String accountReservationKey, final Predicate<MailMessage> condition,
 			final long timeoutSeconds) {
@@ -130,6 +135,7 @@ public class MailService {
 	 *            the condition a message must meet
 	 * @param timeoutSeconds
 	 *            the timeout in seconds
+	 * @return the mail message
 	 */
 	public MailMessage findMessage(final MailAccount mailAccount, final Predicate<MailMessage> condition,
 			final long timeoutSeconds) {
@@ -149,6 +155,7 @@ public class MailService {
 	 *            the timeout in seconds
 	 * @param sleepMillis
 	 *            the time in milliseconds to sleep between polls
+	 * @return the mail message
 	 */
 	public MailMessage findMessage(final String accountReservationKey, final Predicate<MailMessage> condition,
 			final long timeoutSeconds, final long sleepMillis) {
@@ -178,6 +185,7 @@ public class MailService {
 	 *            the timeout in seconds
 	 * @param sleepMillis
 	 *            the time in milliseconds to sleep between polls
+	 * @return the mail message
 	 */
 	public MailMessage findMessage(final MailAccount mailAccount, final Predicate<MailMessage> condition,
 			final long timeoutSeconds, final long sleepMillis) {
@@ -186,21 +194,165 @@ public class MailService {
 
 	private MailMessage findMessage(final MailAccount mailAccount, final Predicate<MailMessage> condition,
 			final long timeoutSeconds, final long sleepMillis, final boolean checkReserved) {
+		List<MailMessage> messages = findMessages(mailAccount, condition, timeoutSeconds, sleepMillis, checkReserved);
+		switch (messages.size()) {
+			case 0:
+				return null;
+			case 1:
+				return getOnlyElement(messages);
+			default:
+				throw new MailException("Multiple messages (" + messages.size() + ") found for " + condition);
+		}
+	}
+
+	/**
+	 * Tries to find messages for the mail account reserved under the specified
+	 * {@code accountReservationKey} applying the specified {@code condition} until it times out
+	 * using the default timeout ( {@link EmailConstants#MAIL_TIMEOUT_SECONDS} and
+	 * {@link EmailConstants#MAIL_SLEEP_MILLIS}).
+	 * 
+	 * @param accountReservationKey
+	 *            the key under which the account has been reserved
+	 * @param condition
+	 *            the condition a message must meet
+	 * @return an immutable list of mail messages
+	 */
+	public List<MailMessage> findMessages(final String accountReservationKey, final Predicate<MailMessage> condition) {
+		return findMessages(accountReservationKey, condition, defaultTimeoutSeconds);
+	}
+
+	/**
+	 * <p>
+	 * Tries to find messages for the specified mail account applying the specified
+	 * {@code condition} until it times out using the default timeout (
+	 * {@link EmailConstants#MAIL_TIMEOUT_SECONDS} and {@link EmailConstants#MAIL_SLEEP_MILLIS}).
+	 * </p>
+	 * <b>Note:</b><br />
+	 * This method uses the specified mail account independently without reservation. If, however,
+	 * the specified mail account has been reserved by any thread (including the current one), an
+	 * {@link IllegalStateException} is thrown. </p>
+	 * 
+	 * @param mailAccount
+	 *            the mail account
+	 * @param condition
+	 *            the condition a message must meet
+	 * @return an immutable list of mail messagess
+	 */
+	public List<MailMessage> findMessages(final MailAccount mailAccount, final Predicate<MailMessage> condition) {
+		return findMessages(mailAccount, condition, defaultTimeoutSeconds);
+	}
+
+	/**
+	 * Tries to find messages for the mail account reserved under the specified
+	 * {@code accountReservationKey} applying the specified {@code condition} until it times out
+	 * using the specified {@code timeout} and {@link EmailConstants#MAIL_SLEEP_MILLIS}.
+	 * 
+	 * @param accountReservationKey
+	 *            the key under which the account has been reserved
+	 * @param condition
+	 *            the condition a message must meet
+	 * @param timeoutSeconds
+	 *            the timeout in seconds
+	 * @return an immutable list of mail messages
+	 */
+	public List<MailMessage> findMessages(final String accountReservationKey, final Predicate<MailMessage> condition,
+			final long timeoutSeconds) {
+		return findMessages(accountReservationKey, condition, timeoutSeconds, defaultSleepMillis);
+	}
+
+	/**
+	 * <p>
+	 * Tries to find messages for the specified mail account applying the specified
+	 * {@code condition} until it times out using the specified {@code timeout} and
+	 * {@link EmailConstants#MAIL_SLEEP_MILLIS}.
+	 * </p>
+	 * <b>Note:</b><br />
+	 * This method uses the specified mail account independently without reservation. If, however,
+	 * the specified mail account has been reserved by any thread (including the current one), an
+	 * {@link IllegalStateException} is thrown. </p>
+	 * 
+	 * @param mailAccount
+	 *            the mail account
+	 * @param condition
+	 *            the condition a message must meet
+	 * @param timeoutSeconds
+	 *            the timeout in seconds
+	 * @return an immutable list of mail messages
+	 */
+	public List<MailMessage> findMessages(final MailAccount mailAccount, final Predicate<MailMessage> condition,
+			final long timeoutSeconds) {
+		return findMessages(mailAccount, condition, timeoutSeconds, defaultSleepMillis);
+	}
+
+	/**
+	 * Tries to find messages for the mail account reserved under the specified
+	 * {@code accountReservationKey} applying the specified {@code condition} until it times out
+	 * using the specified {@code timeout} and and {@code sleepMillis}.
+	 * 
+	 * @param accountReservationKey
+	 *            the key under which the account has been reserved
+	 * @param condition
+	 *            the condition a message must meet
+	 * @param timeoutSeconds
+	 *            the timeout in seconds
+	 * @param sleepMillis
+	 *            the time in milliseconds to sleep between polls
+	 * @return an immutable list of mail messages
+	 */
+	public List<MailMessage> findMessages(final String accountReservationKey, final Predicate<MailMessage> condition,
+			final long timeoutSeconds, final long sleepMillis) {
+		MailAccount mailAccount = checkNotNull(mailAccountManager.lookupUsedMailAccountForCurrentThread(accountReservationKey),
+				"No mail account reserved for current thread under key '%s'", accountReservationKey);
+		return findMessages(mailAccount, condition, timeoutSeconds, sleepMillis, false);
+	}
+
+	/**
+	 * <p>
+	 * Tries to find messages for the specified mail account applying the specified
+	 * {@code condition} until it times out using the specified {@code timeout} and and
+	 * {@code sleepMillis}.
+	 * </p>
+	 * <p>
+	 * <b>Note:</b><br />
+	 * This method uses the specified mail account independently without reservation. If, however,
+	 * the specified mail account has been reserved by any thread (including the current one), an
+	 * {@link IllegalStateException} is thrown.
+	 * </p>
+	 * 
+	 * @param mailAccount
+	 *            the mail account
+	 * @param condition
+	 *            the condition a message must meet
+	 * @param timeoutSeconds
+	 *            the timeout in seconds
+	 * @param sleepMillis
+	 *            the time in milliseconds to sleep between polls
+	 * @return an immutable list of mail messages
+	 */
+	public List<MailMessage> findMessages(final MailAccount mailAccount, final Predicate<MailMessage> condition,
+			final long timeoutSeconds, final long sleepMillis) {
+		return findMessages(mailAccount, condition, timeoutSeconds, sleepMillis, true);
+	}
+
+	private List<MailMessage> findMessages(final MailAccount mailAccount, final Predicate<MailMessage> condition,
+			final long timeoutSeconds, final long sleepMillis, final boolean checkReserved) {
 
 		if (checkReserved) {
 			checkState(!mailAccountManager.isReserved(mailAccount),
 					"Cannot use unreserved mail account that has already been reserved: %s", mailAccount);
 		}
 
-		log.info("Fetching e-mails [timeoutSeconds={}, sleepMillis={}, condition={}]", timeoutSeconds, sleepMillis, condition);
+		log.info("Fetching e-mails [account={}, timeoutSeconds={}, sleepMillis={}, condition={}]",
+				mailAccount.getAddress(), timeoutSeconds, sleepMillis, condition);
+
 		long end = System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(timeoutSeconds);
 
 		StoreManager storeManager = storeManagerFactory.create(mailAccount);
 		do {
-			MailMessage message = storeManager.fetchMessage(condition, true);
-			if (message == null) {
+			List<MailMessage> messages = storeManager.fetchMessages(condition, true);
+			if (messages.isEmpty()) {
 				try {
-					log.info("No matching e-mail found. Sleeping {} ms...", sleepMillis);
+					log.trace("No matching e-mail found. Sleeping {} ms...", sleepMillis);
 					Thread.sleep(sleepMillis);
 				} catch (InterruptedException ex) {
 					Thread.currentThread().interrupt();
@@ -208,12 +360,13 @@ public class MailService {
 				}
 			} else {
 				log.info("Found matching e-mail.");
-				return message;
+				return messages;
 			}
 		} while (end > System.currentTimeMillis());
 
-		throw new MailException(String.format("No matching e-mail found [timeoutSeconds=%d, sleepMillis=%d, condition=%s]",
-				timeoutSeconds, sleepMillis, condition));
+		throw new MailException(String.format(
+				"No matching e-mail found [account=%s, timeoutSeconds=%d, sleepMillis=%d, condition=%s]",
+				mailAccount.getAddress(), timeoutSeconds, sleepMillis, condition));
 	}
 
 	/**

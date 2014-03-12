@@ -39,6 +39,7 @@ import org.slf4j.LoggerFactory;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.collect.FluentIterable;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Table;
 import com.google.inject.assistedinject.Assisted;
 import com.mgmtp.jfunk.core.exception.MailException;
@@ -74,16 +75,17 @@ class StoreManager {
 		this.mailMessageCache = mailMessageCache;
 	}
 
-	MailMessage fetchMessage(final Predicate<MailMessage> condition, final boolean deleteAfterFetch) {
+	List<MailMessage> fetchMessages(final Predicate<MailMessage> condition, final boolean deleteAfterFetch) {
 		Folder folder = openFolder();
 		try {
-			return fetchMessage(folder, condition, deleteAfterFetch);
+			return fetchMessages(folder, condition, deleteAfterFetch);
 		} finally {
 			closeFolder(folder);
 		}
 	}
 
-	private MailMessage fetchMessage(final Folder folder, final Predicate<MailMessage> condition, final boolean deleteAfterFetch) {
+	private List<MailMessage> fetchMessages(final Folder folder, final Predicate<MailMessage> condition,
+			final boolean deleteAfterFetch) {
 		try {
 			log.info("Fetching e-mail messages...");
 			List<Message> messages = asList(folder.getMessages());
@@ -111,7 +113,7 @@ class StoreManager {
 				FileMessageWrapper wrapper = it.next();
 				MailMessage message = wrapper.message;
 				if (condition.apply(message)) {
-					// message matching the condition are removed from the cache
+					// messages matching the condition are removed from the cache
 					// and added to the result
 					it.remove();
 					result.add(message);
@@ -124,14 +126,7 @@ class StoreManager {
 				}
 			}
 
-			switch (result.size()) {
-				case 0:
-					return null;
-				case 1:
-					return getOnlyElement(result);
-				default:
-					throw new MailException("Multiple messages (" + result.size() + ") found for " + condition);
-			}
+			return ImmutableList.copyOf(result);
 		} catch (MessagingException e) {
 			throw new MailException("Error while retrieving mails from folder " + folder.getName(), e);
 		}

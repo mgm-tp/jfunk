@@ -15,13 +15,9 @@
  */
 package com.mgmtp.jfunk.core.mail;
 
-import static com.mgmtp.jfunk.core.mail.EmailConstants.MAIL_CHECK_ACTIVE;
-
-import javax.inject.Inject;
+import java.util.List;
 
 import com.google.common.base.Predicate;
-import com.mgmtp.jfunk.core.config.InjectConfig;
-import com.mgmtp.jfunk.core.step.base.DataSetsStep;
 
 /**
  * Base step for e-mail validation. The {@link #execute()} method does nothing if mail-checking is
@@ -30,15 +26,7 @@ import com.mgmtp.jfunk.core.step.base.DataSetsStep;
  * @author rnaegele
  * @since 3.1.0
  */
-public abstract class BaseEmailStep extends DataSetsStep {
-
-	protected final String accountReservationKey;
-
-	@Inject
-	protected MailService mailService;
-
-	@InjectConfig(name = MAIL_CHECK_ACTIVE, defaultValue = "true")
-	protected boolean mailCheckingActive;
+public abstract class BaseMessageListStep extends BaseEmailStep {
 
 	/**
 	 * @param dataSetKey
@@ -46,25 +34,21 @@ public abstract class BaseEmailStep extends DataSetsStep {
 	 * @param accountReservationKey
 	 *            the key under which the mail account to use was reserved
 	 */
-	public BaseEmailStep(final String dataSetKey, final String accountReservationKey) {
-		super(dataSetKey);
-		this.accountReservationKey = accountReservationKey;
+	public BaseMessageListStep(final String dataSetKey, final String accountReservationKey) {
+		super(dataSetKey, accountReservationKey);
 	}
 
 	/**
-	 * Returns if mail checking is disable and otherwise calls {@link #doExecute()}
+	 * Retrieves a list of e-mails matching the patterns specified in the constructor. If the
+	 * message is successfully retrieved, it is passed to {@link #validateMessages(List)} for
+	 * further validation.
 	 */
 	@Override
-	public void execute() {
-		if (!mailCheckingActive) {
-			log.info("Mail checking disabled. Ignoring e-mail of type {}.", getName());
-			return;
-		}
-
-		doExecute();
+	protected void doExecute() {
+		Predicate<MailMessage> condition = createMessagePredicate();
+		List<MailMessage> messages = mailService.findMessages(accountReservationKey, condition);
+		validateMessages(messages);
 	}
 
-	protected abstract void doExecute();
-
-	protected abstract Predicate<MailMessage> createMessagePredicate();
+	protected abstract void validateMessages(List<MailMessage> messages);
 }
