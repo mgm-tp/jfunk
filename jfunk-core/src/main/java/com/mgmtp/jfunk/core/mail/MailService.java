@@ -376,7 +376,7 @@ public class MailService {
 	 * @param accountReservationKey
 	 *            the key under which the account has been reserved
 	 */
-	void deleteMessages(final String accountReservationKey) {
+	public void deleteMessages(final String accountReservationKey) {
 		MailAccount mailAccount = checkNotNull(mailAccountManager.lookupUsedMailAccountForCurrentThread(accountReservationKey),
 				"No mail account reserved for current thread under key '%s'", accountReservationKey);
 		storeManagerFactory.create(mailAccount).deleteAllMessages();
