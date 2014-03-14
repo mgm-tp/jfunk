@@ -143,7 +143,7 @@ public class JFunkWebDriverEventListener implements WebDriverEventListener {
 
 	@Override
 	public void afterClickOn(final WebElement element, final WebDriver driver) {
-		// unused
+		savePage(driver, "afterClick", element.toString());
 	}
 
 	@Override
