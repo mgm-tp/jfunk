@@ -36,6 +36,7 @@ import javax.mail.Store;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Objects;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.collect.FluentIterable;
@@ -106,6 +107,7 @@ class StoreManager {
 			}
 
 			List<MailMessage> result = newArrayList();
+			log.debug("Cached messages after fetch: {}", mailMessageCache.row(mailAccount.getAccountId()));
 
 			// Iterate over the cache, which include messages just fetched now and those already cached by previous fetches
 			for (Iterator<FileMessageWrapper> it = mailMessageCache.row(mailAccount.getAccountId()).values().iterator(); it
@@ -125,6 +127,8 @@ class StoreManager {
 					mailFile.renameTo(new File(readDir, mailFile.getName()));
 				}
 			}
+
+			log.debug("Cached messages after applying condition: {}", mailMessageCache.row(mailAccount.getAccountId()));
 
 			return ImmutableList.copyOf(result);
 		} catch (MessagingException e) {
@@ -238,6 +242,11 @@ class StoreManager {
 		public FileMessageWrapper(final File file, final MailMessage message) {
 			this.file = file;
 			this.message = message;
+		}
+
+		@Override
+		public String toString() {
+			return Objects.toStringHelper(this).add("file", file.getName()).toString();
 		}
 	}
 }
