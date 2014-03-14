@@ -28,6 +28,7 @@ import javax.inject.Provider;
 import org.apache.commons.io.IOUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoAlertPresentException;
+import org.openqa.selenium.NoSuchWindowException;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
@@ -184,6 +185,16 @@ public class JFunkWebDriverEventListener implements WebDriverEventListener {
 	 *            the object which triggered the event (e.g. a button or a link)
 	 */
 	protected void savePage(final WebDriver driver, final String action, final String triggeredBy) {
+		try {
+			// this updates the driver's window handles, so a subsequent call to
+			// getWindowHandle() fails if the window no longer exists
+			driver.getWindowHandles();
+			driver.getWindowHandle();
+		} catch (NoSuchWindowException ex) {
+			// Window is already closed. Saving the page could cause problems, e. g.
+			// ChromeDriver ould hang.
+			return;
+		}
 		File moduleArchiveDir = moduleArchiveDirProvider.get();
 		if (moduleArchiveDir == null) {
 			return;
