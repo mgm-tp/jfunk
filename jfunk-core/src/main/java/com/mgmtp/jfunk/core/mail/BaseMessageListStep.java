@@ -20,8 +20,8 @@ import java.util.List;
 import com.google.common.base.Predicate;
 
 /**
- * Base step for e-mail validation. The {@link #execute()} method does nothing if mail-checking is
- * disabled by setting the property {@code mail.check.active} to {@code false}.
+ * Base step for validating a list of e-mail messages. The {@link #execute()} method does nothing if
+ * mail-checking is disabled by setting the property {@code mail.check.active} to {@code false}.
  * 
  * @author rnaegele
  * @since 3.1.0
@@ -39,14 +39,22 @@ public abstract class BaseMessageListStep extends BaseEmailStep {
 	}
 
 	/**
-	 * Retrieves a list of e-mails matching the patterns specified in the constructor. If the
-	 * message is successfully retrieved, it is passed to {@link #validateMessages(List)} for
-	 * further validation.
+	 * Returns the number of e-mail messages to be retrieved applying the {@link Predicate} returned
+	 * by {@link #createMessagePredicate()}.
+	 * 
+	 * @return the expected number of e-mail messages
+	 */
+	protected abstract int getExpectedMessagesCount();
+
+	/**
+	 * Retrieves a list of e-mail messages matching the patterns specified in the constructor. If
+	 * the messages are successfully retrieved, they are passed to {@link #validateMessages(List)}
+	 * for further validation.
 	 */
 	@Override
 	protected void doExecute() {
 		Predicate<MailMessage> condition = createMessagePredicate();
-		List<MailMessage> messages = mailService.findMessages(accountReservationKey, condition);
+		List<MailMessage> messages = mailService.findMessages(accountReservationKey, condition, getExpectedMessagesCount());
 		validateMessages(messages);
 	}
 
