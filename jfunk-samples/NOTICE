@@ -16,6 +16,8 @@ From: 'an unknown organization'
     License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
   - Guava: Google Core Libraries for Java (http://code.google.com/p/guava-libraries/guava) com.google.guava:guava:bundle:15.0
     License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+  - ICU4J (http://icu-project.org/) com.ibm.icu:icu4j:jar:52.1
+    License: ICU License  (http://source.icu-project.org/repos/icu/icu/trunk/license.html)
   - javax.inject (http://code.google.com/p/atinject/) javax.inject:javax.inject:jar:1
     License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
   - Java Native Access (https://github.com/twall/jna) net.java.dev.jna:jna:jar:3.4.0
@@ -33,21 +35,21 @@ From: 'an unknown organization'
     License: The MIT License  (http://code.google.com/p/mockito/wiki/License)
   - Objenesis (http://objenesis.googlecode.com/svn/docs/index.html) org.objenesis:objenesis:jar:1.0
     License: MIT License  (http://objenesis.googlecode.com/svn/docs/license.html)
-  - selenium-api (http://selenium.googlecode.com/selenium-api/) org.seleniumhq.selenium:selenium-api:jar:2.39.0
+  - selenium-api (http://selenium.googlecode.com/selenium-api/) org.seleniumhq.selenium:selenium-api:jar:2.40.0
     License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
-  - selenium-chrome-driver (http://selenium.googlecode.com/selenium-chrome-driver/) org.seleniumhq.selenium:selenium-chrome-driver:jar:2.39.0
+  - selenium-chrome-driver (http://selenium.googlecode.com/selenium-chrome-driver/) org.seleniumhq.selenium:selenium-chrome-driver:jar:2.40.0
     License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
-  - selenium-firefox-driver (http://selenium.googlecode.com/selenium-firefox-driver/) org.seleniumhq.selenium:selenium-firefox-driver:jar:2.39.0
+  - selenium-firefox-driver (http://selenium.googlecode.com/selenium-firefox-driver/) org.seleniumhq.selenium:selenium-firefox-driver:jar:2.40.0
     License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
-  - selenium-htmlunit-driver (http://selenium.googlecode.com/selenium-htmlunit-driver/) org.seleniumhq.selenium:selenium-htmlunit-driver:jar:2.39.0
+  - selenium-htmlunit-driver (http://selenium.googlecode.com/selenium-htmlunit-driver/) org.seleniumhq.selenium:selenium-htmlunit-driver:jar:2.40.0
     License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
-  - selenium-ie-driver (http://selenium.googlecode.com/selenium-ie-driver/) org.seleniumhq.selenium:selenium-ie-driver:jar:2.39.0
+  - selenium-ie-driver (http://selenium.googlecode.com/selenium-ie-driver/) org.seleniumhq.selenium:selenium-ie-driver:jar:2.40.0
     License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
-  - selenium-java (http://selenium.googlecode.com/selenium-java/) org.seleniumhq.selenium:selenium-java:jar:2.39.0
+  - selenium-java (http://selenium.googlecode.com/selenium-java/) org.seleniumhq.selenium:selenium-java:jar:2.40.0
     License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
-  - selenium-remote-driver (http://selenium.googlecode.com/selenium-remote-driver/) org.seleniumhq.selenium:selenium-remote-driver:jar:2.39.0
+  - selenium-remote-driver (http://selenium.googlecode.com/selenium-remote-driver/) org.seleniumhq.selenium:selenium-remote-driver:jar:2.40.0
     License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
-  - selenium-support (http://selenium.googlecode.com/selenium-support/) org.seleniumhq.selenium:selenium-support:jar:2.39.0
+  - selenium-support (http://selenium.googlecode.com/selenium-support/) org.seleniumhq.selenium:selenium-support:jar:2.40.0
     License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
   - webbit (http://webbitserver.org/) org.webbitserver:webbit:jar:0.4.14
     License: BSD License  (http://www.opensource.org/licenses/bsd-license)
