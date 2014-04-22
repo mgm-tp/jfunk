@@ -95,14 +95,6 @@ public class Commands {
 		scriptContext.resetFixedData(dataSetKey, entryKey)
 	}
 
-	Closure<MailAccount> reserveFixedMailAccount = { accountReservationKey = null, accountId ->
-		if (accountReservationKey == null) {
-			scriptContext.reserveFixedMailAccount(accountId)
-		} else {
-			scriptContext.reserveFixedMailAccount(accountReservationKey, accountId)
-		}
-	}
-
 	Closure<MailAccount> reserveMailAccount = { accountReservationKey = null, pool = null ->
 		if (accountReservationKey == null) {
 			scriptContext.reserveMailAccount()
