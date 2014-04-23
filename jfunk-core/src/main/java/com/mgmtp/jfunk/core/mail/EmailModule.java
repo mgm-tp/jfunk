@@ -23,6 +23,7 @@ import static com.mgmtp.jfunk.common.util.Predicates.contains;
 import static com.mgmtp.jfunk.core.mail.EmailConstants.MAIL_DEBUG;
 import static com.mgmtp.jfunk.core.mail.EmailConstants.MAIL_DELETE_ALL_ON_RESERVATION;
 import static com.mgmtp.jfunk.core.mail.EmailConstants.MAIL_SLEEP_MILLIS;
+import static com.mgmtp.jfunk.core.mail.EmailConstants.MAIL_SSL_TRUST;
 import static com.mgmtp.jfunk.core.mail.EmailConstants.MAIL_STORE_PROTOCOL;
 import static com.mgmtp.jfunk.core.mail.EmailConstants.MAIL_TIMEOUT_SECONDS;
 import static com.mgmtp.jfunk.core.mail.EmailConstants.MAIL_TRANSPORT_PROTOCOL;
@@ -30,6 +31,7 @@ import static java.lang.String.format;
 import static org.apache.commons.lang3.StringUtils.substringAfterLast;
 import static org.apache.commons.lang3.StringUtils.substringBeforeLast;
 
+import java.security.GeneralSecurityException;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
@@ -53,6 +55,7 @@ import com.mgmtp.jfunk.common.config.ScriptScoped;
 import com.mgmtp.jfunk.common.util.Configuration;
 import com.mgmtp.jfunk.core.config.BaseJFunkGuiceModule;
 import com.mgmtp.jfunk.core.mail.StoreManager.FileMessageWrapper;
+import com.sun.mail.util.MailSSLSocketFactory;
 
 /**
  * Guice module for e-mail handling. This module must be installed when e-mail support is necessary.
@@ -90,18 +93,25 @@ public class EmailModule extends BaseJFunkGuiceModule {
 
 	@Provides
 	@StoreSession
-	Properties provideStoreSession(final Configuration config) {
+	Properties provideStoreSession(final Configuration config) throws GeneralSecurityException {
 		String protocol = checkNotNull(config.get(MAIL_STORE_PROTOCOL), "Property %s not configured.", MAIL_STORE_PROTOCOL);
 		Properties sessionProps = new Properties();
 		sessionProps.putAll(filterKeys(config, contains('.' + protocol + '.')));
 		sessionProps.setProperty(MAIL_DEBUG, config.get(MAIL_DEBUG, "false"));
 		sessionProps.setProperty(MAIL_STORE_PROTOCOL, protocol);
+
+		if (config.getBoolean(MAIL_SSL_TRUST)) {
+			MailSSLSocketFactory socketFactory = new MailSSLSocketFactory();
+			socketFactory.setTrustAllHosts(true);
+			sessionProps.put("mail." + protocol + ".ssl.socketFactory", socketFactory);
+		}
+
 		return sessionProps;
 	}
 
 	@Provides
 	@TransportSession
-	Session provideTransportSession(final Configuration config) {
+	Session provideTransportSession(final Configuration config) throws GeneralSecurityException {
 		String protocol = checkNotNull(config.get(MAIL_TRANSPORT_PROTOCOL), "Property %s not configured.",
 				MAIL_TRANSPORT_PROTOCOL);
 		Properties sessionProps = new Properties();
@@ -112,6 +122,11 @@ public class EmailModule extends BaseJFunkGuiceModule {
 		String user = config.get("mail." + protocol + ".user");
 		String password = config.get("mail." + protocol + ".password");
 
+		if (config.getBoolean("mail.ssl.trust")) {
+			MailSSLSocketFactory socketFactory = new MailSSLSocketFactory();
+			socketFactory.setTrustAllHosts(true);
+			sessionProps.put("mail." + protocol + ".ssl.socketFactory", socketFactory);
+		}
 		return !isNullOrEmpty(user) && !isNullOrEmpty(password)
 				? Session.getInstance(sessionProps, new MailAuthenticator(user, password))
 				: Session.getInstance(sessionProps);
