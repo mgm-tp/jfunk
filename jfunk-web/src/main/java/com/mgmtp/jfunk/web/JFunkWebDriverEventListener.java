@@ -68,7 +68,7 @@ public class JFunkWebDriverEventListener implements WebDriverEventListener {
 		this.config = config;
 		this.moduleArchiveDirProvider = moduleArchiveDirProvider;
 		this.dumpFileCreatorProvider = dumpFileCreatorProvider;
-		this.saveOutputMap = new EnumMap<SaveOutput, Boolean>(SaveOutput.class);
+		this.saveOutputMap = new EnumMap<>(SaveOutput.class);
 		for (SaveOutput saveOutput : SaveOutput.values()) {
 			// active flag for every output type
 			saveOutputMap.put(saveOutput, config.getBoolean(JFunkConstants.ARCHIVE_INCLUDE + saveOutput.getIdentifier(),
@@ -276,6 +276,7 @@ public class JFunkWebDriverEventListener implements WebDriverEventListener {
 				}
 			} catch (Exception ex) {
 				log.error("Could not save file: {}. {}", f, ex.getMessage());
+				return;
 			}
 		}
 	}
