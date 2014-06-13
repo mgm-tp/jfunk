@@ -22,6 +22,7 @@ import java.util.regex.Pattern;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
@@ -34,6 +35,7 @@ import com.google.common.base.Predicate;
  * to {@link ExpectedConditions}.
  * 
  * @author rnaegele
+ * @author eneumann
  */
 public class WebDriverPredicates {
 
@@ -104,6 +106,22 @@ public class WebDriverPredicates {
 
 	public static Predicate<WebDriver> refreshOnFalseNullOrException(final Predicate<WebDriver> delegate) {
 		return new RefreshOnFalseNullOrExceptionWrapperPredicate(delegate);
+	}
+
+	public static Predicate<WebDriver> alertIsPresent() {
+		return new AlertIsPresentPredicate();
+	}
+
+	public static Predicate<WebDriver> alertTextEquals(final String text) {
+		return new AlertTextEqualsPredicate(text);
+	}
+
+	public static Predicate<WebDriver> alertTextMatchesPattern(final Pattern pattern) {
+		return new AlertTextMatchesPatternPredicate(pattern);
+	}
+
+	public static Predicate<WebDriver> alertTextMatchesPattern(final String pattern) {
+		return new AlertTextMatchesPatternPredicate(Pattern.compile(pattern));
 	}
 
 	private static class TextEqualsPredicate extends LocatorPredicate {
@@ -311,6 +329,71 @@ public class WebDriverPredicates {
 		@Override
 		public String toString() {
 			return delegate.toString();
+		}
+	}
+
+	private static class AlertIsPresentPredicate implements Predicate<WebDriver> {
+		@Override
+		public boolean apply(final WebDriver input) {
+			try {
+				input.switchTo().alert();
+				return true;
+			} catch (NoAlertPresentException nape) {
+				return false;
+			}
+		}
+
+		@Override
+		public String toString() {
+			return "alert to be present";
+		}
+	}
+
+	private static class AlertTextEqualsPredicate implements Predicate<WebDriver> {
+		private final String text;
+		private String alertText;
+
+		public AlertTextEqualsPredicate(final String text) {
+			this.text = text;
+		}
+
+		@Override
+		public boolean apply(final WebDriver input) {
+			try {
+				alertText = input.switchTo().alert().getText();
+				return alertText.equals(text);
+			} catch (NoAlertPresentException nape) {
+				return false;
+			}
+		}
+
+		@Override
+		public String toString() {
+			return String.format("alert text to equal '%s'. Current text: '%s'", text, alertText);
+		}
+	}
+
+	private static class AlertTextMatchesPatternPredicate implements Predicate<WebDriver> {
+		private final Pattern pattern;
+		private String alertText;
+
+		public AlertTextMatchesPatternPredicate(final Pattern pattern) {
+			this.pattern = pattern;
+		}
+
+		@Override
+		public boolean apply(final WebDriver input) {
+			try {
+				alertText = input.switchTo().alert().getText();
+				return pattern.matcher(alertText).matches();
+			} catch (NoAlertPresentException nape) {
+				return false;
+			}
+		}
+
+		@Override
+		public String toString() {
+			return String.format("alert text to match pattern '%s'. Current text: '%s'", pattern, alertText);
 		}
 	}
 }
