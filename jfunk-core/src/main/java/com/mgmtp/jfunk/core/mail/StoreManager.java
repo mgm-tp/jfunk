@@ -88,7 +88,6 @@ class StoreManager {
 	private List<MailMessage> fetchMessages(final Folder folder, final Predicate<MailMessage> condition,
 			final boolean deleteAfterFetch) {
 		try {
-			log.info("Fetching e-mail messages...");
 			List<Message> messages = asList(folder.getMessages());
 			List<MailMessage> mailMessages = FluentIterable.from(messages).transform(MessageFunctions.toMailMessage()).toList();
 
@@ -164,12 +163,12 @@ class StoreManager {
 		}
 
 		try {
-			log.info("Flagging {} message(s) for deletion", messages.size());
+			log.debug("Flagging {} message(s) for deletion", messages.size());
 			for (Message message : messages) {
 				message.setFlag(Flag.DELETED, true);
 			}
-			Message[] expungedMessages = folder.expunge();
-			log.info("Expunged {} message(s)", expungedMessages.length);
+			folder.close(true)
+			log.debug("Expunged {} message(s)", messages.size());
 		} catch (MessagingException ex) {
 			throw new MailException("Error deleting e-mail message", ex);
 		}
