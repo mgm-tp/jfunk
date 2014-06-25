@@ -167,7 +167,7 @@ class StoreManager {
 			for (Message message : messages) {
 				message.setFlag(Flag.DELETED, true);
 			}
-			folder.close(true)
+			folder.close(true);
 			log.debug("Expunged {} message(s)", messages.size());
 		} catch (MessagingException ex) {
 			throw new MailException("Error deleting e-mail message", ex);
