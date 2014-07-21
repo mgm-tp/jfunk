@@ -270,20 +270,21 @@ public class JFunkWebElement extends WebDriverStep {
 				break;
 			case CHECK_VALUE:
 				String checkValue = elementValue;
-				String value;
-				if (element.getTagName().equalsIgnoreCase(WebConstants.SELECT)) {
-					Select select = new Select(element);
-					value = select.getFirstSelectedOption().getAttribute(WebConstants.VALUE);
-				} else {
-					value = element.getAttribute(WebConstants.VALUE);
-				}
-
 				if (checkTrafo != null) {
 					checkValue = checkTrafo.trafo(checkValue);
 				}
 
 				log.info(this + ", checkValue=" + checkValue);
-				if (WebConstants.INPUT.equalsIgnoreCase(element.getTagName())
+				if (element.getTagName().equalsIgnoreCase(WebConstants.SELECT)) {
+					Select select = new Select(element);
+					String value = select.getFirstSelectedOption().getAttribute(WebConstants.VALUE);
+					if (!Objects.equal(checkValue, value)) {
+						String text = select.getFirstSelectedOption().getText();
+						if (!Objects.equal(checkValue, text)) {
+							throw new InvalidValueException(element, checkValue, text + " (option value=" + value + ")");
+						}
+					}
+				} else if (WebConstants.INPUT.equalsIgnoreCase(element.getTagName())
 						&& WebConstants.RADIO.equals(element.getAttribute(WebConstants.TYPE))) {
 					List<WebElement> elements = getWebDriver().findElements(by);
 					for (WebElement webElement : elements) {
@@ -300,6 +301,7 @@ public class JFunkWebElement extends WebDriverStep {
 						throw new InvalidValueException(element, checkValue, String.valueOf(elVal));
 					}
 				} else {
+					String value = element.getAttribute(WebConstants.VALUE);
 					if (!Objects.equal(checkValue, value)) {
 						throw new InvalidValueException(element, checkValue, value);
 					}
