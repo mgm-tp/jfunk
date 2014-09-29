@@ -18,7 +18,7 @@ public class ItemInfo {
 		this(value, null);
 	}
 
-	private ItemInfo(final String value, final Path path) {
+	public ItemInfo(final String value, final Path path) {
 		this.path = path;
 		this.value = value;
 	}
@@ -39,6 +39,6 @@ public class ItemInfo {
 
 	@Override
 	public String toString() {
-		return path != null ? path.getFileName().toString() : value;
+		return value != null ? value : path.getFileName().toString();
 	}
 }

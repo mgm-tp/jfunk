@@ -5,6 +5,7 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
+import java.nio.file.PathMatcher;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -22,11 +23,15 @@ import com.mgmtp.jfunk.common.exception.JFunkException;
 public class PathTreeItem extends TreeItem<ItemInfo> {
 	private Boolean isLeaf = null;
 	private ObservableList<TreeItem<ItemInfo>> children;
+	private final PathMatcher matcher;
 
-	public PathTreeItem(final ItemInfo itemInfo) {
+	public PathTreeItem(final ItemInfo itemInfo, final PathMatcher matcher) {
 		super(itemInfo);
-		String res = Files.isDirectory(itemInfo.getPath()) ? "folder.png" : "text-x-generic.png";
-		setGraphic(new ImageView(new Image(getClass().getResourceAsStream(res))));
+		this.matcher = matcher;
+		if (itemInfo.getPath() != null) {
+			String res = Files.isDirectory(itemInfo.getPath()) ? "/com/famfamfam/silk/folder.png" : "/com/famfamfam/silk/page.png";
+			setGraphic(new ImageView(new Image(getClass().getResource(res).toExternalForm())));
+		}
 	}
 
 	@Override
@@ -41,7 +46,12 @@ public class PathTreeItem extends TreeItem<ItemInfo> {
 	@Override
 	public boolean isLeaf() {
 		if (isLeaf == null) {
-			isLeaf = !Files.isDirectory(getValue().getPath(), LinkOption.NOFOLLOW_LINKS);
+			Path path = getValue().getPath();
+			if (path == null) {
+				isLeaf = Boolean.FALSE;
+			} else {
+				isLeaf = !Files.isDirectory(path, LinkOption.NOFOLLOW_LINKS);
+			}
 		}
 		return isLeaf.booleanValue();
 	}
@@ -50,9 +60,11 @@ public class PathTreeItem extends TreeItem<ItemInfo> {
 		Path path = treeItem.getValue().getPath();
 		if (path != null && Files.isDirectory(path, LinkOption.NOFOLLOW_LINKS)) {
 			ObservableList<TreeItem<ItemInfo>> childrenList = FXCollections.observableArrayList();
-			try (DirectoryStream<Path> dirs = Files.newDirectoryStream(path)) {
-				for (Path dir : dirs) {
-					childrenList.add(new PathTreeItem(new ItemInfo(dir)));
+			try (DirectoryStream<Path> filesAndDirs = Files.newDirectoryStream(path)) {
+				for (Path fileOrDir : filesAndDirs) {
+					if (Files.isDirectory(fileOrDir) || matcher.matches(fileOrDir)) {
+						childrenList.add(new PathTreeItem(new ItemInfo(fileOrDir), matcher));
+					}
 				}
 			} catch (IOException ex) {
 				throw new JFunkException("Error retrieving children.", ex);

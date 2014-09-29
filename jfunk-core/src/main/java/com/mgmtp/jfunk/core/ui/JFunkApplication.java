@@ -2,6 +2,8 @@ package com.mgmtp.jfunk.core.ui;
 
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -9,12 +11,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javafx.application.Application;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
 import org.slf4j.Logger;
@@ -41,15 +47,13 @@ public class JFunkApplication extends Application {
 
 	@Override
 	public void start(final Stage stage) throws Exception {
-		String fxmlFile = "fxml/app.fxml";
 		FXMLLoader loader = new FXMLLoader();
 		loader.setController(this);
-		Parent rootNode = (Parent) loader.load(getClass().getResourceAsStream(fxmlFile));
+		Parent rootNode = (Parent) loader.load(getClass().getResourceAsStream("fxml/app.fxml"));
 
 		Scene scene = new Scene(rootNode, 1024, 768);
-		//		scene.getStylesheets().add("/styles/styles.css");
-
 		stage.setTitle("jFunk Runner");
+		stage.getIcons().add(new Image(getClass().getResource("/jFunk.png").toExternalForm()));
 		stage.setScene(scene);
 		stage.show();
 	}
@@ -57,16 +61,13 @@ public class JFunkApplication extends Application {
 	@FXML
 	private void initialize() {
 		jFunkProps.getItems().addAll(retrieveAvailableJFunkProps());
-		treeView.setRoot(new PathTreeItem(new ItemInfo(Paths.get("scripts"))));
-
-		//		Files.walkFileTree(Paths.get("scripts"), new SimpleFileVisitor<Path>() {
-		//
-		//			@Override
-		//			public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
-		//				logger.info(file.toString());
-		//				return FileVisitResult.CONTINUE;
-		//			}
-		//		});
+		TreeItem<ItemInfo> root = new PathTreeItem(new ItemInfo("jFunk"), null);
+		root.setGraphic(new ImageView(new Image(getClass().getResource("/com/famfamfam/silk/computer.png").toExternalForm())));
+		FileSystem fs = FileSystems.getDefault();
+		ObservableList<TreeItem<ItemInfo>> children = root.getChildren();
+		children.add(new PathTreeItem(new ItemInfo("Groovy Scripts", Paths.get("scripts")), fs.getPathMatcher("glob:scripts/**/*.groovy")));
+		children.add(new PathTreeItem(new ItemInfo("Unit Tests", Paths.get("target/test-classes")), fs.getPathMatcher("glob:**/*Test.class")));
+		treeView.setRoot(root);
 	}
 
 	private List<String> retrieveAvailableJFunkProps() {
@@ -88,5 +89,9 @@ public class JFunkApplication extends Application {
 		}
 
 		return fileNames;
+	}
+
+	private void runTestWithSurefire() {
+
 	}
 }

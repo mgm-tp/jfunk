@@ -172,14 +172,9 @@
 				<version>2.2</version>
 			</dependency>
 			<dependency>
-				<groupId>org.apache.maven.surefire</groupId>
-				<artifactId>maven-surefire-common</artifactId>
-				<version>2.17</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.maven.surefire</groupId>
-				<artifactId>surefire-api</artifactId>
-				<version>2.17</version>
+				<groupId>com.famfamfam</groupId>
+				<artifactId>silk</artifactId>
+				<version>1.3</version>
 			</dependency>
 			<dependency>
 				<groupId>commons-io</groupId>

@@ -2,11 +2,15 @@ package com.mgmtp.jfunk.core.ui;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.nio.file.FileSystems;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.PathMatcher;
+import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 
-import org.apache.maven.plugin.surefire.util.DirectoryScanner;
-import org.apache.maven.surefire.util.ScanResult;
 import org.testng.annotations.Test;
 
 /**
@@ -22,17 +26,33 @@ public class SurefireTest {
 		//		include.add("**/*ZT*A.java");
 		//		List<String> exclude = new ArrayList<>();
 
-		DirectoryScanner surefireDirectoryScanner = new DirectoryScanner(baseDir, null, null, null);
+		final PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:**/*Test.class");
+		Files.walkFileTree(Paths.get("target/test-classes"), new SimpleFileVisitor<Path>() {
+			@Override
+			public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
+				if (matcher.matches(file)) {
+					System.out.println(file);
+				}
+				return FileVisitResult.CONTINUE;
+			}
 
-		ScanResult classNames = surefireDirectoryScanner.scan();
-		int size = classNames.size();
-		List<String> testClasses = new ArrayList<>(size);
-		for (int i = 0; i < size; ++i) {
-			testClasses.add(classNames.getClassName(i));
-		}
+			@Override
+			public FileVisitResult visitFileFailed(final Path file, final IOException exc) throws IOException {
+				return FileVisitResult.CONTINUE;
+			}
+		});
+
+		//		DirectoryScanner surefireDirectoryScanner = new DirectoryScanner(baseDir, null, null, null);
+		//
+		//		ScanResult classNames = surefireDirectoryScanner.scan();
+		//		int size = classNames.size();
+		//		List<String> testClasses = new ArrayList<>(size);
+		//		for (int i = 0; i < size; ++i) {
+		//			testClasses.add(classNames.getClassName(i));
+		//		}
 
 		//		assertNotNull(classNames);
-		System.out.println(testClasses);
+		//		System.out.println(testClasses);
 		//		assertEquals(3, classNames.size());
 		//
 		//		Properties props = new Properties();
