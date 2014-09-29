@@ -66,7 +66,7 @@ import org.apache.log4j.Logger;
 
 /**
  * GUI for starting test scripts
- * 
+ *
  */
 public final class JFunkFrame extends JFrame {
 	private static final String PATH_TO_MAIL_CONFIG_FILES = "config/email_accounts";
@@ -253,9 +253,9 @@ public final class JFunkFrame extends JFrame {
 		toolBarFirstLine.add(jFunkPropertyFilesComboBox);
 
 		// Build component testsystems
-		testSystemsModel = new PropertiesComboBoxModel("config/system", null, PROPS_SUFFIX, "baseurl", false);
-		testSystemsComboBox = new JComboBox(testSystemsModel);
-		testSystemsComboBox.setBorder(BorderFactory.createTitledBorder("Test system"));
+		//		testSystemsModel = new PropertiesComboBoxModel("config/system", null, PROPS_SUFFIX, "baseurl", false);
+		testSystemsComboBox = new JComboBox();
+		//		testSystemsComboBox.setBorder(BorderFactory.createTitledBorder("Test system"));
 		// Multi-line tooltip
 		testSystemsComboBox.setToolTipText("<html>List of test systems"
 				+ "<br>Defined by all files in directory 'config/system'</br></html>");
@@ -268,8 +268,8 @@ public final class JFunkFrame extends JFrame {
 		toolBarSecondLine.setFloatable(false);
 
 		// Build component mail configuration
-		mailConfigurationsModel = new PropertiesComboBoxModel(PATH_TO_MAIL_CONFIG_FILES, null, PROPS_SUFFIX, null, false);
-		mailConfigurationsComboBox = new JComboBox(mailConfigurationsModel);
+		//		mailConfigurationsModel = new PropertiesComboBoxModel(PATH_TO_MAIL_CONFIG_FILES, null, PROPS_SUFFIX, null, false);
+		mailConfigurationsComboBox = new JComboBox();
 		mailConfigurationsComboBox.setBorder(BorderFactory.createTitledBorder("Mail configuration"));
 		// Multi-line tooltip
 		mailConfigurationsComboBox.setToolTipText("<html>List of mail configurations"
@@ -287,8 +287,8 @@ public final class JFunkFrame extends JFrame {
 		parallelComboBox.setSelectedIndex(1);
 		parallelComboBox.setBorder(BorderFactory.createTitledBorder("Parallel?"));
 		parallelComboBox
-				.setToolTipText("If set to 'yes', a single script will be executed "
-						+ "multiple times using the specified number of threads");
+		.setToolTipText("If set to 'yes', a single script will be executed "
+				+ "multiple times using the specified number of threads");
 		toolBarSecondLine.add(parallelComboBox);
 
 		jPanelUtilities = new JPanel();
