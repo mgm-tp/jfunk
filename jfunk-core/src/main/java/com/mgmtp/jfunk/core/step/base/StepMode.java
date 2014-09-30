@@ -57,5 +57,5 @@ public enum StepMode {
 	 * @deprecated Elster-specific, to be removed
 	 */
 	@Deprecated
-	EDIT_CANCEL;
+	EDIT_CANCEL
 }

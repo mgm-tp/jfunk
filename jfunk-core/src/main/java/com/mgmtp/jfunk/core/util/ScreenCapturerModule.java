@@ -76,7 +76,7 @@ public class ScreenCapturerModule extends BaseJFunkGuiceModule {
 	Set<Class<? extends AbstractBaseEvent>> provideEventClassesRegisteredForScreenshots(final Configuration config) {
 		String classesString = config.get(SCREENSHOT_EVENT_CLASSES_KEY);
 		if (isNullOrEmpty(classesString)) {
-			return ImmutableSet.<Class<? extends AbstractBaseEvent>>of();
+			return ImmutableSet.of();
 		}
 
 		return FluentIterable.from(asList(classesString.split("\\s*,\\s*")))

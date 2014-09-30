@@ -20,8 +20,8 @@ import javax.inject.Inject;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
+import com.mgmtp.jfunk.application.google.GoogleAdvancedSearchModule;
 import com.mgmtp.jfunk.core.reporting.CsvReporter;
-import com.mgmtp.jfunk.samples.google.GoogleAdvancedSearchModule;
 import com.mgmtp.jfunk.unit.JFunkRunner;
 import com.mgmtp.jfunk.unit.JFunkTestNGSupport;
 

@@ -1,8 +1,10 @@
-package com.mgmtp.jfunk.core.ui;
+package com.mgmtp.jfunk.application.runner;
+
+import static java.nio.file.Files.isDirectory;
+import static java.nio.file.Files.newDirectoryStream;
 
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.PathMatcher;
@@ -29,7 +31,7 @@ public class PathTreeItem extends TreeItem<ItemInfo> {
 		super(itemInfo);
 		this.matcher = matcher;
 		if (itemInfo.getPath() != null) {
-			String res = Files.isDirectory(itemInfo.getPath()) ? "/com/famfamfam/silk/folder.png" : "/com/famfamfam/silk/page.png";
+			String res = isDirectory(itemInfo.getPath()) ? "/com/famfamfam/silk/folder.png" : "/com/famfamfam/silk/page.png";
 			setGraphic(new ImageView(new Image(getClass().getResource(res).toExternalForm())));
 		}
 	}
@@ -50,7 +52,7 @@ public class PathTreeItem extends TreeItem<ItemInfo> {
 			if (path == null) {
 				isLeaf = Boolean.FALSE;
 			} else {
-				isLeaf = !Files.isDirectory(path, LinkOption.NOFOLLOW_LINKS);
+				isLeaf = !isDirectory(path, LinkOption.NOFOLLOW_LINKS);
 			}
 		}
 		return isLeaf.booleanValue();
@@ -58,11 +60,11 @@ public class PathTreeItem extends TreeItem<ItemInfo> {
 
 	private ObservableList<TreeItem<ItemInfo>> retrieveChildren(final TreeItem<ItemInfo> treeItem) {
 		Path path = treeItem.getValue().getPath();
-		if (path != null && Files.isDirectory(path, LinkOption.NOFOLLOW_LINKS)) {
+		if (path != null && isDirectory(path, LinkOption.NOFOLLOW_LINKS)) {
 			ObservableList<TreeItem<ItemInfo>> childrenList = FXCollections.observableArrayList();
-			try (DirectoryStream<Path> filesAndDirs = Files.newDirectoryStream(path)) {
+			try (DirectoryStream<Path> filesAndDirs = newDirectoryStream(path)) {
 				for (Path fileOrDir : filesAndDirs) {
-					if (Files.isDirectory(fileOrDir) || matcher.matches(fileOrDir)) {
+					if (isDirectory(fileOrDir) || matcher.matches(fileOrDir)) {
 						childrenList.add(new PathTreeItem(new ItemInfo(fileOrDir), matcher));
 					}
 				}

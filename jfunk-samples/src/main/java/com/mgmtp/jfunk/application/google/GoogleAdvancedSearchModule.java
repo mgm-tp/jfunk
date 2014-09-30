@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mgmtp.jfunk.samples.google;
+package com.mgmtp.jfunk.application.google;
 
+import com.mgmtp.jfunk.application.google.step.AdvancedSearchStep;
 import com.mgmtp.jfunk.core.module.TestModuleImpl;
-import com.mgmtp.jfunk.samples.google.step.AdvancedSearchStep;
 
 public class GoogleAdvancedSearchModule extends TestModuleImpl {
 

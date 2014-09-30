@@ -379,6 +379,6 @@ public class ModuleArchiver {
 	}
 
 	public static enum ArchivingMode {
-		all, error, none;
+		all, error, none
 	}
 }

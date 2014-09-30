@@ -12,7 +12,7 @@
          <bottom>
             <ToolBar BorderPane.alignment="CENTER">
               <items>
-                <Button fx:id="btnRun" mnemonicParsing="false" onAction="#runTest" text="Button" />
+                <Button fx:id="btnRun" mnemonicParsing="false" text="Button" />
               </items>
             </ToolBar>
          </bottom>

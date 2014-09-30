@@ -80,7 +80,7 @@ public abstract class ComplexStep extends DataSetsStep {
 	 *            the step mode (if {@code null}, {@link StepMode#SET_VALUE} is used)
 	 */
 	public ComplexStep(final StepMode stepMode) {
-		this((String) null, stepMode);
+		this(null, stepMode);
 	}
 
 	public ComplexStep() {

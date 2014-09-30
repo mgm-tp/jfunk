@@ -36,5 +36,5 @@ public enum ExecutionMode {
 	/**
 	 * Execution from the specified break step until the end
 	 */
-	finish;
+	finish
 }

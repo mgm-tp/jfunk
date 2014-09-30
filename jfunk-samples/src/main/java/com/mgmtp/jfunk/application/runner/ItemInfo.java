@@ -1,4 +1,4 @@
-package com.mgmtp.jfunk.core.ui;
+package com.mgmtp.jfunk.application.runner;
 
 import java.nio.file.Path;
 

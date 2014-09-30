@@ -20,7 +20,7 @@ import javax.inject.Inject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.mgmtp.jfunk.samples.google.GoogleAdvancedSearchModule;
+import com.mgmtp.jfunk.application.google.GoogleAdvancedSearchModule;
 import com.mgmtp.jfunk.unit.JFunkJUnitSupport;
 import com.mgmtp.jfunk.unit.JFunkRunner;
 

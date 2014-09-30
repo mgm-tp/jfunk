@@ -1,14 +1,20 @@
-package com.mgmtp.jfunk.core.ui;
+package com.mgmtp.jfunk.application.runner;
+
+import static java.nio.file.Files.newDirectoryStream;
+import static java.nio.file.Paths.get;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.nio.file.DirectoryStream;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javafx.application.Application;
 import javafx.collections.ObservableList;
@@ -23,9 +29,14 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
+import org.reflections.Reflections;
+import org.reflections.scanners.MethodAnnotationsScanner;
+import org.reflections.util.ConfigurationBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.testng.annotations.Test;
 
+import com.google.common.base.Predicate;
 import com.mgmtp.jfunk.common.exception.JFunkException;
 
 /**
@@ -59,15 +70,17 @@ public class JFunkApplication extends Application {
 	}
 
 	@FXML
-	private void initialize() {
+	private void initialize() throws MalformedURLException {
 		jFunkProps.getItems().addAll(retrieveAvailableJFunkProps());
 		TreeItem<ItemInfo> root = new PathTreeItem(new ItemInfo("jFunk"), null);
 		root.setGraphic(new ImageView(new Image(getClass().getResource("/com/famfamfam/silk/computer.png").toExternalForm())));
 		FileSystem fs = FileSystems.getDefault();
 		ObservableList<TreeItem<ItemInfo>> children = root.getChildren();
-		children.add(new PathTreeItem(new ItemInfo("Groovy Scripts", Paths.get("scripts")), fs.getPathMatcher("glob:scripts/**/*.groovy")));
-		children.add(new PathTreeItem(new ItemInfo("Unit Tests", Paths.get("target/test-classes")), fs.getPathMatcher("glob:**/*Test.class")));
+		children.add(new PathTreeItem(new ItemInfo("Groovy Scripts", get("scripts")), fs.getPathMatcher("glob:scripts/**/*.groovy")));
+		children.add(new PathTreeItem(new ItemInfo("Unit Tests", get("target/test-classes")), fs.getPathMatcher("glob:**/*Test.class")));
 		treeView.setRoot(root);
+
+		findTestClassesAndMethods();
 	}
 
 	private List<String> retrieveAvailableJFunkProps() {
@@ -80,7 +93,7 @@ public class JFunkApplication extends Application {
 		};
 
 		List<String> fileNames = new ArrayList<>();
-		try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get("config"), filter)) {
+		try (DirectoryStream<Path> directoryStream = newDirectoryStream(get("config"), filter)) {
 			for (Path path : directoryStream) {
 				fileNames.add(path.getFileName().toString());
 			}
@@ -89,6 +102,22 @@ public class JFunkApplication extends Application {
 		}
 
 		return fileNames;
+	}
+
+	private void findTestClassesAndMethods() throws MalformedURLException {
+		URL url = get("target/test-classes").toUri().toURL();
+		ClassLoader loader = new URLClassLoader(new URL[] { url });
+		Reflections reflections = new Reflections(new ConfigurationBuilder().addClassLoader(loader).addScanners(new MethodAnnotationsScanner())
+				.addUrls(url).filterInputsBy(new Predicate<String>() {
+
+					@Override
+					public boolean apply(final String input) {
+						System.out.println(input);
+						return true;
+					}
+				}));
+		Set<Method> set = reflections.getMethodsAnnotatedWith(Test.class);
+		System.out.println(set);
 	}
 
 	private void runTestWithSurefire() {
