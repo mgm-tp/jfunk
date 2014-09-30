@@ -50,8 +50,7 @@ import com.mgmtp.jfunk.web.exception.InvalidValueException;
  * <li>radio buttons</li>
  * <li>drop down lists</li>
  * </ul>
- * When not in either {@link StepMode#SET_VALUE} or {@link StepMode#EDIT_VALUE} or
- * {@link StepMode#SET_EMPTY} the element is checked for a given value (
+ * When not in {@link StepMode#SET_VALUE} the element is checked for a given value (
  * {@link StepMode#CHECK_VALUE} ) or checked for its default value ( {@link StepMode#CHECK_DEFAULT}
  * ).
  * 
@@ -307,7 +306,6 @@ public class JFunkWebElement extends WebDriverStep {
 					}
 				}
 				break;
-			case SET_EMPTY:
 			case SET_VALUE:
 				String setValue = elementValue;
 				if (setTrafo != null) {
@@ -375,42 +373,6 @@ public class JFunkWebElement extends WebDriverStep {
 					}
 				}
 				break;
-			case EDIT_CANCEL:
-			case EDIT_VALUE:
-				String editValue = elementValue;
-				if (setTrafo != null) {
-					editValue = setTrafo.trafo(editValue);
-				}
-				log.info(this + (setTrafo != null ? ", editValue (after trafo)=" + editValue : ""));
-				if (element.getTagName().equalsIgnoreCase(WebConstants.SELECT)) {
-					Select select = new Select(element);
-					select.selectByValue(editValue);
-				} else if (WebConstants.INPUT.equalsIgnoreCase(element.getTagName())
-						&& WebConstants.RADIO.equals(element.getAttribute(WebConstants.TYPE))) {
-					List<WebElement> elements = getWebDriver().findElements(by);
-					for (WebElement webElement : elements) {
-						if (webElement.isDisplayed() && webElement.isEnabled()) {
-							String elVal = webElement.getAttribute(WebConstants.VALUE);
-							if (elVal.equals(editValue) && !webElement.isSelected()) {
-								webElement.click();
-							}
-						}
-					}
-				} else if (WebConstants.CHECKBOX.equals(element.getAttribute(WebConstants.TYPE))) {
-					if (Boolean.valueOf(editValue) && !element.isSelected() || !Boolean.valueOf(editValue)
-							&& element.isSelected()) {
-						element.click();
-					}
-				} else {
-					if (element.isDisplayed() && element.isEnabled()
-							&& (element.getAttribute("readonly") == null || element.getAttribute("readonly").equals("false"))) {
-						element.clear();
-						element.sendKeys(editValue);
-					} else {
-						log.warn("Element is invisible or disabled, value cannot be reset");
-					}
-				}
-				break;
 			case NONE:
 				// do nothing
 				break;
@@ -420,19 +382,7 @@ public class JFunkWebElement extends WebDriverStep {
 	}
 
 	protected String retrieveElementValue() {
-		String value;
-
-		if (stepMode == StepMode.SET_EMPTY) {
-			value = "";
-		} else {
-			if (dataSetKey != null) {
-				value = dataSets.get(dataSetKey).getValue(dataKey);
-			} else {
-				// if no data set key is present, the data key is assumed to be the value
-				value = dataKey;
-			}
-		}
-		return value;
+		return (dataSetKey != null) ? dataSets.get(dataSetKey).getValue(dataKey) : dataKey;
 	}
 
 	/**
