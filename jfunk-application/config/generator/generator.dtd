@@ -1,0 +1,137 @@
+<!--
+
+    Copyright (c) 2014 mgm technology partners GmbH
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<!-- edited with XMLSpy v2008 (http://www.altova.com) by Jochen Dost (mgm technology partners GmbH) -->
+<!-- Root element -->
+<!ELEMENT configuration (format, charsets, controls, fields, constraints)>
+<!-- A format element defines the default formats for date and number values -->
+<!ELEMENT format (date | number | (date, number))>
+<!ELEMENT number (pattern, locale)>
+<!ELEMENT date (pattern, locale)>
+<!ELEMENT pattern (#PCDATA)>
+<!ELEMENT locale (language, country)>
+<!ELEMENT language (#PCDATA)>
+<!ELEMENT country (#PCDATA)>
+<!ELEMENT controls (control+)>
+<!ELEMENT control ((cases | case+)?)>
+<!ATTLIST control
+	class CDATA "com.mgmtp.jfunk.data.generator.control.BoundaryControl"
+	id ID #REQUIRED
+	shuffle (true | false) "false"
+>
+<!ELEMENT control_ref EMPTY>
+<!ATTLIST control_ref
+	id IDREF #REQUIRED
+>
+<!--
+wenn dieses feld den wert true gesetzt ist werden nur richtige werte und zeichen generiert
+wenn der wert nicht true ist, dann werden auch falsche werte generiert, abhaengig vom kontrol objekt
+-->
+<!ELEMENT bad (#PCDATA)>
+<!-- optionales feld fuer den typ MathRandomControl um die anzahl der pflicht faelle zu konfigurieren
+die dieser kontrol typ erzeugt
+-->
+<!ELEMENT cases (#PCDATA)>
+<!ELEMENT case EMPTY>
+<!ATTLIST case
+	type (null | blank | lt_min | min | avg | max | gt_max) "avg"
+>
+<!--
+ein charset definiert ein grund buchstaben set aus dem die zeichen fuer alle darunterliegenden felder stammen
+der expression ist ein regular expression der auf einen string der laenge 1 matchen muss. mit hilfe
+dieses ausdrucks werden alle buchstaben, die das character set beinhaltet auf match geprueft und nur diejenigen in das
+charset uebernommen, welche auf den expression matchen. beispiele fuer einen sinnvollen ausdruck waeren hier
+\w oder \p{Print}
+-->
+<!ELEMENT charsets (charset+)>
+<!ELEMENT charset (encoding, good_expression, bad_expression)>
+<!ATTLIST charset
+	id ID #REQUIRED
+>
+<!-- definiert das encoding fuer das character set. das encoding muss eines sein, welches character in einem byte enkodiert -->
+<!ELEMENT encoding (#PCDATA)>
+<!ELEMENT good_expression (#PCDATA)>
+<!ELEMENT bad_expression (#PCDATA)>
+<!--
+fields enthaelt alle felder definitionen, welche dann per id referenziert werden koennen. grundsaetzlich lassen sich felder
+direkt im verwendenden konstraint configurieren oder per referenz_id referenzieren. wenn eine id angegeben ist, muss diese innerhalb des typs eindeutig sein
+es muessen jedoch keine felder hier definiert sein.
+-->
+<!ELEMENT fields (field*)>
+<!--
+constraints enthaelt alle konstraint objekte, die bei der generierung der testdaten direkt verwendung finden
+constraints koennen aus mehreren inneinander verschachtelten konstraints bestehen und definieren umgebungsregeln fuer die
+eingebetteten felder typen
+-->
+<!ELEMENT constraints (constraint+)>
+<!ATTLIST constraints
+	charset_id IDREF #REQUIRED
+>
+<!--
+ein konstraint definiert einen regelsatz fuer ein oder mehrere felder.
+es gibt verschiedene typen von konstraints, daher gibt es auch verschiedene moeglichkeiten fuer einen konstraint in der dtd
+abhaengig vom typ (class) kann es sich um einen zusammengesetzten, bedingten, oder optionalen konstraint handeln
+-->
+<!ELEMENT constraint (name?, format?, control_ref?, constant?, ((key_constraint, entry+, default_entry?) | ((min, max)?, (field | field_ref), (constraint | constraint_ref)?) | (summand+) | (factor, (constraint | constraint_ref)) | (constraint | constraint_ref)+ | (constraint?) | (source, target))?)>
+<!ATTLIST constraint
+	class CDATA "com.mgmtp.jfunk.data.generator.constraint.FieldContainer"
+	id ID #IMPLIED
+	dependent (true | false) "false"
+	charset_id CDATA #IMPLIED
+>
+<!ELEMENT source (constraint | constraint_ref)>
+<!ELEMENT target (constraint | constraint_ref)>
+<!ELEMENT constraint_ref EMPTY>
+<!ATTLIST constraint_ref
+	id IDREF #REQUIRED
+>
+<!ELEMENT field (format?, control_ref, ((expression) | (min, max, notzero?, expression?) | (value+)), expression2?)>
+<!ATTLIST field
+	class CDATA "com.mgmtp.jfunk.data.generator.field.Enumeration"
+	id ID #IMPLIED
+>
+<!ELEMENT field_ref EMPTY>
+<!ATTLIST field_ref
+	id IDREF #REQUIRED
+>
+<!--
+ein entry kommt innerhalb eines mapping konstraints vor und definiert einen key wert
+sowie den dazugehoerigen konstraint, der dann den wert liefert
+-->
+<!ELEMENT key_constraint (constraint | constraint_ref)>
+<!ELEMENT entry (key+, (constraint | constraint_ref))>
+<!ELEMENT default_entry (constraint | constraint_ref)>
+<!ELEMENT summand (constraint | constraint_ref)>
+<!ATTLIST summand
+	negative (true | false) "false"
+>
+<!ELEMENT condition (constraint | constraint_ref)>
+<!ELEMENT true (constraint | constraint_ref)>
+<!ELEMENT false (constraint | constraint_ref)>
+<!ELEMENT key (#PCDATA)>
+<!ELEMENT value (#PCDATA)>
+<!ELEMENT min (#PCDATA)>
+<!ELEMENT max (#PCDATA)>
+<!ELEMENT notzero (#PCDATA)>
+<!ELEMENT factor (#PCDATA)>
+<!ELEMENT constant (#PCDATA)>
+<!-- der klassenname fuer ein objekt -->
+<!ELEMENT class (#PCDATA)>
+<!-- der expression ausdruck ist ein regular expression -->
+<!ELEMENT expression (#PCDATA)>
+<!ELEMENT expression2 (#PCDATA)>
+<!ELEMENT name (#PCDATA)>
