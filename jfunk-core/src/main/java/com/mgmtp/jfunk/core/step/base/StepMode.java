@@ -44,18 +44,4 @@ public enum StepMode {
 	/**
 	 * Editiert den Wert des Parameters und setzt ihn auf den entsprechenden FormData Wert
 	 */
-	@Deprecated
-	EDIT_VALUE,
-
-	/**
-	 * @deprecated Elster-specific, to be removed
-	 */
-	@Deprecated
-	SET_EMPTY,
-
-	/**
-	 * @deprecated Elster-specific, to be removed
-	 */
-	@Deprecated
-	EDIT_CANCEL
 }

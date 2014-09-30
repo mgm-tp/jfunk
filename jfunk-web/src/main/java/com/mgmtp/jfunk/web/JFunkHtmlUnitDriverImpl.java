@@ -26,6 +26,7 @@ import java.util.Set;
 
 import javax.inject.Provider;
 
+import com.gargoylesoftware.htmlunit.HttpWebConnection;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.Credentials;
 import org.apache.http.client.CredentialsProvider;
@@ -52,8 +53,7 @@ import com.mgmtp.jfunk.web.util.DumpFileCreator;
  * @author rnaegele
  */
 public class JFunkHtmlUnitDriverImpl extends HtmlUnitDriver implements IncorrectnessListener, RefreshHandler,
-		CredentialsProvider,
-		AlertHandler, JFunkHtmlUnitWebDriver {
+		CredentialsProvider, AlertHandler, JFunkHtmlUnitWebDriver {
 
 	private final Logger log = Logger.getLogger(getClass());
 
@@ -61,8 +61,6 @@ public class JFunkHtmlUnitDriverImpl extends HtmlUnitDriver implements Incorrect
 	protected final HtmlUnitSSLParams sslParams;
 	protected final AjaxController ajaxController;
 	protected final Map<String, CredentialsProvider> credentialsProviderMap;
-
-	protected HttpClient httpClient;
 
 	protected final List<JavaScriptAlert> collectedAlerts = Lists.newArrayList();
 	protected final RefreshHandler refreshHandler = new WaitingRefreshHandler();
@@ -126,24 +124,6 @@ public class JFunkHtmlUnitDriverImpl extends HtmlUnitDriver implements Incorrect
 		for (WebWindowListener listener : listenersProvider.get()) {
 			client.addWebWindowListener(listener);
 		}
-
-		HtmlUnitHttpWebConnection webConnection = createWebConnection(client);
-		client.setWebConnection(webConnection);
-		httpClient = new ImmutableHttpClient(webConnection.getHttpClient());
-	}
-
-	protected HtmlUnitHttpWebConnection createWebConnection(final WebClient client) {
-		return new HtmlUnitHttpWebConnection(client, sslParams);
-	}
-
-	/**
-	 * Returns an {@link ImmutableHttpClient} around HtmlUnit's {@link HttpClient}.
-	 * 
-	 * @return the httpClient
-	 */
-	@Override
-	public HttpClient getHttpClient() {
-		return httpClient;
 	}
 
 	@Override
