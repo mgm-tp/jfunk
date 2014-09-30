@@ -26,5 +26,4 @@ public interface JFunkHtmlUnitWebDriver {
 
 	WebClient getWebClient();
 
-	HttpClient getHttpClient();
 }
