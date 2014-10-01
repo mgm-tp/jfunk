@@ -1,6 +1,7 @@
 package com.mgmtp.jfunk.application.runner;
 
 import static java.nio.file.Files.newDirectoryStream;
+import static java.nio.file.Files.walkFileTree;
 import static java.nio.file.Paths.get;
 
 import java.io.IOException;
@@ -11,11 +12,15 @@ import java.net.URLClassLoader;
 import java.nio.file.DirectoryStream;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
+import java.nio.file.FileVisitResult;
 import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import com.google.common.collect.TreeMultiset;
 import javafx.application.Application;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -70,7 +75,7 @@ public class JFunkApplication extends Application {
 	}
 
 	@FXML
-	private void initialize() throws MalformedURLException {
+	private void initialize() throws IOException {
 		jFunkProps.getItems().addAll(retrieveAvailableJFunkProps());
 		TreeItem<ItemInfo> root = new PathTreeItem(new ItemInfo("jFunk"), null);
 		root.setGraphic(new ImageView(new Image(getClass().getResource("/com/famfamfam/silk/computer.png").toExternalForm())));
@@ -104,20 +109,28 @@ public class JFunkApplication extends Application {
 		return fileNames;
 	}
 
-	private void findTestClassesAndMethods() throws MalformedURLException {
+	private void findTestClassesAndMethods() throws IOException {
+//		walkFileTree(get("target/test-classes"), new SimpleFileVisitor<Path>() {
+//			@Override
+//			public FileVisitResult preVisitDirectory(final Path dir, final BasicFileAttributes attrs) throws IOException {
+//				return super.preVisitDirectory(dir, attrs);
+//			}
+//
+//			@Override
+//			public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
+//				return super.visitFile(file, attrs);
+//			}
+//		});
+
 		URL url = get("target/test-classes").toUri().toURL();
 		ClassLoader loader = new URLClassLoader(new URL[] { url });
-		Reflections reflections = new Reflections(new ConfigurationBuilder().addClassLoader(loader).addScanners(new MethodAnnotationsScanner())
-				.addUrls(url).filterInputsBy(new Predicate<String>() {
-
-					@Override
-					public boolean apply(final String input) {
-						System.out.println(input);
-						return true;
-					}
-				}));
+		Reflections reflections = new Reflections(
+				new ConfigurationBuilder().addClassLoader(loader).addScanners(new MethodAnnotationsScanner()).addUrls(url));
 		Set<Method> set = reflections.getMethodsAnnotatedWith(Test.class);
 		System.out.println(set);
+
+
+
 	}
 
 	private void runTestWithSurefire() {

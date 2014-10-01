@@ -64,8 +64,11 @@ public class PathTreeItem extends TreeItem<ItemInfo> {
 			ObservableList<TreeItem<ItemInfo>> childrenList = FXCollections.observableArrayList();
 			try (DirectoryStream<Path> filesAndDirs = newDirectoryStream(path)) {
 				for (Path fileOrDir : filesAndDirs) {
-					if (isDirectory(fileOrDir) || matcher.matches(fileOrDir)) {
+					if (isDirectory(fileOrDir)) {
 						childrenList.add(new PathTreeItem(new ItemInfo(fileOrDir), matcher));
+					} else if (matcher.matches(fileOrDir)) {
+						childrenList.add(new PathTreeItem(new ItemInfo(fileOrDir), matcher));
+
 					}
 				}
 			} catch (IOException ex) {
