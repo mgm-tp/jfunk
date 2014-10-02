@@ -24,7 +24,7 @@ From: 'an unknown organization'
     License: MIT License  (http://objenesis.googlecode.com/svn/docs/license.html)
 
 From: 'Codehaus' (http://www.codehaus.org/)
-  - Plexus Common Utilities (http://plexus.codehaus.org/plexus-utils) org.codehaus.plexus:plexus-utils:jar:3.0.17
+  - Plexus Common Utilities (http://plexus.codehaus.org/plexus-utils) org.codehaus.plexus:plexus-utils:jar:3.0.15
     License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 From: 'Google, Inc.' (http://www.google.com)

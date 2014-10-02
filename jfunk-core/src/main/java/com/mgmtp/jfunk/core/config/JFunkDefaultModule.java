@@ -17,6 +17,7 @@ package com.mgmtp.jfunk.core.config;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Module;
+import com.google.inject.Provides;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
 import com.mgmtp.jfunk.core.JFunk;
 import com.mgmtp.jfunk.core.JFunkBase;

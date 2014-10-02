@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.image.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
@@ -12,7 +13,10 @@
          <bottom>
             <ToolBar BorderPane.alignment="CENTER">
               <items>
-                <Button fx:id="btnRun" mnemonicParsing="false" text="Button" />
+                <Button id="btnRun" fx:id="btnRun" mnemonicParsing="false" onAction="#runTest" text="Run" />
+                  <Separator orientation="VERTICAL" />
+                  <Button id="btnRun" fx:id="btnExpandAll" mnemonicParsing="false" onAction="#expandAll" text="Expand Tree" />
+                  <Button id="btnRun" fx:id="btnCollapseAll" mnemonicParsing="false" onAction="#collapseAll" text="Collapse Tree" />
               </items>
             </ToolBar>
          </bottom>
