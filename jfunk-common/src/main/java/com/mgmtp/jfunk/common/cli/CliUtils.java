@@ -135,7 +135,7 @@ public class CliUtils {
 	 * Executes the specified command line and blocks until the process has finished or till the
 	 * timeout is reached. The output of the process is captured, returned, as well as logged with
 	 * info (stdout) and error (stderr) level, respectively.
-	 * 
+	 *
 	 * @param cli
 	 *            the command line
 	 * @param loggerName
@@ -147,7 +147,7 @@ public class CliUtils {
 	 *            the process input to read from, must be thread safe
 	 * @param timeoutInSeconds
 	 *            a positive integer to specify timeout, zero and negative integers for no timeout
-	 * 
+	 *
 	 * @return the process' output
 	 */
 	public static CliOutput executeCommandLine(final Commandline cli, final String loggerName, final String logMessagePrefix,

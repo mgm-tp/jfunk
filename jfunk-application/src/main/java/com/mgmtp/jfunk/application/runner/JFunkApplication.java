@@ -1,6 +1,8 @@
 package com.mgmtp.jfunk.application.runner;
 
 import com.google.common.base.Predicate;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.mgmtp.jfunk.common.cli.CliUtils;
 import com.mgmtp.jfunk.common.exception.JFunkException;
 import javafx.application.Application;
@@ -10,12 +12,16 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.Slider;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import org.codehaus.plexus.util.cli.Commandline;
@@ -23,31 +29,40 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Reader;
+import java.io.Writer;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.DirectoryStream;
 import java.nio.file.FileSystems;
 import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.PathMatcher;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
 
 import static com.google.common.base.Predicates.or;
 import static com.google.common.collect.Lists.newArrayList;
+import static com.mgmtp.jfunk.application.runner.util.TreeViewUtils.findTreeItem;
+import static com.mgmtp.jfunk.application.runner.util.TreeViewUtils.setExpanded;
 import static java.nio.file.Files.newDirectoryStream;
 import static java.nio.file.Files.walkFileTree;
 import static java.nio.file.Paths.get;
+import static java.util.Collections.emptySet;
 import static org.apache.commons.io.FilenameUtils.removeExtension;
 import static org.reflections.ReflectionUtils.getMethods;
 import static org.reflections.ReflectionUtils.withAnnotation;
@@ -58,6 +73,12 @@ import static org.reflections.ReflectionUtils.withAnnotation;
 public class JFunkApplication extends Application {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
+
+	@FXML
+	private Slider threads;
+
+	@FXML
+	private CheckBox parallel;
 
 	@FXML
 	private ComboBox<String> jFunkProps;
@@ -74,34 +95,156 @@ public class JFunkApplication extends Application {
 	@FXML
 	private Button btnCollapseAll;
 
+	@FXML
+	private GridPane testPropsPane;
+
+	private Map<String, ComboBox<String>> testPropsBoxes = new HashMap<>();
+
 	public static void main(final String[] args) {
 		launch(args);
 	}
 
 	@Override
 	public void start(final Stage stage) throws Exception {
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+			@Override
+			public void run() {
+				saveState(stage);
+			}
+		});
 		FXMLLoader loader = new FXMLLoader();
 		loader.setController(this);
 		try (InputStream is = getClass().getResourceAsStream("fxml/app.fxml")) {
 			Parent rootNode = (Parent) loader.load(is);
 			Scene scene = new Scene(rootNode, 1024, 768);
 			stage.setTitle("jFunk Runner");
-			stage.getIcons().add(new Image(getClass().getResource("/jFunk.png").toExternalForm()));
+			stage.getIcons().add(imageFromResource("/jFunk.png"));
 			stage.setScene(scene);
+			loadState(stage);
 			stage.show();
 		}
 	}
 
 	@FXML
 	private void initialize() throws IOException {
-		jFunkProps.getItems().addAll(retrieveAvailableJFunkProps());
-		btnRun.setGraphic(new ImageView(new Image(getClass().getResource("/com/famfamfam/silk/control_play.png").toExternalForm())));
-		btnExpandAll.setGraphic(new ImageView(new Image(getClass().getResource("/com/famfamfam/silk/arrow_out.png").toExternalForm())));
-		btnCollapseAll.setGraphic(new ImageView(new Image(getClass().getResource("/com/famfamfam/silk/arrow_in.png").toExternalForm())));
-		findTestClassesAndMethods();
+		treeView.setRoot(new TreeItem<ItemInfo>(new ItemInfo("jFunk", ItemInfoType.LABEL)));
+
+		testPropsPane.setHgap(10d);
+		testPropsPane.setVgap(10d);
+		try (Reader reader = Files.newBufferedReader(get("config", "runner.json"), StandardCharsets.UTF_8)) {
+			Gson gson = new GsonBuilder().create();
+			RunnerConfig cfg = gson.fromJson(reader, RunnerConfig.class);
+			int row = 1;
+			for (Entry<String, List<String>> entry : cfg.getTestProperties().entrySet()) {
+				String key = entry.getKey();
+				testPropsPane.add(new Label(key), 1, row);
+				ComboBox<String> values = new ComboBox<>();
+				testPropsBoxes.put(key, values);
+				values.setId(key);
+				testPropsPane.add(values, 2, row++);
+				for (String value : entry.getValue()) {
+					values.getItems().add(value);
+				}
+			}
+
+			retrieveAvailableJFunkProps();
+			btnRun.setGraphic(new ImageView(imageFromResource("/com/famfamfam/silk/control_play.png")));
+			btnExpandAll.setGraphic(new ImageView(imageFromResource("/com/famfamfam/silk/arrow_out.png")));
+			btnCollapseAll.setGraphic(new ImageView(imageFromResource("/com/famfamfam/silk/arrow_in.png")));
+			retrieveTestClassesAndMethods();
+			retrieveGroovyScripts(cfg.getGroovyScriptDirs());
+
+			treeView.setCellFactory(new Callback<TreeView<ItemInfo>, TreeCell<ItemInfo>>() {
+				@Override
+				public TreeCell<ItemInfo> call(final TreeView<ItemInfo> objectTreeView) {
+					return new TreeCell<ItemInfo>() {
+						@Override
+						protected void updateItem(final ItemInfo itemInfo, final boolean empty) {
+							super.updateItem(itemInfo, empty);
+							if (!empty) {
+								String res;
+								switch (itemInfo.getType()) {
+									case LABEL:
+										setText(itemInfo.getValue());
+										res = "/com/famfamfam/silk/folder.png";
+										break;
+									case TEST_CLASS:
+										setText(removeExtension(itemInfo.getValue()));
+										res = "/com/famfamfam/silk/page.png";
+										break;
+									case TEST_METHOD:
+										setText(itemInfo.getValue());
+										res = "/com/famfamfam/silk/page_white_code_red.png";
+										break;
+									case TEST_SCRIPT:
+										setText(itemInfo.getValue());
+										res = "/com/famfamfam/silk/page_white_code_red.png";
+										break;
+									default:
+										throw new IllegalStateException("Default case not handled for enum: " + itemInfo.getType());
+								}
+								setGraphic(new ImageView(imageFromResource(res)));
+							}
+						}
+					};
+				}
+			});
+
+			setExpanded(treeView.getRoot(), true);
+		}
 	}
 
-	private List<String> retrieveAvailableJFunkProps() {
+	private void loadState(Stage stage) {
+		try (Reader reader = Files.newBufferedReader(get("config", "uistate.json"), StandardCharsets.UTF_8)) {
+			UiState state = new Gson().fromJson(reader, UiState.class);
+			stage.setX(state.getWindowX());
+			stage.setY(state.getWindowY());
+			stage.setWidth(state.getWindowWidth());
+			stage.setHeight(state.getWindowHeight());
+			threads.setValue(state.getThreads());
+			parallel.setSelected(state.isParallel());
+			String props = state.getjFunkProps();
+			if (jFunkProps.getItems().contains(props)) {
+				jFunkProps.setValue(props);
+			}
+			for (Entry<String, ComboBox<String>> entry : testPropsBoxes.entrySet()) {
+				String key = entry.getKey();
+				String value = state.getTestProps().get(key);
+				ComboBox<String> comboBox = testPropsBoxes.get(key);
+				if (comboBox.getItems().contains(value)) {
+					comboBox.setValue(value);
+				}
+			}
+		} catch (IOException ex) {
+			logger.error("Could not load UI state: {}", ex.toString());
+		}
+	}
+
+	private void saveState(Stage stage) {
+		try (Writer writer = Files.newBufferedWriter(get("config", "uistate.json"), StandardCharsets.UTF_8)) {
+			UiState state = new UiState();
+			state.setWindowX(stage.getX());
+			state.setWindowY(stage.getY());
+			state.setWindowWidth(stage.getWidth());
+			state.setWindowHeight(stage.getHeight());
+			state.setThreads(threads.getValue());
+			state.setParallel(parallel.isSelected());
+			state.setjFunkProps(jFunkProps.getValue());
+			for (Entry<String, ComboBox<String>> entry : testPropsBoxes.entrySet()) {
+				state.getTestProps().put(entry.getKey(), entry.getValue().getValue());
+			}
+			Gson gson = new GsonBuilder().setPrettyPrinting().create();
+			gson.toJson(state, writer);
+		} catch (IOException ex) {
+			logger.error("Could not write UI state", ex);
+		}
+	}
+
+	private Image imageFromResource(String resource) {
+		return new Image(getClass().getResource(resource).toExternalForm());
+	}
+
+	private void retrieveAvailableJFunkProps() {
 		DirectoryStream.Filter<Path> filter = new DirectoryStream.Filter<Path>() {
 			@Override
 			public boolean accept(final Path file) throws IOException {
@@ -119,25 +262,34 @@ public class JFunkApplication extends Application {
 			throw new JFunkException(ex);
 		}
 
-		return fileNames;
+		jFunkProps.getItems().addAll(fileNames);
+		jFunkProps.getSelectionModel().select(0);
 	}
 
-	private void findTestClassesAndMethods() throws IOException {
-		final Set<Path> testClasses = new TreeSet<>();
-		final PathMatcher pathMatcher = FileSystems.getDefault().getPathMatcher("glob:**/*Test.class");
-		final Path start = get("target/test-classes");
-		walkFileTree(start, new SimpleFileVisitor<Path>() {
+	private Set<Path> findPaths(final Path startDir, final String syntaxAndPattern) throws IOException {
+		if (!Files.exists(startDir)) {
+			logger.warn("Path '{}' does not exist. Cannot retrieve files for this path with 'syntaxAndPattern': {}", startDir, syntaxAndPattern);
+			return emptySet();
+		}
+		final Set<Path> paths = new TreeSet<>();
+		final PathMatcher pathMatcher = FileSystems.getDefault().getPathMatcher(syntaxAndPattern);
+		walkFileTree(startDir, new SimpleFileVisitor<Path>() {
 			@Override
 			public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
 				if (pathMatcher.matches(file)) {
-					testClasses.add(start.relativize(file));
+					paths.add(startDir.relativize(file));
 				}
 				return FileVisitResult.CONTINUE;
 			}
 		});
+		return paths;
+	}
 
+	private void retrieveTestClassesAndMethods() throws IOException {
+		Path start = get("target/test-classes");
+		final Set<Path> testClasses = findPaths(start, "glob:**/*Test.class");
 		TreeItem<ItemInfo> root = new TreeItem<>(new ItemInfo("Test Classes", ItemInfoType.LABEL));
-		treeView.setRoot(root);
+		treeView.getRoot().getChildren().add(root);
 
 		ClassLoader testClassLoader = new URLClassLoader(new URL[]{start.toUri().toURL()});
 
@@ -179,93 +331,82 @@ public class JFunkApplication extends Application {
 				current.getChildren().add(new TreeItem<ItemInfo>(new ItemInfo(testMethod.getName(), ItemInfoType.TEST_METHOD)));
 			}
 		}
+	}
 
-		treeView.setCellFactory(new Callback<TreeView<ItemInfo>, TreeCell<ItemInfo>>() {
-			@Override
-			public TreeCell<ItemInfo> call(final TreeView<ItemInfo> objectTreeView) {
-				return new TreeCell<ItemInfo>() {
+	private void retrieveGroovyScripts(final List<String> groovyScriptDirs) throws IOException {
+		Set<Path> groovyScripts = new TreeSet<>();
+		for (String dir : groovyScriptDirs) {
+			groovyScripts.addAll(findPaths(get(dir), "glob:**/*.groovy"));
+		}
+
+		TreeItem<ItemInfo> root = new TreeItem<>(new ItemInfo("Groovy Scripts", ItemInfoType.LABEL));
+		treeView.getRoot().getChildren().add(root);
+
+		for (Path groovyScript : groovyScripts) {
+			TreeItem<ItemInfo> current = root;
+			String pathString = groovyScript.toString();
+			List<String> split = newArrayList(pathString.split("[/\\\\]"));
+			System.out.println(Arrays.asList(split));
+			String previousPathElement = null;
+			for (Iterator<String> it = split.iterator(); it.hasNext(); ) {
+				String s = it.next();
+				Path path = previousPathElement != null ? get(previousPathElement, s) : get(s);
+				previousPathElement = path.toString();
+
+				final TreeItem<ItemInfo> item = new TreeItem<>(new ItemInfo(path, it.hasNext() ? ItemInfoType.LABEL : ItemInfoType.TEST_SCRIPT));
+				TreeItem<ItemInfo> existing = findTreeItem(root, new Predicate<TreeItem<ItemInfo>>() {
 					@Override
-					protected void updateItem(final ItemInfo itemInfo, final boolean empty) {
-						super.updateItem(itemInfo, empty);
-						if (!empty) {
-							setText(itemInfo.getValue());
-							String res;
-							switch (itemInfo.getType()) {
-								case LABEL:
-									res = "/com/famfamfam/silk/folder.png";
-									break;
-								case TEST_CLASS:
-									res = "/com/famfamfam/silk/page.png";
-									break;
-								case TEST_METHOD:
-									res = "/com/famfamfam/silk/page_white_code_red.png";
-									break;
-								default:
-									throw new IllegalStateException("Default case not handled for enum: " + itemInfo.getType());
-							}
-							setGraphic(new ImageView(new Image(getClass().getResource(res).toExternalForm())));
-						}
+					public boolean apply(final TreeItem<ItemInfo> input) {
+						return input.getValue().getValue().equals(item.getValue().getValue());
 					}
-				};
-			}
-		});
-	}
-
-	private void traverseTreeItem(TreeItem<ItemInfo> startNode, TreeItemVisitor<ItemInfo> visitor) {
-		if (visitor.visit(startNode)) {
-			if (!startNode.isLeaf()) {
-				for (TreeItem<ItemInfo> treeItem : startNode.getChildren()) {
-					traverseTreeItem(treeItem, visitor);
+				});
+				if (existing == null) {
+					current.getChildren().add(item);
+					current = item;
+				} else {
+					System.out.println("found: " + existing);
+					current = existing;
 				}
 			}
 		}
-	}
-
-	private TreeItem<ItemInfo> findTreeItem(TreeItem<ItemInfo> startNode, Predicate<TreeItem<ItemInfo>> predicate) {
-		for (TreeItem<ItemInfo> node : startNode.getChildren()) {
-			if (predicate.apply(node)) {
-				return node;
-			}
-			TreeItem<ItemInfo> result = findTreeItem(node, predicate);
-			if (result != null) {
-				return result;
-			}
-		}
-		return null;
-	}
-
-	private void runTestWithSurefire() {
-
-	}
-
-	private void setExpanded(final TreeItem<ItemInfo> startNode, final boolean expanded) {
-		traverseTreeItem(startNode, new TreeItemVisitor<ItemInfo>() {
-			@Override
-			public boolean visit(final TreeItem<ItemInfo> treeItem) {
-				if (!treeItem.isLeaf()) {
-					treeItem.setExpanded(expanded);
-				}
-				return true;
-			}
-		});
 	}
 
 	public void runTest(ActionEvent e) throws Exception {
-//		TreeItem<ItemInfo> item = (TreeItem<ItemInfo>) e.getSource();
-//		item.getValue().getType();
+		TreeItem<ItemInfo> item = treeView.getSelectionModel().getSelectedItem();
+		if (item != null) {
+			ItemInfoType type = item.getValue().getType();
+			switch (type) {
+				case TEST_CLASS:
+					runTestWithMaven(item.getValue().getPath(), null);
+					break;
+				case TEST_METHOD:
+					runTestWithMaven(item.getParent().getValue().getPath(), item.getValue().getValue());
+					break;
+				case TEST_SCRIPT:
+
+					break;
+				default:
+					// nothing
+			}
+		}
+	}
+
+	private void runTestWithMaven(Path path, String method) throws Exception {
+		String test = removeExtension(path.toString()).replaceAll("[/\\\\]", ".");
+		if (method != null) {
+			test += '#' + method;
+		}
 		Commandline cli = new Commandline();
 		cli.setExecutable("mvn");
 		cli.setWorkingDirectory(get(".").toAbsolutePath().normalize().getParent().toFile());
 		cli.addSystemEnvironment();
-//		cli.createArg().setValue("test");
-//		cli.createArg().setValue("-pl");
-//		cli.createArg().setValue("jfunk-application");
-//		cli.createArg().setValue("-am");
-//		cli.createArg().setValue("-Dtest=com.mgmtp.jfunk.application.runner.TreeTest#testFind");
-//		cli.createArg().setValue("-DfailIfNoTests=false");
+		cli.createArg().setValue("test");
+		cli.createArg().setValue("-pl");
+		cli.createArg().setValue("jfunk-application");
+		cli.createArg().setValue("-am");
+		cli.createArg().setValue("-Dtest=" + test);
+		cli.createArg().setValue("-DfailIfNoTests=false");
 		CliUtils.executeCommandLine(cli);
-
-		new ProcessBuilder().command("cmd.exe", "/c", "dir").directory(get(".").toAbsolutePath().normalize().getParent().toFile()).start();
 	}
 
 	public void expandAll(ActionEvent e) {

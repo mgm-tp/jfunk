@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Copyright (C) 2013 mgm technology partners GmbH, Munich. See the LICENSE file distributed with this work for additional information regarding copyright ownership and intellectual property rights. -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>com.mgmtp.maven.poms</groupId>
@@ -81,7 +82,7 @@
 										</goals>
 									</pluginExecutionFilter>
 									<action>
-										<ignore />
+										<ignore/>
 									</action>
 								</pluginExecution>
 							</pluginExecutions>
@@ -107,7 +108,8 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.1</version><!--$NO-MVN-MAN-VER$ -->
+				<version>3.1</version>
+				<!--$NO-MVN-MAN-VER$ -->
 				<configuration>
 					<source>1.7</source>
 					<target>1.7</target>
@@ -180,6 +182,11 @@
 				<groupId>org.reflections</groupId>
 				<artifactId>reflections</artifactId>
 				<version>0.9.9</version>
+			</dependency>
+			<dependency>
+				<groupId>com.google.code.gson</groupId>
+				<artifactId>gson</artifactId>
+				<version>2.3</version>
 			</dependency>
 			<dependency>
 				<groupId>commons-io</groupId>
@@ -341,7 +348,8 @@
 			<dependency>
 				<groupId>org.codehaus.plexus</groupId>
 				<artifactId>plexus-utils</artifactId>
-				<version>3.0.15</version><!-- 3.0.17 is buggy!!! -->
+				<version>3.0.15</version>
+				<!-- 3.0.17 won't work anymore due to different shell handling!!! -->
 			</dependency>
 			<dependency>
 				<groupId>com.ibm.icu</groupId>

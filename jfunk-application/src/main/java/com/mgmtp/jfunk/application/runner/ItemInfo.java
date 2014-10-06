@@ -17,7 +17,7 @@ public class ItemInfo {
 	private final ItemInfoType type;
 
 	public ItemInfo(final Path path, final ItemInfoType type) {
-		this(removeExtension(path.getFileName().toString()), path, type);
+		this(path.getFileName().toString(), path, type);
 	}
 
 	public ItemInfo(final String value, final ItemInfoType type) {

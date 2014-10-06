@@ -1,0 +1,17 @@
+{
+  "groovyScriptDirs": [
+    "scripts",
+    "groovy"
+  ],
+  "testProperties": {
+    "testystem": [
+      "dev",
+      "prod"
+    ],
+    "webdriver.key": [
+      "chrome",
+      "ie",
+      "firefox"
+    ]
+  }
+}
