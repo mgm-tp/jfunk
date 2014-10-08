@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.text.*?>
-<?import javafx.scene.layout.*?>
 <?import java.lang.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.text.Font?>
 
-<Tab text="jFunk" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
-   <graphic>
-      <TextArea id="taLog" prefHeight="200.0" prefWidth="200.0">
-         <font>
-            <Font name="Courier New" size="10.0" />
-         </font>
-      </TextArea>
-   </graphic>
+<Tab fx:id="tab" text="jFunk" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <content>
+   	<TextArea fx:id="taLog">
+
+	</TextArea>
+   </content>
 </Tab>

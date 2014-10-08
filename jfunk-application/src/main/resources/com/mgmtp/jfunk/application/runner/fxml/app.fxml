@@ -8,41 +8,6 @@
 <?import javafx.scene.layout.*?>
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="544.0" prefWidth="859.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
-  <top>
-      <BorderPane BorderPane.alignment="CENTER">
-         <bottom>
-            <ToolBar BorderPane.alignment="CENTER">
-              <items>
-                <Button id="btnRun" fx:id="btnRun" mnemonicParsing="false" onAction="#runTest" text="Run" />
-                  <Separator orientation="VERTICAL" />
-                  <Button id="btnRun" fx:id="btnExpandAll" mnemonicParsing="false" onAction="#expandAll" text="Expand Tree" />
-                  <Button id="btnRun" fx:id="btnCollapseAll" mnemonicParsing="false" onAction="#collapseAll" text="Collapse Tree" />
-              </items>
-            </ToolBar>
-         </bottom>
-         <top>
-            <MenuBar BorderPane.alignment="CENTER">
-              <menus>
-                <Menu mnemonicParsing="false" text="File">
-                  <items>
-                    <MenuItem mnemonicParsing="false" text="Close" />
-                  </items>
-                </Menu>
-                <Menu mnemonicParsing="false" text="Edit">
-                  <items>
-                    <MenuItem mnemonicParsing="false" text="Delete" />
-                  </items>
-                </Menu>
-                <Menu mnemonicParsing="false" text="Help">
-                  <items>
-                    <MenuItem mnemonicParsing="false" text="About" />
-                  </items>
-                </Menu>
-              </menus>
-            </MenuBar>
-         </top>
-      </BorderPane>
-   </top>
    <center>
       <SplitPane dividerPositions="0.5">
          <items>
@@ -108,4 +73,14 @@
          </items>
       </SplitPane>
    </center>
+   <top>
+      <ToolBar BorderPane.alignment="CENTER">
+        <items>
+          <Button id="btnRun" fx:id="btnRun" mnemonicParsing="false" onAction="#runTest" />
+            <Separator orientation="VERTICAL" />
+            <Button id="btnRun" fx:id="btnExpandAll" mnemonicParsing="false" onAction="#expandAll" />
+            <Button id="btnRun" fx:id="btnCollapseAll" mnemonicParsing="false" onAction="#collapseAll" />
+        </items>
+      </ToolBar>
+   </top>
 </BorderPane>

@@ -1,11 +1,14 @@
 package com.mgmtp.jfunk.application.runner;
 
+import com.google.common.base.Function;
 import com.google.common.base.Predicate;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.mgmtp.jfunk.common.cli.CliUtils;
 import com.mgmtp.jfunk.common.exception.JFunkException;
 import javafx.application.Application;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -16,19 +19,22 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Callback;
-import org.codehaus.plexus.util.cli.Commandline;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
@@ -109,19 +115,32 @@ public class JFunkApplication extends Application {
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			@Override
 			public void run() {
+				stage.setIconified(false);
 				saveState(stage);
 			}
 		});
+		for (Screen screen : Screen.getScreens()) {
+			screen.getBounds();
+		}
 		FXMLLoader loader = new FXMLLoader();
 		loader.setController(this);
 		try (InputStream is = getClass().getResourceAsStream("fxml/app.fxml")) {
 			Parent rootNode = (Parent) loader.load(is);
-			Scene scene = new Scene(rootNode, 1024, 768);
+			Scene scene = new Scene(rootNode, 1024d, 768d);
 			stage.setTitle("jFunk Runner");
 			stage.getIcons().add(imageFromResource("/jFunk.png"));
 			stage.setScene(scene);
 			loadState(stage);
 			stage.show();
+
+			// If the windows was iconified before being closed last, on Windows -32000 is stored for x and y values
+			// which are way outside any screen bounds. The code below restores the window to its default bounds in this case.
+			ObservableList<Screen> screens = Screen.getScreensForRectangle(stage.getX(), stage.getY(), stage.getWidth(), stage.getHeight());
+			if (screens.isEmpty()) {
+				stage.setWidth(1024d);
+				stage.setHeight(768d);
+				stage.centerOnScreen();
+			}
 		}
 	}
 
@@ -149,8 +168,8 @@ public class JFunkApplication extends Application {
 
 			retrieveAvailableJFunkProps();
 			btnRun.setGraphic(new ImageView(imageFromResource("/com/famfamfam/silk/control_play.png")));
-			btnExpandAll.setGraphic(new ImageView(imageFromResource("/com/famfamfam/silk/arrow_out.png")));
-			btnCollapseAll.setGraphic(new ImageView(imageFromResource("/com/famfamfam/silk/arrow_in.png")));
+			btnExpandAll.setGraphic(new ImageView(imageFromResource("/com/famfamfam/silk/add.png")));
+			btnCollapseAll.setGraphic(new ImageView(imageFromResource("/com/famfamfam/silk/delete.png")));
 			retrieveTestClassesAndMethods();
 			retrieveGroovyScripts(cfg.getGroovyScriptDirs());
 
@@ -392,21 +411,27 @@ public class JFunkApplication extends Application {
 	}
 
 	private void runTestWithMaven(Path path, String method) throws Exception {
-		String test = removeExtension(path.toString()).replaceAll("[/\\\\]", ".");
-		if (method != null) {
-			test += '#' + method;
+		ProcessController ctrl = new ProcessController();
+		FXMLLoader loader = new FXMLLoader();
+		loader.setController(ctrl);
+		try (InputStream is = getClass().getResourceAsStream("fxml/log-tab.fxml")) {
+			Tab tab = (Tab) loader.load(is);
+			TabPane pane = new TabPane();
+			pane.getTabs().add(tab);
+			Scene scene = new Scene(pane, 1024, 768);
+			Stage stage = new Stage();
+			stage.setTitle("jFunk Log Viewer");
+			stage.getIcons().add(imageFromResource("/jFunk.png"));
+			stage.setScene(scene);
+			stage.show();
 		}
-		Commandline cli = new Commandline();
-		cli.setExecutable("mvn");
-		cli.setWorkingDirectory(get(".").toAbsolutePath().normalize().getParent().toFile());
-		cli.addSystemEnvironment();
-		cli.createArg().setValue("test");
-		cli.createArg().setValue("-pl");
-		cli.createArg().setValue("jfunk-application");
-		cli.createArg().setValue("-am");
-		cli.createArg().setValue("-Dtest=" + test);
-		cli.createArg().setValue("-DfailIfNoTests=false");
-		CliUtils.executeCommandLine(cli);
+
+		ctrl.runTestWithMaven(path, method, Maps.transformValues(testPropsBoxes, new Function<ComboBox<String>, String>() {
+			@Override
+			public String apply(@Nullable final ComboBox<String> input) {
+				return input.getValue();
+			}
+		}));
 	}
 
 	public void expandAll(ActionEvent e) {

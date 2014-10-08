@@ -137,7 +137,7 @@ From: 'The Apache Software Foundation' (http://www.apache.org/)
     License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
   - Commons IO (http://commons.apache.org/io/) commons-io:commons-io:jar:2.4
     License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
-  - Commons Exec (http://commons.apache.org/exec/) org.apache.commons:commons-exec:jar:1.1
+  - Apache Commons Exec (http://commons.apache.org/proper/commons-exec/) org.apache.commons:commons-exec:jar:1.2
     License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
   - Apache Commons Lang (http://commons.apache.org/proper/commons-lang/) org.apache.commons:commons-lang3:jar:3.3.2
     License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
