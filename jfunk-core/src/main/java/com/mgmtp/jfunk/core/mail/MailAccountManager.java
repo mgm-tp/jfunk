@@ -197,8 +197,7 @@ public class MailAccountManager {
 				MailAccount account = lookupUsedMailAccountForCurrentThread(accountReservationKey);
 				if (!isNullOrEmpty(fixedAccountId)) {
 					if (account != null) {
-						checkState(
-								account.getAccountId().equals(fixedAccountId),
+						checkState(account.getAccountId().equals(fixedAccountId),
 								"Fixed configured mail account does not match that already reserved (configured=%s, reserved=%s)",
 								fixedAccountId, account.getAccountId());
 					} else {
@@ -212,8 +211,7 @@ public class MailAccountManager {
 				} else {
 					checkState(!addressPool.isEmpty(), "No fixed e-mail account configured and specified pool is empty.");
 					if (account != null) {
-						checkState(addressPool.contains(account),
-								"Account '%s' is already reserved under key: %s", account, accountReservationKey);
+						checkState(addressPool.contains(account), "Account '%s' is already reserved under key: %s", account, accountReservationKey);
 						log.info("Using already reserved e-mail account: {}", account.getAccountId());
 						return account;
 					}
@@ -263,9 +261,7 @@ public class MailAccountManager {
 	public MailAccount lookupUsedMailAccountForCurrentThread(final String accountReservationKey) {
 		lock.lock();
 		try {
-			Map<MailAccount, ThreadReservationKeyWrapper> usedAccountsForThread = filterValues(usedAccounts,
-					new CurrentThreadWrapperPredicate());
-
+			Map<MailAccount, ThreadReservationKeyWrapper> usedAccountsForThread = filterValues(usedAccounts, new CurrentThreadWrapperPredicate());
 			if (!usedAccountsForThread.isEmpty()) {
 				for (Entry<MailAccount, ThreadReservationKeyWrapper> entry : usedAccountsForThread.entrySet()) {
 					if (entry.getValue().accountReservationKey.equals(accountReservationKey)) {
@@ -291,14 +287,13 @@ public class MailAccountManager {
 
 	/**
 	 * Gets the set of reserved mail accounts for the current thread.
-	 * 
+	 *
 	 * @return the set of reserved mail accounts
 	 */
 	public Set<MailAccount> getReservedMailAccountsForCurrentThread() {
 		lock.lock();
 		try {
-			Map<MailAccount, ThreadReservationKeyWrapper> accountsForThread = filterValues(usedAccounts,
-					new CurrentThreadWrapperPredicate());
+			Map<MailAccount, ThreadReservationKeyWrapper> accountsForThread = filterValues(usedAccounts, new CurrentThreadWrapperPredicate());
 			return ImmutableSet.copyOf(accountsForThread.keySet());
 		} finally {
 			lock.unlock();
@@ -307,21 +302,20 @@ public class MailAccountManager {
 
 	/**
 	 * Gets the set of reservation key under which accounts are reserved for the current thread.
-	 * 
+	 *
 	 * @return the set of reservation keys
 	 */
 	public Set<String> getRegisteredAccountReservationKeysForCurrentThread() {
 		lock.lock();
 		try {
-			Map<MailAccount, String> accountsForThread = transformValues(filterValues(usedAccounts,
-					new CurrentThreadWrapperPredicate()),
+			Map<MailAccount, String> accountsForThread = transformValues(filterValues(usedAccounts, new CurrentThreadWrapperPredicate()),
 					new Function<ThreadReservationKeyWrapper, String>() {
 						@Override
 						public String apply(final ThreadReservationKeyWrapper input) {
 							return input.accountReservationKey;
 						}
 					}
-					);
+			);
 
 			return ImmutableSet.copyOf(accountsForThread.values());
 		} finally {
@@ -348,7 +342,7 @@ public class MailAccountManager {
 		log.info("Releasing all mail accounts for the current thread...");
 		lock.lock();
 		try {
-			for (Iterator<Entry<MailAccount, ThreadReservationKeyWrapper>> it = usedAccounts.entrySet().iterator(); it.hasNext();) {
+			for (Iterator<Entry<MailAccount, ThreadReservationKeyWrapper>> it = usedAccounts.entrySet().iterator(); it.hasNext(); ) {
 				ThreadReservationKeyWrapper wrapper = it.next().getValue();
 				if (wrapper.thread == Thread.currentThread()) {
 					it.remove();
