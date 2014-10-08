@@ -43,7 +43,7 @@ import com.mgmtp.jfunk.core.scripting.ScriptMetaData;
 
 /**
  * Provides support for integrating jFunk into a unit test framework.
- * 
+ *
  * @author rnaegele
  */
 class UnitSupport {
@@ -134,11 +134,11 @@ class UnitSupport {
 				// Look up the cause hierarchy if we find a ModuleExecutionException.
 				// We only need to log exceptions other than ModuleExecutionException because they
 				// have already been logged and we don't want to pollute the log file any further.
-				Throwable th = throwable.getCause();
+				Throwable th = throwable;
 				while (!(th instanceof ModuleExecutionException)) {
 					if (th == null) {
 						// log original throwable which was passed in!!!
-						LOGGER.error("Error executing script: " + throwable.getMessage(), throwable);
+						LOGGER.error("Error executing method: " + methodName, throwable);
 						break;
 					}
 					th = th.getCause();

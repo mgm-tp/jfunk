@@ -46,7 +46,7 @@ import com.mgmtp.jfunk.core.scripting.groovy.Commands;
 
 /**
  * Executes Groovy scripts.
- * 
+ *
  */
 @Singleton
 public class ScriptExecutor {
@@ -61,7 +61,7 @@ public class ScriptExecutor {
 
 	/**
 	 * Creates a new instance.
-	 * 
+	 *
 	 * @param scriptContextProvider
 	 *            provides the {@link ScriptContext}
 	 * @param eventBus
@@ -81,7 +81,7 @@ public class ScriptExecutor {
 
 	/**
 	 * Executes the specified Groovy script.
-	 * 
+	 *
 	 * @param script
 	 *            the script file
 	 * @param scriptProperties
@@ -129,11 +129,11 @@ public class ScriptExecutor {
 			// We only need to log exceptions other than ModuleExecutionException because they
 			// have already been logged and we don't want to pollute the log file any further.
 			// In fact, other exception cannot normally happen.
-			Throwable th = ex.getCause();
+			Throwable th = ex;
 			while (!(th instanceof ModuleExecutionException)) {
 				if (th == null) {
 					// log original exception
-					log.error("Error executing script: " + ex.getMessage(), ex);
+					log.error("Error executing script: " + script, ex);
 					success = false;
 					break;
 				}
