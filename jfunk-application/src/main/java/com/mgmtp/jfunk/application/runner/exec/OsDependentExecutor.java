@@ -49,7 +49,11 @@ public class OsDependentExecutor extends DefaultExecutor {
 
 		@Override
 		public Process exec(final CommandLine command, final Map env, final File workingDir) throws IOException {
-			return new ProcessBuilder().directory(workingDir).command(command.toStrings()).start();
+			ProcessBuilder builder = new ProcessBuilder().directory(workingDir).command(command.toStrings());
+			if (env != null) {
+				builder.environment().putAll(env);
+			}
+			return builder.start();
 		}
 
 		@Override

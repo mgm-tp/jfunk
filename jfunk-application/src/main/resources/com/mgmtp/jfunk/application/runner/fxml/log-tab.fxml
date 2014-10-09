@@ -1,15 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import javafx.scene.control.*?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TextArea?>
-<?import javafx.scene.text.Font?>
 
-<Tab fx:id="tab" text="jFunk" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
-   <content>
-   	<TextArea fx:id="taLog">
-
-	</TextArea>
-   </content>
+<Tab fx:id="tab" text="jFunk" fx:controller="com.mgmtp.jfunk.application.runner.TabHolder" xmlns="http://javafx.com/javafx/8"
+	 xmlns:fx="http://javafx.com/fxml/1">
+	<content>
+		<TextArea fx:id="taLog" editable="false"/>
+	</content>
 </Tab>

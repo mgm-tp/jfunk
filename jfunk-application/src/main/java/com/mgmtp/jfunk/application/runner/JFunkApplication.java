@@ -2,7 +2,6 @@ package com.mgmtp.jfunk.application.runner;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -19,13 +18,9 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -34,7 +29,6 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
@@ -63,8 +57,12 @@ import java.util.TreeSet;
 
 import static com.google.common.base.Predicates.or;
 import static com.google.common.collect.Lists.newArrayList;
-import static com.mgmtp.jfunk.application.runner.util.TreeViewUtils.findTreeItem;
-import static com.mgmtp.jfunk.application.runner.util.TreeViewUtils.setExpanded;
+import static com.mgmtp.jfunk.application.runner.util.UiUtils.createImage;
+import static com.mgmtp.jfunk.application.runner.util.UiUtils.createImageView;
+import static com.mgmtp.jfunk.application.runner.util.UiUtils.findTreeItem;
+import static com.mgmtp.jfunk.application.runner.util.UiUtils.setExpanded;
+import static java.nio.file.Files.newBufferedReader;
+import static java.nio.file.Files.newBufferedWriter;
 import static java.nio.file.Files.newDirectoryStream;
 import static java.nio.file.Files.walkFileTree;
 import static java.nio.file.Paths.get;
@@ -106,6 +104,8 @@ public class JFunkApplication extends Application {
 
 	private Map<String, ComboBox<String>> testPropsBoxes = new HashMap<>();
 
+	private final ProcessController procCtrl = new ProcessController();
+
 	public static void main(final String[] args) {
 		launch(args);
 	}
@@ -128,7 +128,7 @@ public class JFunkApplication extends Application {
 			Parent rootNode = (Parent) loader.load(is);
 			Scene scene = new Scene(rootNode, 1024d, 768d);
 			stage.setTitle("jFunk Runner");
-			stage.getIcons().add(imageFromResource("/jFunk.png"));
+			stage.getIcons().add(createImage("jFunk.png"));
 			stage.setScene(scene);
 			loadState(stage);
 			stage.show();
@@ -150,7 +150,7 @@ public class JFunkApplication extends Application {
 
 		testPropsPane.setHgap(10d);
 		testPropsPane.setVgap(10d);
-		try (Reader reader = Files.newBufferedReader(get("config", "runner.json"), StandardCharsets.UTF_8)) {
+		try (Reader reader = newBufferedReader(get("config", "runner.json"), StandardCharsets.UTF_8)) {
 			Gson gson = new GsonBuilder().create();
 			RunnerConfig cfg = gson.fromJson(reader, RunnerConfig.class);
 			int row = 1;
@@ -167,9 +167,9 @@ public class JFunkApplication extends Application {
 			}
 
 			retrieveAvailableJFunkProps();
-			btnRun.setGraphic(new ImageView(imageFromResource("/com/famfamfam/silk/control_play.png")));
-			btnExpandAll.setGraphic(new ImageView(imageFromResource("/com/famfamfam/silk/add.png")));
-			btnCollapseAll.setGraphic(new ImageView(imageFromResource("/com/famfamfam/silk/delete.png")));
+			btnRun.setGraphic(createImageView("com/famfamfam/silk/control_play.png"));
+			btnExpandAll.setGraphic(createImageView("com/famfamfam/silk/add.png"));
+			btnCollapseAll.setGraphic(createImageView("com/famfamfam/silk/delete.png"));
 			retrieveTestClassesAndMethods();
 			retrieveGroovyScripts(cfg.getGroovyScriptDirs());
 
@@ -185,24 +185,24 @@ public class JFunkApplication extends Application {
 								switch (itemInfo.getType()) {
 									case LABEL:
 										setText(itemInfo.getValue());
-										res = "/com/famfamfam/silk/folder.png";
+										res = "com/famfamfam/silk/folder.png";
 										break;
 									case TEST_CLASS:
 										setText(removeExtension(itemInfo.getValue()));
-										res = "/com/famfamfam/silk/page.png";
+										res = "com/famfamfam/silk/page.png";
 										break;
 									case TEST_METHOD:
 										setText(itemInfo.getValue());
-										res = "/com/famfamfam/silk/page_white_code_red.png";
+										res = "com/famfamfam/silk/page_white_code_red.png";
 										break;
 									case TEST_SCRIPT:
 										setText(itemInfo.getValue());
-										res = "/com/famfamfam/silk/page_white_code_red.png";
+										res = "com/famfamfam/silk/page_white_code_red.png";
 										break;
 									default:
 										throw new IllegalStateException("Default case not handled for enum: " + itemInfo.getType());
 								}
-								setGraphic(new ImageView(imageFromResource(res)));
+								setGraphic(createImageView(res));
 							}
 						}
 					};
@@ -214,7 +214,7 @@ public class JFunkApplication extends Application {
 	}
 
 	private void loadState(Stage stage) {
-		try (Reader reader = Files.newBufferedReader(get("config", "uistate.json"), StandardCharsets.UTF_8)) {
+		try (Reader reader = newBufferedReader(get("config", "uistate.json"), StandardCharsets.UTF_8)) {
 			UiState state = new Gson().fromJson(reader, UiState.class);
 			stage.setX(state.getWindowX());
 			stage.setY(state.getWindowY());
@@ -240,7 +240,7 @@ public class JFunkApplication extends Application {
 	}
 
 	private void saveState(Stage stage) {
-		try (Writer writer = Files.newBufferedWriter(get("config", "uistate.json"), StandardCharsets.UTF_8)) {
+		try (Writer writer = newBufferedWriter(get("config", "uistate.json"), StandardCharsets.UTF_8)) {
 			UiState state = new UiState();
 			state.setWindowX(stage.getX());
 			state.setWindowY(stage.getY());
@@ -257,10 +257,6 @@ public class JFunkApplication extends Application {
 		} catch (IOException ex) {
 			logger.error("Could not write UI state", ex);
 		}
-	}
-
-	private Image imageFromResource(String resource) {
-		return new Image(getClass().getResource(resource).toExternalForm());
 	}
 
 	private void retrieveAvailableJFunkProps() {
@@ -338,6 +334,7 @@ public class JFunkApplication extends Application {
 					current = existing;
 				}
 			}
+			// TODO use reflection, catch ClassNotFoundException
 			Set<Method> testMethods = null;
 			try {
 				String fqcn = removeExtension(pathString.replaceAll("[/\\\\]", "."));
@@ -411,24 +408,24 @@ public class JFunkApplication extends Application {
 	}
 
 	private void runTestWithMaven(Path path, String method) throws Exception {
-		ProcessController ctrl = new ProcessController();
-		FXMLLoader loader = new FXMLLoader();
-		loader.setController(ctrl);
-		try (InputStream is = getClass().getResourceAsStream("fxml/log-tab.fxml")) {
-			Tab tab = (Tab) loader.load(is);
-			TabPane pane = new TabPane();
-			pane.getTabs().add(tab);
-			Scene scene = new Scene(pane, 1024, 768);
-			Stage stage = new Stage();
-			stage.setTitle("jFunk Log Viewer");
-			stage.getIcons().add(imageFromResource("/jFunk.png"));
-			stage.setScene(scene);
-			stage.show();
-		}
+//		FXMLLoader loader = new FXMLLoader();
+//		try (InputStream is = getClass().getResourceAsStream("fxml/log-tab.fxml")) {
+//			Tab tab = (Tab) loader.load(is);
+//			TabHolder holder = loader.getController();
+//			TabPane pane = new TabPane();
+//			ctrl.setTabPane(pane);
+//			pane.getTabs().add(tab);
+//			Scene scene = new Scene(pane, 1024, 768);
+//			Stage stage = new Stage();
+//			stage.setTitle("jFunk Log Viewer");
+//			stage.getIcons().add(createImage("jFunk.png"));
+//			stage.setScene(scene);
+//			stage.show();
+//		}
 
-		ctrl.runTestWithMaven(path, method, Maps.transformValues(testPropsBoxes, new Function<ComboBox<String>, String>() {
+		procCtrl.runTestWithMaven(path, method, Maps.transformValues(testPropsBoxes, new Function<ComboBox<String>, String>() {
 			@Override
-			public String apply(@Nullable final ComboBox<String> input) {
+			public String apply(final ComboBox<String> input) {
 				return input.getValue();
 			}
 		}));
@@ -440,5 +437,9 @@ public class JFunkApplication extends Application {
 
 	public void collapseAll(ActionEvent e) {
 		setExpanded(treeView.getRoot(), false);
+	}
+
+	public void killTestProcess(ActionEvent e) {
+		procCtrl.killProcessInSelectedTab();
 	}
 }
