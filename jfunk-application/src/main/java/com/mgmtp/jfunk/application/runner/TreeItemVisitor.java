@@ -3,7 +3,8 @@ package com.mgmtp.jfunk.application.runner;
 import javafx.scene.control.TreeItem;
 
 /**
- * Created by rnaegele on 02.10.2014.
+ * @author rnaegele
+ * @since 3.1.0
  */
 public interface TreeItemVisitor<T> {
 

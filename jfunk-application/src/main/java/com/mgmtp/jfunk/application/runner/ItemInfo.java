@@ -5,10 +5,11 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.nio.file.Path;
 
-import static org.apache.commons.io.FilenameUtils.removeExtension;
-
 /**
+ * Data bean for tree view items.
+ * 
  * @author rnaegele
+ * @since 3.1.0
  */
 public class ItemInfo {
 

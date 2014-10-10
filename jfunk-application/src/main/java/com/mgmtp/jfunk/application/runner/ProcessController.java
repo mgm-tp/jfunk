@@ -1,6 +1,9 @@
 package com.mgmtp.jfunk.application.runner;
 
+import com.google.common.base.Joiner;
 import com.mgmtp.jfunk.application.runner.exec.OsDependentExecutor;
+import com.mgmtp.jfunk.application.runner.exec.TabExecuteResultHandler;
+import com.mgmtp.jfunk.application.runner.exec.TabLogOutputStream;
 import javafx.application.Platform;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -16,20 +19,27 @@ import jfxtras.labs.dialogs.MonologFX.Type;
 import jfxtras.labs.dialogs.MonologFXBuilder;
 import jfxtras.labs.dialogs.MonologFXButton;
 import org.apache.commons.exec.CommandLine;
-import org.apache.commons.exec.ExecuteException;
-import org.apache.commons.exec.ExecuteResultHandler;
 import org.apache.commons.exec.ExecuteWatchdog;
 import org.apache.commons.exec.Executor;
-import org.apache.commons.exec.LogOutputStream;
 import org.apache.commons.exec.PumpStreamHandler;
 import org.apache.commons.exec.ShutdownHookProcessDestroyer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 import static com.mgmtp.jfunk.application.runner.util.UiUtils.createImage;
 import static com.mgmtp.jfunk.application.runner.util.UiUtils.createImageView;
@@ -38,16 +48,20 @@ import static org.apache.commons.exec.ExecuteWatchdog.INFINITE_TIMEOUT;
 import static org.apache.commons.io.FilenameUtils.removeExtension;
 
 /**
+ * Controls test processes.
+ *
  * @author rnaegele
  * @since 3.1.0
  */
 public class ProcessController {
 
-	private TabPane tabPane = new TabPane();
+	private final Logger logger = LoggerFactory.getLogger(getClass());
+
+	private final TabPane tabPane = new TabPane();
+	private final List<TabHolder> tabHolders = new ArrayList<>();
+	private final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
 
 	private Stage consoleWindow;
-
-	private List<TabHolder> tabHolders = new ArrayList<>();
 
 	public ProcessController() {
 		tabPane.setTabClosingPolicy(TabClosingPolicy.ALL_TABS);
@@ -55,6 +69,7 @@ public class ProcessController {
 
 	public void showConsoleWindow() {
 		if (consoleWindow == null) {
+			logger.info("Creating console window...");
 			Stage stage = new Stage();
 			stage.setTitle("jFunk Log Viewer");
 			stage.getIcons().add(createImage("jFunk.png"));
@@ -64,24 +79,36 @@ public class ProcessController {
 			stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 				@Override
 				public void handle(final WindowEvent windowEvent) {
-					MonologFX msgBox = MonologFXBuilder.create()
-													   .titleText("Confirmation")
-													   .message("Close and kill running processes?")
-													   .type(Type.QUESTION)
-													   .build();
-					if (msgBox.showDialog() == MonologFXButton.Type.YES) {
-						for (TabHolder tabHolder : tabHolders) {
-							tabHolder.getWatchdog().destroyProcess();
+					boolean procsRunning = false;
+					for (TabHolder tabHolder : tabHolders) {
+						if (tabHolder.getWatchdog().isWatching()) {
+							procsRunning = true;
+							break;
 						}
-						tabHolders.clear();
-						tabPane.getTabs().clear();
-					} else {
-						windowEvent.consume();
+					}
+					if (procsRunning) {
+						MonologFX msgBox = MonologFXBuilder.create()
+														   .titleText("Confirmation")
+														   .message("Close and kill running processes?")
+														   .type(Type.QUESTION)
+														   .build();
+						if (msgBox.showDialog() == MonologFXButton.Type.YES) {
+							for (TabHolder tabHolder : tabHolders) {
+								logger.info("Destroying process: {}", tabHolder.getTab().getText());
+								tabHolder.getWatchdog().destroyProcess();
+							}
+							logger.info("Closing all tabs...");
+							tabHolders.clear();
+							tabPane.getTabs().clear();
+						} else {
+							windowEvent.consume();
+						}
 					}
 				}
 			});
 			consoleWindow = stage;
 		}
+		logger.info("Showing console window...");
 		consoleWindow.show();
 		consoleWindow.toFront();
 	}
@@ -91,6 +118,8 @@ public class ProcessController {
 		if (method != null) {
 			test += '#' + method;
 		}
+
+		logger.info("Running test process: {}", test);
 
 		final ExecuteWatchdog watchdog = new ExecuteWatchdog(INFINITE_TIMEOUT);
 
@@ -106,87 +135,80 @@ public class ProcessController {
 		});
 		final TextArea console = new TextArea();
 		console.setEditable(false);
+		console.setWrapText(false);
+		console.setStyle("-fx-font-family: Courier New;");
 		tab.setContent(console);
 		tabPane.getTabs().add(tab);
 		tabPane.getSelectionModel().select(tab);
 
-		TabHolder holder = new TabHolder(tab, console, watchdog);
+		final BlockingQueue<String> consoleQueue = new LinkedBlockingDeque<>();
+
+		final ScheduledFuture<?> future = scheduleQueuePolling(consoleQueue, console);
+
+		final TabHolder holder = new TabHolder(tab, console, watchdog, consoleQueue);
 		tabHolders.add(holder);
 
-		CommandLine cmdl = new CommandLine("mvn");
-		cmdl.addArgument("test");
-		cmdl.addArgument("-pl");
-		cmdl.addArgument("jfunk-application");
-//		cmdl.addArgument("-X");
-		cmdl.addArgument("-Dtest=" + test);
-		cmdl.addArgument("-DfailIfNoTests=false");
+		CommandLine cmdl = createCommandLine(test, testProps);
 
 		Executor executor = new OsDependentExecutor();
 		executor.setWorkingDirectory(get(".").toAbsolutePath().normalize().getParent().toFile());
 
-//		String mavenOpts = nullToEmpty(System.getenv("MAVEN_OPTS"));
-//		StrBuilder sbMavenOpts = new StrBuilder(200);
-//		sbMavenOpts.append(mavenOpts);
-		for (Entry<String, String> entry : testProps.entrySet()) {
-			cmdl.addArgument("-D" + entry.getKey() + '=' + entry.getValue());
-		}
-//
-//		Map<String, String> env = new HashMap<>(System.getenv());
-//		env.put("MAVEN_OPTS", sbMavenOpts.toString());
-
+		logger.info("Commandline: {}", cmdl);
 		console.appendText(cmdl.toString() + "\n");
-//		taLog.appendText("MAVEN_OPTS: " + sbMavenOpts + "\n\n");
 
-		LogOutputStream os = new LogOutputStream() {
-			private int lineCounter = 0;
-
-			@Override
-			protected void processLine(final String line, final int level) {
-
-				Platform.runLater(new Runnable() {
-					public void run() {
-//						lineCounter++;
-//						if (lineCounter > 1000) {
-//							taLog.deleteText(0, taLog.getText().indexOf('\n'));
-//						}
-						console.appendText(line + '\n');
-					}
-				});
-			}
-		};
 		executor.setWatchdog(watchdog);
-		executor.setStreamHandler(new PumpStreamHandler(os));
+		executor.setStreamHandler(new PumpStreamHandler(new TabLogOutputStream(consoleQueue)));
 		executor.setProcessDestroyer(new ShutdownHookProcessDestroyer());
-		executor.execute(cmdl, new ExecuteResultHandler() {
-			@Override
-			public void onProcessComplete(final int exitValue) {
-				Platform.runLater(new Runnable() {
-					public void run() {
-						tab.setGraphic(createImageView("com/famfamfam/silk/accept.png"));
-						tab.setClosable(true);
-					}
-				});
-			}
-
-			@Override
-			public void onProcessFailed(final ExecuteException e) {
-				Platform.runLater(new Runnable() {
-					public void run() {
-						tab.setGraphic(createImageView("com/famfamfam/silk/exclamation.png"));
-						tab.setClosable(true);
-						// TODO logger
-						e.printStackTrace();
-					}
-				});
-			}
-		});
+		executor.execute(cmdl, new TabExecuteResultHandler(tab, future));
 
 		showConsoleWindow();
 	}
 
+	private ScheduledFuture<?> scheduleQueuePolling(final BlockingQueue<String> consoleQueue, final TextArea console) {
+		return executorService.scheduleWithFixedDelay(new Runnable() {
+			@Override
+			public void run() {
+				if (consoleQueue.size() < 10) {
+					logger.debug("to small");
+					return;
+				}
+				logger.debug("Draining queue...");
+				Collection<String> collection = new LinkedList<String>();
+				consoleQueue.drainTo(collection);
+				logger.debug("size: {}", collection.size());
+				if (!collection.isEmpty()) {
+					final String text = Joiner.on("\n").join(collection);
+					Platform.runLater(new Runnable() {
+						@Override
+						public void run() {
+							console.appendText(text + "\n");
+						}
+					});
+				}
+			}
+		}, 100L, 100L, TimeUnit.MILLISECONDS);
+	}
+
+	private CommandLine createCommandLine(final String test, final Map<String, String> testProps) {
+		CommandLine cmdl = new CommandLine("mvn");
+		cmdl.addArgument("test");
+		cmdl.addArgument("-X");
+		cmdl.addArgument("-pl");
+		cmdl.addArgument("jfunk-application");
+		cmdl.addArgument("-Dtest=" + test);
+		cmdl.addArgument("-DfailIfNoTests=false");
+
+		for (Entry<String, String> entry : testProps.entrySet()) {
+			cmdl.addArgument("-D" + entry.getKey() + '=' + entry.getValue());
+		}
+		return cmdl;
+	}
+
 	public void killProcessInSelectedTab() {
 		int index = tabPane.getSelectionModel().getSelectedIndex();
-		tabHolders.get(index).getWatchdog().destroyProcess();
+		TabHolder tabHolder = tabHolders.get(index);
+		logger.info("Killing process: {}", tabHolder.getTab().getText());
+		tabHolder.getWatchdog().destroyProcess();
 	}
 
 	private int getTabIndex(Tab tab) {

@@ -1,7 +1,10 @@
 package com.mgmtp.jfunk.application.runner;
 
 /**
- * Created by rnaegele on 02.10.2014.
+ * Enum for node type in the tree view.
+ *
+ * @author rnaegele
+ * @since 3.1.0
  */
 public enum ItemInfoType {
 	LABEL,

@@ -6,9 +6,11 @@ import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mgmtp.jfunk.common.exception.JFunkException;
+import javafx.animation.PauseTransition;
 import javafx.application.Application;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -21,11 +23,15 @@ import javafx.scene.control.Slider;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Callback;
-import org.junit.Test;
+import javafx.util.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,6 +39,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.Writer;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -47,6 +54,7 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -55,7 +63,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
 
-import static com.google.common.base.Predicates.or;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.mgmtp.jfunk.application.runner.util.UiUtils.createImage;
 import static com.mgmtp.jfunk.application.runner.util.UiUtils.createImageView;
@@ -127,6 +134,23 @@ public class JFunkApplication extends Application {
 		try (InputStream is = getClass().getResourceAsStream("fxml/app.fxml")) {
 			Parent rootNode = (Parent) loader.load(is);
 			Scene scene = new Scene(rootNode, 1024d, 768d);
+			scene.getAccelerators().put(new KeyCodeCombination(KeyCode.F9), new Runnable() {
+						@Override
+						public void run() {
+							btnRun.arm();
+							PauseTransition pt = new PauseTransition(Duration.millis(200));
+							pt.setOnFinished(new EventHandler<ActionEvent>() {
+								@Override
+								public void handle(ActionEvent event) {
+									btnRun.fire();
+									btnRun.disarm();
+								}
+							});
+							pt.play();
+						}
+					}
+			);
+
 			stage.setTitle("jFunk Runner");
 			stage.getIcons().add(createImage("jFunk.png"));
 			stage.setScene(scene);
@@ -174,6 +198,18 @@ public class JFunkApplication extends Application {
 			retrieveGroovyScripts(cfg.getGroovyScriptDirs());
 
 			treeView.setCellFactory(new Callback<TreeView<ItemInfo>, TreeCell<ItemInfo>>() {
+
+				private EventHandler<MouseEvent> runHandler = new EventHandler<MouseEvent>() {
+					@Override
+					public void handle(final MouseEvent mouseEvent) {
+						if (mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
+							if (mouseEvent.getClickCount() == 2) {
+								btnRun.fire();
+							}
+						}
+					}
+				};
+
 				@Override
 				public TreeCell<ItemInfo> call(final TreeView<ItemInfo> objectTreeView) {
 					return new TreeCell<ItemInfo>() {
@@ -193,10 +229,12 @@ public class JFunkApplication extends Application {
 										break;
 									case TEST_METHOD:
 										setText(itemInfo.getValue());
+										setOnMouseClicked(runHandler);
 										res = "com/famfamfam/silk/page_white_code_red.png";
 										break;
 									case TEST_SCRIPT:
 										setText(itemInfo.getValue());
+										setOnMouseClicked(runHandler);
 										res = "com/famfamfam/silk/page_white_code_red.png";
 										break;
 									default:
@@ -234,7 +272,7 @@ public class JFunkApplication extends Application {
 					comboBox.setValue(value);
 				}
 			}
-		} catch (IOException ex) {
+		} catch (Exception ex) {
 			logger.error("Could not load UI state: {}", ex.toString());
 		}
 	}
@@ -334,15 +372,30 @@ public class JFunkApplication extends Application {
 					current = existing;
 				}
 			}
-			// TODO use reflection, catch ClassNotFoundException
-			Set<Method> testMethods = null;
+			Set<Method> testMethods = new TreeSet<>(new Comparator<Method>() {
+				@Override
+				public int compare(final Method m1, final Method m2) {
+					return m1.getName().compareTo(m2.getName());
+				}
+			});
+			String fqcn = removeExtension(pathString.replaceAll("[/\\\\]", "."));
+
 			try {
-				String fqcn = removeExtension(pathString.replaceAll("[/\\\\]", "."));
-				testMethods = getMethods(Class.forName(fqcn, false, testClassLoader), or(withAnnotation(Test.class),
-						withAnnotation(org.testng.annotations.Test.class)));
-			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
+				logger.info("Searching TestNG tests...");
+				Class<? extends Annotation> testNgAnnotation = Class.forName("org.testng.annotations.Test").asSubclass(Annotation.class);
+				testMethods.addAll(getMethods(Class.forName(fqcn, false, testClassLoader), withAnnotation(testNgAnnotation)));
+			} catch (ClassNotFoundException ex) {
+				logger.info("TestNG not on class path: {}", ex.getMessage());
 			}
+
+			try {
+				logger.info("Searching JUnit tests...");
+				Class<? extends Annotation> jUnitAnnotation = Class.forName("org.junit.Test").asSubclass(Annotation.class);
+				testMethods.addAll(getMethods(Class.forName(fqcn, false, testClassLoader), withAnnotation(jUnitAnnotation)));
+			} catch (ClassNotFoundException ex) {
+				logger.info("JUnit not on class path: {}", ex.getMessage());
+			}
+
 			for (Method testMethod : testMethods) {
 				current.getChildren().add(new TreeItem<ItemInfo>(new ItemInfo(testMethod.getName(), ItemInfoType.TEST_METHOD)));
 			}
@@ -408,21 +461,6 @@ public class JFunkApplication extends Application {
 	}
 
 	private void runTestWithMaven(Path path, String method) throws Exception {
-//		FXMLLoader loader = new FXMLLoader();
-//		try (InputStream is = getClass().getResourceAsStream("fxml/log-tab.fxml")) {
-//			Tab tab = (Tab) loader.load(is);
-//			TabHolder holder = loader.getController();
-//			TabPane pane = new TabPane();
-//			ctrl.setTabPane(pane);
-//			pane.getTabs().add(tab);
-//			Scene scene = new Scene(pane, 1024, 768);
-//			Stage stage = new Stage();
-//			stage.setTitle("jFunk Log Viewer");
-//			stage.getIcons().add(createImage("jFunk.png"));
-//			stage.setScene(scene);
-//			stage.show();
-//		}
-
 		procCtrl.runTestWithMaven(path, method, Maps.transformValues(testPropsBoxes, new Function<ComboBox<String>, String>() {
 			@Override
 			public String apply(final ComboBox<String> input) {

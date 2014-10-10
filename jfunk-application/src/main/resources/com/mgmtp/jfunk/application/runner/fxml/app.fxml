@@ -89,7 +89,6 @@
 		<ToolBar BorderPane.alignment="CENTER">
 			<items>
 				<Button fx:id="btnRun" mnemonicParsing="false" onAction="#runTest"/>
-				<Button fx:id="btnKill" mnemonicParsing="false" onAction="#killTestProcess"/>
 				<Separator orientation="VERTICAL"/>
 				<Button fx:id="btnExpandAll" mnemonicParsing="false" onAction="#expandAll"/>
 				<Button fx:id="btnCollapseAll" mnemonicParsing="false" onAction="#collapseAll"/>
