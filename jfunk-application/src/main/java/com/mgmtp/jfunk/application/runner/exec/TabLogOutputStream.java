@@ -1,6 +1,8 @@
 package com.mgmtp.jfunk.application.runner.exec;
 
 import org.apache.commons.exec.LogOutputStream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Queue;
 
@@ -11,7 +13,7 @@ import java.util.Queue;
  * @since 3.1.0
  */
 public class TabLogOutputStream extends LogOutputStream {
-
+	private Logger logger = LoggerFactory.getLogger(getClass());
 	private final Queue<String> queue;
 
 	/**
@@ -32,6 +34,7 @@ public class TabLogOutputStream extends LogOutputStream {
 	 */
 	@Override
 	protected void processLine(final String line, final int level) {
+		logger.debug(line);
 		queue.offer(line);
 	}
 }

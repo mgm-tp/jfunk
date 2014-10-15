@@ -1,10 +1,9 @@
 package com.mgmtp.jfunk.application.runner;
 
-import com.google.common.base.Joiner;
 import com.mgmtp.jfunk.application.runner.exec.OsDependentExecutor;
 import com.mgmtp.jfunk.application.runner.exec.TabExecuteResultHandler;
 import com.mgmtp.jfunk.application.runner.exec.TabLogOutputStream;
-import javafx.application.Platform;
+import com.mgmtp.jfunk.application.runner.util.ConsoleQueueProcessor;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
@@ -26,14 +25,12 @@ import org.apache.commons.exec.ShutdownHookProcessDestroyer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingDeque;
@@ -43,7 +40,6 @@ import java.util.concurrent.TimeUnit;
 
 import static com.mgmtp.jfunk.application.runner.util.UiUtils.createImage;
 import static com.mgmtp.jfunk.application.runner.util.UiUtils.createImageView;
-import static java.nio.file.Paths.get;
 import static org.apache.commons.exec.ExecuteWatchdog.INFINITE_TIMEOUT;
 import static org.apache.commons.io.FilenameUtils.removeExtension;
 
@@ -113,7 +109,7 @@ public class ProcessController {
 		consoleWindow.toFront();
 	}
 
-	public void runTestWithMaven(Path path, String method, final Map<String, String> testProps) throws IOException {
+	public void runTest(Path path, String method, final Map<String, String> testProps, TestType testType) throws IOException {
 		String test = removeExtension(path.toString()).replaceAll("[/\\\\]", ".");
 		if (method != null) {
 			test += '#' + method;
@@ -142,67 +138,37 @@ public class ProcessController {
 		tabPane.getSelectionModel().select(tab);
 
 		final BlockingQueue<String> consoleQueue = new LinkedBlockingDeque<>();
-
-		final ScheduledFuture<?> future = scheduleQueuePolling(consoleQueue, console);
+		final ScheduledFuture<?> future = scheduleQueuePolling(new ConsoleQueueProcessor(consoleQueue, console, 10));
 
 		final TabHolder holder = new TabHolder(tab, console, watchdog, consoleQueue);
 		tabHolders.add(holder);
 
-		CommandLine cmdl = createCommandLine(test, testProps);
+		CommandLine cmdl = testType.createCommandLine(path, method, testProps);
 
 		Executor executor = new OsDependentExecutor();
-		executor.setWorkingDirectory(get(".").toAbsolutePath().normalize().getParent().toFile());
+		executor.setWorkingDirectory(new File(".").getAbsoluteFile());
 
-		logger.info("Commandline: {}", cmdl);
+		logger.info("CommandLine: {}", cmdl);
 		console.appendText(cmdl.toString() + "\n");
 
 		executor.setWatchdog(watchdog);
 		executor.setStreamHandler(new PumpStreamHandler(new TabLogOutputStream(consoleQueue)));
 		executor.setProcessDestroyer(new ShutdownHookProcessDestroyer());
-		executor.execute(cmdl, new TabExecuteResultHandler(tab, future));
+		executor.execute(cmdl, new TabExecuteResultHandler(tab, future, new ConsoleQueueProcessor(consoleQueue, console, 0)));
 
 		showConsoleWindow();
 	}
 
-	private ScheduledFuture<?> scheduleQueuePolling(final BlockingQueue<String> consoleQueue, final TextArea console) {
+	private ScheduledFuture<?> scheduleQueuePolling(final ConsoleQueueProcessor queueProcessor) {
 		return executorService.scheduleWithFixedDelay(new Runnable() {
 			@Override
 			public void run() {
-				if (consoleQueue.size() < 10) {
-					logger.debug("to small");
-					return;
-				}
-				logger.debug("Draining queue...");
-				Collection<String> collection = new LinkedList<String>();
-				consoleQueue.drainTo(collection);
-				logger.debug("size: {}", collection.size());
-				if (!collection.isEmpty()) {
-					final String text = Joiner.on("\n").join(collection);
-					Platform.runLater(new Runnable() {
-						@Override
-						public void run() {
-							console.appendText(text + "\n");
-						}
-					});
-				}
+				queueProcessor.processQueue();
 			}
 		}, 100L, 100L, TimeUnit.MILLISECONDS);
 	}
 
-	private CommandLine createCommandLine(final String test, final Map<String, String> testProps) {
-		CommandLine cmdl = new CommandLine("mvn");
-		cmdl.addArgument("test");
-		cmdl.addArgument("-X");
-		cmdl.addArgument("-pl");
-		cmdl.addArgument("jfunk-application");
-		cmdl.addArgument("-Dtest=" + test);
-		cmdl.addArgument("-DfailIfNoTests=false");
 
-		for (Entry<String, String> entry : testProps.entrySet()) {
-			cmdl.addArgument("-D" + entry.getKey() + '=' + entry.getValue());
-		}
-		return cmdl;
-	}
 
 	public void killProcessInSelectedTab() {
 		int index = tabPane.getSelectionModel().getSelectedIndex();

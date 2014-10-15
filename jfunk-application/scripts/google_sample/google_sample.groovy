@@ -16,15 +16,12 @@
 /*
  * Demo script for jFunk in Groovy
  */
-import org.openqa.selenium.By
-import org.openqa.selenium.Keys
-
-import com.mgmtp.jfunk.core.reporting.CsvReporter
-import com.mgmtp.jfunk.application.google.GoogleModule
 import com.mgmtp.jfunk.web.step.CheckHtml4Pattern
 import com.mgmtp.jfunk.web.step.JFunkWebElement
 import com.mgmtp.jfunk.web.step.LoadPage
 import com.mgmtp.jfunk.web.step.SendKeysStep
+import org.openqa.selenium.By
+import org.openqa.selenium.Keys
 
 String url = 'http://www.google.com'
 
@@ -39,7 +36,7 @@ set 'archive.dir' to 'testruns/google'
 
 generate 'google'
 
-module ('GoogleScriptModule', [dataSetKey: 'google']) {
+module('GoogleScriptModule', [dataSetKey: 'google']) {
 
 	step new LoadPage(url)
 

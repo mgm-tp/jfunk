@@ -1,5 +1,6 @@
 package com.mgmtp.jfunk.application.runner.exec;
 
+import com.mgmtp.jfunk.application.runner.util.ConsoleQueueProcessor;
 import javafx.application.Platform;
 import javafx.scene.control.Tab;
 import org.apache.commons.exec.ExecuteException;
@@ -16,10 +17,12 @@ public class TabExecuteResultHandler implements ExecuteResultHandler {
 
 	private final Tab tab;
 	private final ScheduledFuture<?> future;
+	private final ConsoleQueueProcessor queueProcessor;
 
-	public TabExecuteResultHandler(final Tab tab, final ScheduledFuture<?> future) {
+	public TabExecuteResultHandler(final Tab tab, final ScheduledFuture<?> future, final ConsoleQueueProcessor queueProcessor) {
 		this.tab = tab;
 		this.future = future;
+		this.queueProcessor = queueProcessor;
 	}
 
 	@Override
@@ -29,6 +32,10 @@ public class TabExecuteResultHandler implements ExecuteResultHandler {
 				tab.setGraphic(createImageView("com/famfamfam/silk/accept.png"));
 				tab.setClosable(true);
 				future.cancel(true);
+
+				// we process the queue after canceling, otherwise it might happen the we
+				// do not any process output if a process terminates very fast
+				queueProcessor.processQueue();
 			}
 		});
 	}
@@ -40,6 +47,11 @@ public class TabExecuteResultHandler implements ExecuteResultHandler {
 				tab.setGraphic(createImageView("com/famfamfam/silk/exclamation.png"));
 				tab.setClosable(true);
 				future.cancel(true);
+
+				// we process the queue after canceling, otherwise it might happen the we
+				// do not any process output if a process fails very fast
+				queueProcessor.processQueue();
+
 				logger.error(ex.getMessage(), ex);
 			}
 		});

@@ -61,8 +61,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
-				<version>2.1</version>
-				<!--$NO-MVN-MAN-VER$ -->
 				<executions>
 					<execution>
 						<id>copy-deps</id>
@@ -72,6 +70,15 @@
 						</goals>
 						<configuration>
 							<outputDirectory>${basedir}/lib</outputDirectory>
+						</configuration>
+					</execution>
+					<execution>
+						<phase>validate</phase>
+						<goals>
+							<goal>build-classpath</goal>
+						</goals>
+						<configuration>
+							<outputFile>${project.build.directory}/classpath.txt</outputFile>
 						</configuration>
 					</execution>
 				</executions>

@@ -405,7 +405,11 @@ public class JFunkApplication extends Application {
 	private void retrieveGroovyScripts(final List<String> groovyScriptDirs) throws IOException {
 		Set<Path> groovyScripts = new TreeSet<>();
 		for (String dir : groovyScriptDirs) {
-			groovyScripts.addAll(findPaths(get(dir), "glob:**/*.groovy"));
+			Path startDir = get(dir);
+			Set<Path> paths = findPaths(startDir, "glob:**/*.groovy");
+			for (Path path : paths) {
+				groovyScripts.add(startDir.resolve(path));
+			}
 		}
 
 		TreeItem<ItemInfo> root = new TreeItem<>(new ItemInfo("Groovy Scripts", ItemInfoType.LABEL));
@@ -440,19 +444,19 @@ public class JFunkApplication extends Application {
 		}
 	}
 
-	public void runTest(ActionEvent e) throws Exception {
+	public void runTest(final ActionEvent e) throws Exception {
 		TreeItem<ItemInfo> item = treeView.getSelectionModel().getSelectedItem();
 		if (item != null) {
 			ItemInfoType type = item.getValue().getType();
 			switch (type) {
 				case TEST_CLASS:
-					runTestWithMaven(item.getValue().getPath(), null);
+					runTest(item.getValue().getPath(), null, TestType.JUNIT);
 					break;
 				case TEST_METHOD:
-					runTestWithMaven(item.getParent().getValue().getPath(), item.getValue().getValue());
+					runTest(item.getParent().getValue().getPath(), item.getValue().getValue(), TestType.JUNIT);
 					break;
 				case TEST_SCRIPT:
-
+					runTest(item.getParent().getValue().getPath(), item.getValue().getValue(), TestType.GROOVY);
 					break;
 				default:
 					// nothing
@@ -460,24 +464,24 @@ public class JFunkApplication extends Application {
 		}
 	}
 
-	private void runTestWithMaven(Path path, String method) throws Exception {
-		procCtrl.runTestWithMaven(path, method, Maps.transformValues(testPropsBoxes, new Function<ComboBox<String>, String>() {
+	private void runTest(final Path path, final String method, final TestType testType) throws Exception {
+		procCtrl.runTest(path, method, Maps.transformValues(testPropsBoxes, new Function<ComboBox<String>, String>() {
 			@Override
 			public String apply(final ComboBox<String> input) {
 				return input.getValue();
 			}
-		}));
+		}), testType);
 	}
 
-	public void expandAll(ActionEvent e) {
+	public void expandAll(final ActionEvent e) {
 		setExpanded(treeView.getRoot(), true);
 	}
 
-	public void collapseAll(ActionEvent e) {
+	public void collapseAll(final ActionEvent e) {
 		setExpanded(treeView.getRoot(), false);
 	}
 
-	public void killTestProcess(ActionEvent e) {
+	public void killTestProcess(final ActionEvent e) {
 		procCtrl.killProcessInSelectedTab();
 	}
 }

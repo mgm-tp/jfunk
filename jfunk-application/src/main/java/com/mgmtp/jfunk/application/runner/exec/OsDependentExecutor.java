@@ -40,11 +40,14 @@ public class OsDependentExecutor extends DefaultExecutor {
 		if (OS.isFamilyWindows()) {
 			cmdToExecute = new CommandLine("cmd");
 			cmdToExecute.addArgument("/c");
+			cmdToExecute.addArgument("\"", false);
 			cmdToExecute.addArguments(command.toStrings());
+			cmdToExecute.addArgument("\"", false);
 		} else {
 			cmdToExecute = command;
 		}
-		return new ProcessBuilderLauncher().exec(cmdToExecute, env, dir);
+		return super.launch(command, env, dir);
+		//return new ProcessBuilderLauncher().exec(cmdToExecute, env, dir);
 	}
 
 	static class ProcessBuilderLauncher implements CommandLauncher {
