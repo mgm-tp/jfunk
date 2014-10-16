@@ -8,7 +8,9 @@ package com.mgmtp.jfunk.application.runner;
  */
 public enum ItemInfoType {
 	LABEL,
-	TEST_CLASS,
-	TEST_METHOD,
+	JUNIT_TEST_CLASS,
+	TESTNG_TEST_CLASS,
+	JUNIT_TEST_METHOD,
+	TESTNG_TEST_METHOD,
 	TEST_SCRIPT
 }

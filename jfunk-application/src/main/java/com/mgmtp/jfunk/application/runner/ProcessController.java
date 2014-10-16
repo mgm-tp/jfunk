@@ -56,10 +56,12 @@ public class ProcessController {
 	private final TabPane tabPane = new TabPane();
 	private final List<TabHolder> tabHolders = new ArrayList<>();
 	private final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
+	private final Stage primaryStage;
 
 	private Stage consoleWindow;
 
-	public ProcessController() {
+	public ProcessController(final Stage primaryStage) {
+		this.primaryStage = primaryStage;
 		tabPane.setTabClosingPolicy(TabClosingPolicy.ALL_TABS);
 	}
 
@@ -67,6 +69,7 @@ public class ProcessController {
 		if (consoleWindow == null) {
 			logger.info("Creating console window...");
 			Stage stage = new Stage();
+			stage.initOwner(primaryStage);
 			stage.setTitle("jFunk Log Viewer");
 			stage.getIcons().add(createImage("jFunk.png"));
 
@@ -109,7 +112,7 @@ public class ProcessController {
 		consoleWindow.toFront();
 	}
 
-	public void runTest(Path path, String method, final Map<String, String> testProps, TestType testType) throws IOException {
+	public void runTest(Path path, String method, final TestParameters testParams, TestType testType) throws IOException {
 		String test = removeExtension(path.toString()).replaceAll("[/\\\\]", ".");
 		if (method != null) {
 			test += '#' + method;
@@ -143,7 +146,7 @@ public class ProcessController {
 		final TabHolder holder = new TabHolder(tab, console, watchdog, consoleQueue);
 		tabHolders.add(holder);
 
-		CommandLine cmdl = testType.createCommandLine(path, method, testProps);
+		CommandLine cmdl = testType.createCommandLine(path, method, testParams);
 
 		Executor executor = new OsDependentExecutor();
 		executor.setWorkingDirectory(new File(".").getAbsoluteFile());
@@ -167,8 +170,6 @@ public class ProcessController {
 			}
 		}, 100L, 100L, TimeUnit.MILLISECONDS);
 	}
-
-
 
 	public void killProcessInSelectedTab() {
 		int index = tabPane.getSelectionModel().getSelectedIndex();

@@ -5,6 +5,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.mgmtp.jfunk.application.runner.util.UiUtils;
 import com.mgmtp.jfunk.common.exception.JFunkException;
 import javafx.animation.PauseTransition;
 import javafx.application.Application;
@@ -66,7 +67,6 @@ import java.util.TreeSet;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.mgmtp.jfunk.application.runner.util.UiUtils.createImage;
 import static com.mgmtp.jfunk.application.runner.util.UiUtils.createImageView;
-import static com.mgmtp.jfunk.application.runner.util.UiUtils.findTreeItem;
 import static com.mgmtp.jfunk.application.runner.util.UiUtils.setExpanded;
 import static java.nio.file.Files.newBufferedReader;
 import static java.nio.file.Files.newBufferedWriter;
@@ -111,7 +111,7 @@ public class JFunkApplication extends Application {
 
 	private Map<String, ComboBox<String>> testPropsBoxes = new HashMap<>();
 
-	private final ProcessController procCtrl = new ProcessController();
+	private ProcessController procCtrl;
 
 	public static void main(final String[] args) {
 		launch(args);
@@ -126,9 +126,9 @@ public class JFunkApplication extends Application {
 				saveState(stage);
 			}
 		});
-		for (Screen screen : Screen.getScreens()) {
-			screen.getBounds();
-		}
+
+		procCtrl = new ProcessController(stage);
+
 		FXMLLoader loader = new FXMLLoader();
 		loader.setController(this);
 		try (InputStream is = getClass().getResourceAsStream("fxml/app.fxml")) {
@@ -223,11 +223,13 @@ public class JFunkApplication extends Application {
 										setText(itemInfo.getValue());
 										res = "com/famfamfam/silk/folder.png";
 										break;
-									case TEST_CLASS:
+									case JUNIT_TEST_CLASS:
+									case TESTNG_TEST_CLASS:
 										setText(removeExtension(itemInfo.getValue()));
 										res = "com/famfamfam/silk/page.png";
 										break;
-									case TEST_METHOD:
+									case JUNIT_TEST_METHOD:
+									case TESTNG_TEST_METHOD:
 										setText(itemInfo.getValue());
 										setOnMouseClicked(runHandler);
 										res = "com/famfamfam/silk/page_white_code_red.png";
@@ -357,49 +359,75 @@ public class JFunkApplication extends Application {
 				Path path = previousPathElement != null ? get(previousPathElement, s) : get(s);
 				previousPathElement = path.toString();
 
-				final TreeItem<ItemInfo> item = new TreeItem<>(new ItemInfo(path, it.hasNext() ? ItemInfoType.LABEL : ItemInfoType.TEST_CLASS));
-				TreeItem<ItemInfo> existing = findTreeItem(root, new Predicate<TreeItem<ItemInfo>>() {
-					@Override
-					public boolean apply(final TreeItem<ItemInfo> input) {
-						return input.getValue().getValue().equals(item.getValue().getValue());
-					}
-				});
-				if (existing == null) {
-					current.getChildren().add(item);
-					current = item;
+				if (it.hasNext()) {
+					final TreeItem<ItemInfo> item = new TreeItem<>(new ItemInfo(path, ItemInfoType.LABEL));
+					current = addIfNotExists(root, current, item);
 				} else {
-					System.out.println("found: " + existing);
-					current = existing;
+					Set<Method> testMethods = new TreeSet<>(new Comparator<Method>() {
+						@Override
+						public int compare(final Method m1, final Method m2) {
+							return m1.getName().compareTo(m2.getName());
+						}
+					});
+					String fqcn = removeExtension(pathString.replaceAll("[/\\\\]", "."));
+
+					try {
+						logger.info("Searching TestNG tests...");
+						Class<? extends Annotation> testNgAnnotation = Class.forName("org.testng.annotations.Test").asSubclass(Annotation.class);
+						testMethods.addAll(getMethods(Class.forName(fqcn, false, testClassLoader), withAnnotation(testNgAnnotation)));
+						if (!testMethods.isEmpty()) {
+							final TreeItem<ItemInfo> item = new TreeItem<>(new ItemInfo(path, ItemInfoType.TESTNG_TEST_CLASS));
+							current = addIfNotExists(root, current, item);
+							for (Method testMethod : testMethods) {
+								current.getChildren()
+									   .add(new TreeItem<ItemInfo>(new ItemInfo(testMethod.getName(), ItemInfoType.TESTNG_TEST_METHOD)));
+							}
+						}
+					} catch (ClassNotFoundException ex) {
+						logger.info("TestNG not on class path: {}", ex.getMessage());
+					}
+
+					if (testMethods.isEmpty()) {
+						try {
+							logger.info("Searching JUnit tests...");
+							Class<? extends Annotation> jUnitAnnotation = Class.forName("org.junit.Test").asSubclass(Annotation.class);
+							testMethods.addAll(getMethods(Class.forName(fqcn, false, testClassLoader), withAnnotation(jUnitAnnotation)));
+							if (!testMethods.isEmpty()) {
+								final TreeItem<ItemInfo> item = new TreeItem<>(new ItemInfo(path, ItemInfoType.JUNIT_TEST_CLASS));
+								current = addIfNotExists(root, current, item);
+								for (Method testMethod : testMethods) {
+									current.getChildren()
+										   .add(new TreeItem<ItemInfo>(new ItemInfo(testMethod.getName(), ItemInfoType.JUNIT_TEST_METHOD)));
+								}
+							}
+						} catch (ClassNotFoundException ex) {
+							logger.info("JUnit not on class path: {}", ex.getMessage());
+						}
+					}
 				}
-			}
-			Set<Method> testMethods = new TreeSet<>(new Comparator<Method>() {
-				@Override
-				public int compare(final Method m1, final Method m2) {
-					return m1.getName().compareTo(m2.getName());
-				}
-			});
-			String fqcn = removeExtension(pathString.replaceAll("[/\\\\]", "."));
-
-			try {
-				logger.info("Searching TestNG tests...");
-				Class<? extends Annotation> testNgAnnotation = Class.forName("org.testng.annotations.Test").asSubclass(Annotation.class);
-				testMethods.addAll(getMethods(Class.forName(fqcn, false, testClassLoader), withAnnotation(testNgAnnotation)));
-			} catch (ClassNotFoundException ex) {
-				logger.info("TestNG not on class path: {}", ex.getMessage());
-			}
-
-			try {
-				logger.info("Searching JUnit tests...");
-				Class<? extends Annotation> jUnitAnnotation = Class.forName("org.junit.Test").asSubclass(Annotation.class);
-				testMethods.addAll(getMethods(Class.forName(fqcn, false, testClassLoader), withAnnotation(jUnitAnnotation)));
-			} catch (ClassNotFoundException ex) {
-				logger.info("JUnit not on class path: {}", ex.getMessage());
-			}
-
-			for (Method testMethod : testMethods) {
-				current.getChildren().add(new TreeItem<ItemInfo>(new ItemInfo(testMethod.getName(), ItemInfoType.TEST_METHOD)));
 			}
 		}
+	}
+
+	private TreeItem<ItemInfo> addIfNotExists(final TreeItem<ItemInfo> root, TreeItem<ItemInfo> current, final TreeItem<ItemInfo> item) {
+		TreeItem<ItemInfo> existing = findTreeItem(root, item);
+		if (existing == null) {
+			current.getChildren().add(item);
+			current = item;
+		} else {
+			System.out.println("found: " + existing);
+			current = existing;
+		}
+		return current;
+	}
+
+	private TreeItem<ItemInfo> findTreeItem(final TreeItem<ItemInfo> root, final TreeItem<ItemInfo> item) {
+		return UiUtils.findTreeItem(root, new Predicate<TreeItem<ItemInfo>>() {
+			@Override
+			public boolean apply(final TreeItem<ItemInfo> input) {
+				return input.getValue().getValue().equals(item.getValue().getValue());
+			}
+		});
 	}
 
 	private void retrieveGroovyScripts(final List<String> groovyScriptDirs) throws IOException {
@@ -427,19 +455,7 @@ public class JFunkApplication extends Application {
 				previousPathElement = path.toString();
 
 				final TreeItem<ItemInfo> item = new TreeItem<>(new ItemInfo(path, it.hasNext() ? ItemInfoType.LABEL : ItemInfoType.TEST_SCRIPT));
-				TreeItem<ItemInfo> existing = findTreeItem(root, new Predicate<TreeItem<ItemInfo>>() {
-					@Override
-					public boolean apply(final TreeItem<ItemInfo> input) {
-						return input.getValue().getValue().equals(item.getValue().getValue());
-					}
-				});
-				if (existing == null) {
-					current.getChildren().add(item);
-					current = item;
-				} else {
-					System.out.println("found: " + existing);
-					current = existing;
-				}
+				current = addIfNotExists(root, current, item);
 			}
 		}
 	}
@@ -449,12 +465,19 @@ public class JFunkApplication extends Application {
 		if (item != null) {
 			ItemInfoType type = item.getValue().getType();
 			switch (type) {
-				case TEST_CLASS:
+				case JUNIT_TEST_CLASS:
 					runTest(item.getValue().getPath(), null, TestType.JUNIT);
 					break;
-				case TEST_METHOD:
+				case JUNIT_TEST_METHOD:
 					runTest(item.getParent().getValue().getPath(), item.getValue().getValue(), TestType.JUNIT);
 					break;
+				case TESTNG_TEST_CLASS:
+					runTest(item.getValue().getPath(), null, TestType.TESTNG);
+					break;
+				case TESTNG_TEST_METHOD:
+					runTest(item.getParent().getValue().getPath(), item.getValue().getValue(), TestType.TESTNG);
+					break;
+
 				case TEST_SCRIPT:
 					runTest(item.getParent().getValue().getPath(), item.getValue().getValue(), TestType.GROOVY);
 					break;
@@ -465,12 +488,21 @@ public class JFunkApplication extends Application {
 	}
 
 	private void runTest(final Path path, final String method, final TestType testType) throws Exception {
-		procCtrl.runTest(path, method, Maps.transformValues(testPropsBoxes, new Function<ComboBox<String>, String>() {
+		TestParameters testParams = new TestParameters();
+		testParams.getTestProps().putAll(Maps.transformValues(testPropsBoxes, new Function<ComboBox<String>, String>() {
 			@Override
 			public String apply(final ComboBox<String> input) {
 				return input.getValue();
 			}
-		}), testType);
+		}));
+		if (parallel.isSelected()) {
+			testParams.addCommandLineArg("-parallel");
+		}
+		if (threads.getValue() > 1d) {
+			testParams.addCommandLineArg("-threadcount=" + (int) threads.getValue());
+		}
+		testParams.setjFunkProps(jFunkProps.getValue());
+		procCtrl.runTest(path, method, testParams, testType);
 	}
 
 	public void expandAll(final ActionEvent e) {

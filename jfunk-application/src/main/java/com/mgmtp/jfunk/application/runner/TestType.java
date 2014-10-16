@@ -8,11 +8,10 @@ import org.apache.commons.lang3.text.StrBuilder;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.util.Map;
 import java.util.Map.Entry;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Arrays.asList;
 import static org.apache.commons.io.FilenameUtils.removeExtension;
 
@@ -22,15 +21,15 @@ import static org.apache.commons.io.FilenameUtils.removeExtension;
 public enum TestType {
 	GROOVY {
 		@Override
-		public CommandLine createCommandLine(Path path, final String script, final Map<String, String> testProps) {
+		public CommandLine createCommandLine(Path path, final String script, final TestParameters testParams) {
 			try {
 				Path scriptPath = path.resolve(script);
 
 				CommandLine cmdl = new CommandLine("java");
-				for (Entry<String, String> entry : testProps.entrySet()) {
+				for (Entry<String, String> entry : testParams.getTestProps().entrySet()) {
 					cmdl.addArgument("-D" + entry.getKey() + '=' + entry.getValue());
 				}
-
+				cmdl.addArgument("-Djfunk.props.file=" + testParams.getjFunkProps());
 				cmdl.addArgument("-cp");
 
 				StrBuilder sb = new StrBuilder();
@@ -41,9 +40,12 @@ public enum TestType {
 					sb.append(dir);
 				}
 
-				cmdl.addArgument(Files.toString(new File("target/classpath.txt"), StandardCharsets.UTF_8) + sb.toString());
-				cmdl.addArgument("org.testng.TestNG");
-
+				cmdl.addArgument(Files.toString(new File("target/classpath.txt"), UTF_8) + sb.toString());
+				cmdl.addArgument("com.mgmtp.jfunk.core.JFunk");
+				cmdl.addArgument(scriptPath.toString());
+				for (String arg : testParams.getCommandLineArgs()) {
+					cmdl.addArgument(arg);
+				}
 
 				return cmdl;
 			} catch (IOException e) {
@@ -53,19 +55,19 @@ public enum TestType {
 	},
 	TESTNG {
 		@Override
-		public CommandLine createCommandLine(final Path path, final String method, final Map<String, String> testProps) {
+		public CommandLine createCommandLine(final Path path, final String method, final TestParameters testParams) {
 			try {
 				String test = removeExtension(path.toString()).replaceAll("[/\\\\]", ".");
-				String xml = Resources.toString(Resources.getResource(getClass(), "testng_single_class.xml"), StandardCharsets.UTF_8);
+				String xml = Resources.toString(Resources.getResource(getClass(), "testng_single_class.xml"), UTF_8);
 				xml = xml.replace("${class}", test);
 				File suiteFile = File.createTempFile("jfunk_testng", ".xml", new File("target"));
-				Files.write(xml, suiteFile, StandardCharsets.UTF_8);
+				Files.write(xml, suiteFile, UTF_8);
 
 				CommandLine cmdl = new CommandLine("java");
-				for (Entry<String, String> entry : testProps.entrySet()) {
+				for (Entry<String, String> entry : testParams.getTestProps().entrySet()) {
 					cmdl.addArgument("-D" + entry.getKey() + '=' + entry.getValue());
 				}
-
+				cmdl.addArgument("-Djfunk.props.file=" + testParams.getjFunkProps());
 				cmdl.addArgument("-cp");
 
 				StrBuilder sb = new StrBuilder();
@@ -74,7 +76,7 @@ public enum TestType {
 					sb.append(new File("target", dir).getAbsolutePath());
 				}
 
-				cmdl.addArgument(Files.toString(new File("target/classpath.txt"), StandardCharsets.UTF_8) + sb.toString());
+				cmdl.addArgument(Files.toString(new File("target/classpath.txt"), UTF_8) + sb.toString());
 				cmdl.addArgument("org.testng.TestNG");
 				cmdl.addArgument("-d");
 				cmdl.addArgument("${outputDir}");
@@ -93,15 +95,15 @@ public enum TestType {
 	},
 	JUNIT {
 		@Override
-		public CommandLine createCommandLine(final Path path, final String method, final Map<String, String> testProps) {
+		public CommandLine createCommandLine(final Path path, final String method, final TestParameters testParams) {
 			try {
 				String test = removeExtension(path.toString()).replaceAll("[/\\\\]", ".");
 
 				CommandLine cmdl = new CommandLine("java");
-				for (Entry<String, String> entry : testProps.entrySet()) {
+				for (Entry<String, String> entry : testParams.getTestProps().entrySet()) {
 					cmdl.addArgument("-D" + entry.getKey() + '=' + entry.getValue());
 				}
-
+				cmdl.addArgument("-Djfunk.props.file=" + testParams.getjFunkProps());
 				cmdl.addArgument("-cp");
 
 				StrBuilder sb = new StrBuilder();
@@ -111,7 +113,7 @@ public enum TestType {
 				}
 
 
-				cmdl.addArgument(Files.toString(new File("target/classpath.txt"), StandardCharsets.UTF_8) + sb.toString());
+				cmdl.addArgument(Files.toString(new File("target/classpath.txt"), UTF_8) + sb.toString());
 
 				cmdl.addArgument("com.mgmtp.jfunk.application.runner.util.JUnitRunner");
 				cmdl.addArgument(test);
@@ -125,5 +127,5 @@ public enum TestType {
 		}
 	};
 
-	public abstract CommandLine createCommandLine(final Path path, final String methodOrScript, final Map<String, String> testProps);
+	public abstract CommandLine createCommandLine(final Path path, final String methodOrScript, final TestParameters testParams);
 }
