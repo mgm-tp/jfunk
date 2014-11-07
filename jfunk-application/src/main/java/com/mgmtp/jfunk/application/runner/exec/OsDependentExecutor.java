@@ -46,8 +46,7 @@ public class OsDependentExecutor extends DefaultExecutor {
 		} else {
 			cmdToExecute = command;
 		}
-		return super.launch(command, env, dir);
-		//return new ProcessBuilderLauncher().exec(cmdToExecute, env, dir);
+		return new ProcessBuilderLauncher().exec(cmdToExecute, env, dir);
 	}
 
 	static class ProcessBuilderLauncher implements CommandLauncher {

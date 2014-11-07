@@ -7,7 +7,10 @@ import org.junit.runner.Result;
 import static com.google.common.base.Preconditions.checkState;
 
 /**
+ * Runs JUnit tests.
+ *
  * @author rnaegele
+ * @since 4.0.0
  */
 public class JUnitRunner {
 	public static final void main(String[] args) throws ClassNotFoundException {

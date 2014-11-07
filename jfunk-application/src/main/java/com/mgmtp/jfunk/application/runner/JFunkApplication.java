@@ -1,7 +1,5 @@
 package com.mgmtp.jfunk.application.runner;
 
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -21,6 +19,8 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
+import javafx.scene.control.SplitPane;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
@@ -33,6 +33,9 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.Duration;
+import jfxtras.labs.dialogs.MonologFX;
+import jfxtras.labs.dialogs.MonologFX.Type;
+import jfxtras.labs.dialogs.MonologFXButton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,6 +66,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static com.mgmtp.jfunk.application.runner.util.UiUtils.createImage;
@@ -79,7 +83,10 @@ import static org.reflections.ReflectionUtils.getMethods;
 import static org.reflections.ReflectionUtils.withAnnotation;
 
 /**
+ * Main class for jFunk UI.
+ *
  * @author rnaegele
+ * @since 3.1.0
  */
 public class JFunkApplication extends Application {
 
@@ -109,6 +116,18 @@ public class JFunkApplication extends Application {
 	@FXML
 	private GridPane testPropsPane;
 
+	@FXML
+	private TabPane logPane;
+
+	@FXML
+	private SplitPane verticalPane;
+
+	@FXML
+	private SplitPane horizontalPane;
+
+	@FXML
+	private Label glass;
+
 	private Map<String, ComboBox<String>> testPropsBoxes = new HashMap<>();
 
 	private ProcessController procCtrl;
@@ -122,38 +141,48 @@ public class JFunkApplication extends Application {
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			@Override
 			public void run() {
-				stage.setIconified(false);
 				saveState(stage);
 			}
 		});
 
-		procCtrl = new ProcessController(stage);
-
 		FXMLLoader loader = new FXMLLoader();
 		loader.setController(this);
 		try (InputStream is = getClass().getResourceAsStream("fxml/app.fxml")) {
-			Parent rootNode = (Parent) loader.load(is);
+			Parent rootNode = loader.load(is);
 			Scene scene = new Scene(rootNode, 1024d, 768d);
-			scene.getAccelerators().put(new KeyCodeCombination(KeyCode.F9), new Runnable() {
-						@Override
-						public void run() {
-							btnRun.arm();
-							PauseTransition pt = new PauseTransition(Duration.millis(200));
-							pt.setOnFinished(new EventHandler<ActionEvent>() {
-								@Override
-								public void handle(ActionEvent event) {
-									btnRun.fire();
-									btnRun.disarm();
-								}
-							});
-							pt.play();
-						}
+
+			// little animation causing the button is actuqally pressed when hitting F9
+			scene.getAccelerators().put(new KeyCodeCombination(KeyCode.F9), () -> {
+						btnRun.arm();
+						PauseTransition pt = new PauseTransition(Duration.millis(200));
+						pt.setOnFinished(event -> {
+							btnRun.fire();
+							btnRun.disarm();
+						});
+						pt.play();
 					}
 			);
+
+			procCtrl = new ProcessController(logPane);
 
 			stage.setTitle("jFunk Runner");
 			stage.getIcons().add(createImage("jFunk.png"));
 			stage.setScene(scene);
+			stage.setOnCloseRequest(event -> {
+				if (procCtrl.hasRunningProcesses()) {
+					MonologFX msgBox = new MonologFX(Type.QUESTION);
+					msgBox.setMessage("Kill running processes and exit application?");
+					msgBox.setModal(true);
+					if (msgBox.show() == MonologFXButton.Type.YES) {
+						procCtrl.shutdown();
+						System.exit(0);
+					} else {
+						event.consume();
+					}
+				} else {
+					System.exit(0);
+				}
+			});
 			loadState(stage);
 			stage.show();
 
@@ -174,6 +203,7 @@ public class JFunkApplication extends Application {
 
 		testPropsPane.setHgap(10d);
 		testPropsPane.setVgap(10d);
+
 		try (Reader reader = newBufferedReader(get("config", "runner.json"), StandardCharsets.UTF_8)) {
 			Gson gson = new GsonBuilder().create();
 			RunnerConfig cfg = gson.fromJson(reader, RunnerConfig.class);
@@ -198,14 +228,10 @@ public class JFunkApplication extends Application {
 			retrieveGroovyScripts(cfg.getGroovyScriptDirs());
 
 			treeView.setCellFactory(new Callback<TreeView<ItemInfo>, TreeCell<ItemInfo>>() {
-
-				private EventHandler<MouseEvent> runHandler = new EventHandler<MouseEvent>() {
-					@Override
-					public void handle(final MouseEvent mouseEvent) {
-						if (mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
-							if (mouseEvent.getClickCount() == 2) {
-								btnRun.fire();
-							}
+				private EventHandler<MouseEvent> runHandler = mouseEvent -> {
+					if (mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
+						if (mouseEvent.getClickCount() == 2) {
+							btnRun.fire();
 						}
 					}
 				};
@@ -260,6 +286,7 @@ public class JFunkApplication extends Application {
 			stage.setY(state.getWindowY());
 			stage.setWidth(state.getWindowWidth());
 			stage.setHeight(state.getWindowHeight());
+			stage.setMaximized(state.isMaximized());
 			threads.setValue(state.getThreads());
 			parallel.setSelected(state.isParallel());
 			String props = state.getjFunkProps();
@@ -274,6 +301,8 @@ public class JFunkApplication extends Application {
 					comboBox.setValue(value);
 				}
 			}
+			verticalPane.setDividerPositions(state.getVerticalDividerPos());
+			horizontalPane.setDividerPositions(state.getHorizontalDividerPos());
 		} catch (Exception ex) {
 			logger.error("Could not load UI state: {}", ex.toString());
 		}
@@ -286,9 +315,12 @@ public class JFunkApplication extends Application {
 			state.setWindowY(stage.getY());
 			state.setWindowWidth(stage.getWidth());
 			state.setWindowHeight(stage.getHeight());
+			state.setMaximized(stage.isMaximized());
 			state.setThreads(threads.getValue());
 			state.setParallel(parallel.isSelected());
 			state.setjFunkProps(jFunkProps.getValue());
+			state.setVerticalDividerPos(verticalPane.getDividerPositions());
+			state.setHorizontalDividerPos(horizontalPane.getDividerPositions());
 			for (Entry<String, ComboBox<String>> entry : testPropsBoxes.entrySet()) {
 				state.getTestProps().put(entry.getKey(), entry.getValue().getValue());
 			}
@@ -300,12 +332,9 @@ public class JFunkApplication extends Application {
 	}
 
 	private void retrieveAvailableJFunkProps() {
-		DirectoryStream.Filter<Path> filter = new DirectoryStream.Filter<Path>() {
-			@Override
-			public boolean accept(final Path file) throws IOException {
-				String name = file.getFileName().toString();
-				return name.startsWith("jfunk.") && name.endsWith(".properties");
-			}
+		DirectoryStream.Filter<Path> filter = file -> {
+			String name = file.getFileName().toString();
+			return name.startsWith("jfunk.") && name.endsWith(".properties");
 		};
 
 		List<String> fileNames = new ArrayList<>();
@@ -363,12 +392,8 @@ public class JFunkApplication extends Application {
 					final TreeItem<ItemInfo> item = new TreeItem<>(new ItemInfo(path, ItemInfoType.LABEL));
 					current = addIfNotExists(root, current, item);
 				} else {
-					Set<Method> testMethods = new TreeSet<>(new Comparator<Method>() {
-						@Override
-						public int compare(final Method m1, final Method m2) {
-							return m1.getName().compareTo(m2.getName());
-						}
-					});
+					Comparator<Method> comparator = (m1, m2) -> m1.getName().compareTo(m2.getName());
+					Set<Method> testMethods = new TreeSet<>(comparator);
 					String fqcn = removeExtension(pathString.replaceAll("[/\\\\]", "."));
 
 					try {
@@ -379,8 +404,7 @@ public class JFunkApplication extends Application {
 							final TreeItem<ItemInfo> item = new TreeItem<>(new ItemInfo(path, ItemInfoType.TESTNG_TEST_CLASS));
 							current = addIfNotExists(root, current, item);
 							for (Method testMethod : testMethods) {
-								current.getChildren()
-									   .add(new TreeItem<ItemInfo>(new ItemInfo(testMethod.getName(), ItemInfoType.TESTNG_TEST_METHOD)));
+								current.getChildren().add(new TreeItem<>(new ItemInfo(testMethod.getName(), ItemInfoType.TESTNG_TEST_METHOD)));
 							}
 						}
 					} catch (ClassNotFoundException ex) {
@@ -396,8 +420,7 @@ public class JFunkApplication extends Application {
 								final TreeItem<ItemInfo> item = new TreeItem<>(new ItemInfo(path, ItemInfoType.JUNIT_TEST_CLASS));
 								current = addIfNotExists(root, current, item);
 								for (Method testMethod : testMethods) {
-									current.getChildren()
-										   .add(new TreeItem<ItemInfo>(new ItemInfo(testMethod.getName(), ItemInfoType.JUNIT_TEST_METHOD)));
+									current.getChildren().add(new TreeItem<>(new ItemInfo(testMethod.getName(), ItemInfoType.JUNIT_TEST_METHOD)));
 								}
 							}
 						} catch (ClassNotFoundException ex) {
@@ -422,12 +445,7 @@ public class JFunkApplication extends Application {
 	}
 
 	private TreeItem<ItemInfo> findTreeItem(final TreeItem<ItemInfo> root, final TreeItem<ItemInfo> item) {
-		return UiUtils.findTreeItem(root, new Predicate<TreeItem<ItemInfo>>() {
-			@Override
-			public boolean apply(final TreeItem<ItemInfo> input) {
-				return input.getValue().getValue().equals(item.getValue().getValue());
-			}
-		});
+		return UiUtils.findTreeItem(root, input -> input.getValue().getValue().equals(item.getValue().getValue()));
 	}
 
 	private void retrieveGroovyScripts(final List<String> groovyScriptDirs) throws IOException {
@@ -435,9 +453,7 @@ public class JFunkApplication extends Application {
 		for (String dir : groovyScriptDirs) {
 			Path startDir = get(dir);
 			Set<Path> paths = findPaths(startDir, "glob:**/*.groovy");
-			for (Path path : paths) {
-				groovyScripts.add(startDir.resolve(path));
-			}
+			groovyScripts.addAll(paths.stream().map(startDir::resolve).collect(Collectors.toList()));
 		}
 
 		TreeItem<ItemInfo> root = new TreeItem<>(new ItemInfo("Groovy Scripts", ItemInfoType.LABEL));
@@ -460,6 +476,7 @@ public class JFunkApplication extends Application {
 		}
 	}
 
+	// Java FX handler method
 	public void runTest(final ActionEvent e) throws Exception {
 		TreeItem<ItemInfo> item = treeView.getSelectionModel().getSelectedItem();
 		if (item != null) {
@@ -477,7 +494,6 @@ public class JFunkApplication extends Application {
 				case TESTNG_TEST_METHOD:
 					runTest(item.getParent().getValue().getPath(), item.getValue().getValue(), TestType.TESTNG);
 					break;
-
 				case TEST_SCRIPT:
 					runTest(item.getParent().getValue().getPath(), item.getValue().getValue(), TestType.GROOVY);
 					break;
@@ -489,12 +505,7 @@ public class JFunkApplication extends Application {
 
 	private void runTest(final Path path, final String method, final TestType testType) throws Exception {
 		TestParameters testParams = new TestParameters();
-		testParams.getTestProps().putAll(Maps.transformValues(testPropsBoxes, new Function<ComboBox<String>, String>() {
-			@Override
-			public String apply(final ComboBox<String> input) {
-				return input.getValue();
-			}
-		}));
+		testParams.getTestProps().putAll(Maps.transformValues(testPropsBoxes, input -> input.getValue()));
 		if (parallel.isSelected()) {
 			testParams.addCommandLineArg("-parallel");
 		}

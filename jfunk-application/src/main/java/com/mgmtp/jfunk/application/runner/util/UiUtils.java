@@ -39,14 +39,11 @@ public class UiUtils {
 	}
 
 	public static void setExpanded(final TreeItem<ItemInfo> startNode, final boolean expanded) {
-		traverseTreeItem(startNode, new TreeItemVisitor<ItemInfo>() {
-			@Override
-			public boolean visit(final TreeItem<ItemInfo> treeItem) {
-				if (!treeItem.isLeaf()) {
-					treeItem.setExpanded(expanded);
-				}
-				return true;
+		traverseTreeItem(startNode, treeItem -> {
+			if (!treeItem.isLeaf()) {
+				treeItem.setExpanded(expanded);
 			}
+			return true;
 		});
 	}
 

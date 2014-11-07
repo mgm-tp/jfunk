@@ -27,33 +27,29 @@ public class TabExecuteResultHandler implements ExecuteResultHandler {
 
 	@Override
 	public void onProcessComplete(final int exitValue) {
-		Platform.runLater(new Runnable() {
-			public void run() {
-				tab.setGraphic(createImageView("com/famfamfam/silk/accept.png"));
-				tab.setClosable(true);
-				future.cancel(true);
+		Platform.runLater(() -> {
+			tab.setGraphic(createImageView("com/famfamfam/silk/accept.png"));
+			tab.setClosable(true);
+			future.cancel(true);
 
-				// we process the queue after canceling, otherwise it might happen the we
-				// do not any process output if a process terminates very fast
-				queueProcessor.processQueue();
-			}
+			// we process the queue after canceling, otherwise it might happen the we
+			// do not any process output if a process terminates very fast
+			queueProcessor.processQueue();
 		});
 	}
 
 	@Override
 	public void onProcessFailed(final ExecuteException ex) {
-		Platform.runLater(new Runnable() {
-			public void run() {
-				tab.setGraphic(createImageView("com/famfamfam/silk/exclamation.png"));
-				tab.setClosable(true);
-				future.cancel(true);
+		Platform.runLater(() -> {
+			tab.setGraphic(createImageView("com/famfamfam/silk/exclamation.png"));
+			tab.setClosable(true);
+			future.cancel(true);
 
-				// we process the queue after canceling, otherwise it might happen the we
-				// do not any process output if a process fails very fast
-				queueProcessor.processQueue();
+			// we process the queue after canceling, otherwise it might happen the we
+			// do not any process output if a process fails very fast
+			queueProcessor.processQueue();
 
-				logger.error(ex.getMessage(), ex);
-			}
+			logger.error(ex.getMessage(), ex);
 		});
 	}
 }

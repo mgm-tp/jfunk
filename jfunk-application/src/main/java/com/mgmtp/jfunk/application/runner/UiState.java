@@ -15,6 +15,9 @@ public class UiState {
 	private double windowY;
 	private double windowWidth;
 	private double windowHeight;
+	private boolean maximized;
+	private double[] verticalDividerPos;
+	private double[] horizontalDividerPos;
 	private String jFunkProps;
 	private Map<String, String> testProps = new HashMap<>();
 
@@ -78,7 +81,27 @@ public class UiState {
 		return testProps;
 	}
 
-	public void setTestProps(final Map<String, String> testProps) {
-		this.testProps = testProps;
+	public double[] getVerticalDividerPos() {
+		return verticalDividerPos;
+	}
+
+	public void setVerticalDividerPos(final double[] verticalDividerPos) {
+		this.verticalDividerPos = verticalDividerPos;
+	}
+
+	public double[] getHorizontalDividerPos() {
+		return horizontalDividerPos;
+	}
+
+	public void setHorizontalDividerPos(final double[] horizontalDividerPos) {
+		this.horizontalDividerPos = horizontalDividerPos;
+	}
+
+	public boolean isMaximized() {
+		return maximized;
+	}
+
+	public void setMaximized(final boolean maximized) {
+		this.maximized = maximized;
 	}
 }

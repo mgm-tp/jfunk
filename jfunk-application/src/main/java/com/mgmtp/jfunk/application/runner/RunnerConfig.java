@@ -1,11 +1,5 @@
 package com.mgmtp.jfunk.application.runner;
 
-import com.google.common.collect.Multimap;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.mgmtp.jfunk.application.MultimapSerializer;
-import javafx.geometry.Rectangle2D;
-
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -31,12 +25,5 @@ public class RunnerConfig {
 		RunnerConfig cfg = new RunnerConfig();
 		cfg.getGroovyScriptDirs().add("scripts");
 		cfg.getGroovyScriptDirs().add("groovy");
-//		cfg.getTestProperties().put("WebDriver", "chrome");
-//		cfg.getTestProperties().put("WebDriver", "ie");
-//		cfg.getTestProperties().put("WebDriver", "firefox");
-//		cfg.getTestProperties().put("Test System", "dev");
-//		cfg.getTestProperties().put("Test System", "prod");
-		Gson g = new GsonBuilder().setPrettyPrinting().registerTypeAdapter(Multimap.class, MultimapSerializer.INSTANCE).create();
-		System.out.println(g.toJson(cfg));
 	}
 }

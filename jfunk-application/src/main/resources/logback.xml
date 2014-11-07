@@ -41,6 +41,7 @@
 	</appender>
 
 	<logger name="org.apache" level="ERROR" />
+	<logger name="org.openqa" level="INFO" />
 	<logger name="com.gargoylesoftware" level="INFO" />
 
 	<logger name="result" additivity="false" level="INFO">
