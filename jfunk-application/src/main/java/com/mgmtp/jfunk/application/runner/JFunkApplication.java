@@ -125,9 +125,6 @@ public class JFunkApplication extends Application {
 	@FXML
 	private SplitPane horizontalPane;
 
-	@FXML
-	private Label glass;
-
 	private Map<String, ComboBox<String>> testPropsBoxes = new HashMap<>();
 
 	private ProcessController procCtrl;

@@ -9,6 +9,7 @@ import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
+import javafx.scene.layout.BorderPane;
 import jfxtras.labs.dialogs.MonologFX;
 import jfxtras.labs.dialogs.MonologFX.Type;
 import jfxtras.labs.dialogs.MonologFXButton;
@@ -92,14 +93,8 @@ public class ProcessController {
 		final TextArea console = new TextArea();
 		console.setEditable(false);
 		console.setWrapText(false);
-		console.setStyle("-fx-font-family: Courier New;");
-		ScrollPane sp = new ScrollPane();
-		sp.setHbarPolicy(ScrollBarPolicy.AS_NEEDED);
-		sp.setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
-		sp.setFitToHeight(true);
-		sp.setFitToWidth(true);
-		sp.setContent(console);
-		tab.setContent(sp);
+//		console.setStyle("-fx-font-family: Courier New;");
+		tab.setContent(console);
 		logPane.getTabs().add(tab);
 		logPane.getSelectionModel().select(tab);
 
