@@ -34,19 +34,15 @@ From: 'an unknown organization'
     License: Mozilla Public License version 2.0  (http://www.mozilla.org/MPL/2.0/)
   - Neko HTML (http://nekohtml.sourceforge.net/) net.sourceforge.nekohtml:nekohtml:jar:1.9.21
     License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+  - ControlsFX (http://www.controlsfx.org/) org.controlsfx:controlsfx:jar:8.20.8
+    License: The 3-Clause BSD License  (http://www.opensource.org/licenses/bsd-license.php)
+  - FXSampler (http://www.controlsfx.org/) org.controlsfx:openjfx-dialogs:jar:1.0.2
+    License: The 3-Clause BSD License  (http://www.opensource.org/licenses/bsd-license.php)
   - Javassist (http://www.javassist.org/) org.javassist:javassist:bundle:3.18.2-GA
     License: MPL 1.1  (http://www.mozilla.org/MPL/MPL-1.1.html)
     License: LGPL 2.1  (http://www.gnu.org/licenses/lgpl-2.1.html)
     License: Apache License 2.0  (http://www.apache.org/licenses/)
   - JDOM (http://www.jdom.org/) org.jdom:jdom:jar:1.1
-  - jfxtras-common (http://jfxtras.org) org.jfxtras:jfxtras-common:jar:8.0-r3
-    License: BSD  (http://www.opensource.org/licenses/bsd-license.php)
-  - jfxtras-controls (http://jfxtras.org) org.jfxtras:jfxtras-controls:jar:8.0-r3
-    License: BSD  (http://www.opensource.org/licenses/bsd-license.php)
-  - jfxtras-fxml (http://jfxtras.org) org.jfxtras:jfxtras-fxml:jar:8.0-r3
-    License: BSD  (http://www.opensource.org/licenses/bsd-license.php)
-  - JFXtras Labs (http://jfxtras.org) org.jfxtras:jfxtras-labs:jar:8.0-r3
-    License: BSD  (http://www.opensource.org/licenses/bsd-license.php)
   - Mockito (http://www.mockito.org) org.mockito:mockito-core:jar:1.9.5
     License: The MIT License  (http://code.google.com/p/mockito/wiki/License)
   - Objenesis (http://objenesis.googlecode.com/svn/docs/index.html) org.objenesis:objenesis:jar:1.0

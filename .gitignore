@@ -6,4 +6,3 @@ test-output
 .idea
 *.iml
 *.log*
-/jfunk-application/config/uistate.json

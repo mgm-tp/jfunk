@@ -1,0 +1,13 @@
+{
+  "threads": 4.0,
+  "parallel": false,
+  "windowX": 513.0,
+  "windowY": 107.0,
+  "windowWidth": 1024.0,
+  "windowHeight": 768.0,
+  "jFunkProps": "jfunk.properties",
+  "testProps": {
+    "webdriver.key": "firefox",
+    "testsystem": "dev"
+  }
+}
