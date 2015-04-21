@@ -28,6 +28,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.locks.Condition;
@@ -37,6 +38,7 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -210,18 +212,37 @@ public class MailAccountManager {
 					}
 				} else {
 					checkState(!addressPool.isEmpty(), "No fixed e-mail account configured and specified pool is empty.");
+
+					boolean subaddressing = config.getBoolean(EmailConstants.MAIL_SUBADDRESSING);
+					if (subaddressing) {
+						checkState(addressPool.size() == 1, "Mail subaddressing is active, specified pool must contain only one e-mail account.");
+					}
 					if (account != null) {
 						checkState(addressPool.contains(account), "Account '%s' is already reserved under key: %s", account, accountReservationKey);
 						log.info("Using already reserved e-mail account: {}", account.getAccountId());
 						return account;
 					}
 
-					// Try to find a free account.
-					for (MailAccount acc : addressPool) {
-						ThreadReservationKeyWrapper wrapper = usedAccounts.get(acc);
-						if (wrapper == null) {
-							account = acc;
-							break;
+					if (subaddressing) {
+						MailAccount acc = addressPool.get(0);
+						MailAuthenticator auth = (MailAuthenticator) acc.getAuthenticator();
+
+						StringBuilder uniqueAddress = new StringBuilder();
+						uniqueAddress.append(StringUtils.substringBefore(acc.getAddress(), "@"));
+						uniqueAddress.append("+");
+						uniqueAddress.append(UUID.randomUUID());
+						uniqueAddress.append("@");
+						uniqueAddress.append(StringUtils.substringAfter(acc.getAddress(), "@"));
+
+						account = new MailAccount(acc.getAccountId(), uniqueAddress.toString(), auth.getUser(), auth.getPassword());
+					} else {
+						// Try to find a free account.
+						for (MailAccount acc : addressPool) {
+							ThreadReservationKeyWrapper wrapper = usedAccounts.get(acc);
+							if (wrapper == null) {
+								account = acc;
+								break;
+							}
 						}
 					}
 				}
@@ -233,7 +254,7 @@ public class MailAccountManager {
 				} else {
 					// We've found a free account and return it.
 					String accountId = account.getAccountId();
-					log.info("Found free e-mail account: {}", accountId);
+					log.info("Found free e-mail account={} with address={}", accountId, account.getAddress());
 
 					usedAccounts.put(account, new ThreadReservationKeyWrapper(Thread.currentThread(), accountReservationKey));
 
@@ -323,7 +344,7 @@ public class MailAccountManager {
 		}
 	}
 
-	void releaseAllMailAccounts() {
+	public void releaseAllMailAccounts() {
 		log.info("Releasing all mail accounts...");
 		lock.lock();
 		try {
@@ -362,7 +383,7 @@ public class MailAccountManager {
 	 *            the account to release
 	 */
 	public void releaseMailAccountForThread(final MailAccount account) {
-		log.info("Releasing mail account for the current thread: %s", account);
+		log.info("Releasing mail account for the current thread: {}", account);
 		lock.lock();
 		try {
 			ThreadReservationKeyWrapper wrapper = usedAccounts.get(account);

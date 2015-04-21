@@ -19,6 +19,12 @@ import static com.google.common.base.Preconditions.checkArgument;
 
 import javax.mail.Authenticator;
 
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.common.base.Preconditions;
+
 /**
  * Represents an e-mail account.
  * 
@@ -26,8 +32,9 @@ import javax.mail.Authenticator;
 public class MailAccount {
 
 	private final String accountId;
-	private final String address;
+	private String address;
 	private final MailAuthenticator authenticator;
+	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	/**
 	 * Creates a new {@link MailAccount} instance.
@@ -47,32 +54,50 @@ public class MailAccount {
 
 		this.accountId = accountId;
 		this.address = address;
-		this.authenticator = new MailAuthenticator(user, password);
+		authenticator = new MailAuthenticator(user, password);
 	}
 
 	@Override
-	public boolean equals(final Object o) {
-		if (this == o) {
+	public boolean equals(final Object obj) {
+		if (this == obj) {
 			return true;
 		}
-		if (o == null || getClass() != o.getClass()) {
+		if (obj == null) {
 			return false;
 		}
-
-		final MailAccount that = (MailAccount) o;
-		return accountId.equals(that.accountId);
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		MailAccount other = (MailAccount) obj;
+		if (accountId == null) {
+			if (other.accountId != null) {
+				return false;
+			}
+		} else if (!accountId.equals(other.accountId)) {
+			return false;
+		}
+		if (address == null) {
+			if (other.address != null) {
+				return false;
+			}
+		} else if (!address.equals(other.address)) {
+			return false;
+		}
+		return true;
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		return prime * result + accountId.hashCode();
+		result = prime * result + (accountId == null ? 0 : accountId.hashCode());
+		result = prime * result + (address == null ? 0 : address.hashCode());
+		return result;
 	}
 
 	@Override
 	public String toString() {
-		return accountId;
+		return accountId + ": " + address;
 	}
 
 	/**
@@ -99,5 +124,22 @@ public class MailAccount {
 	 */
 	public String getAddress() {
 		return address;
+	}
+
+	/**
+	 * Allows to set a new mail address. This is only possible when mail subaddressing is active and
+	 * the new mail address belongs to the defined mail accountId.
+	  *
+	 * @param address
+	 *            the new mail address
+	 */
+	public void setAddress(final String address) {
+		// Do we have a subaddressing account?
+		Preconditions.checkArgument(StringUtils.startsWith(this.address, accountId + "+"),
+				"Mail address can only be changed when subaddressing is active");
+		Preconditions.checkArgument(StringUtils.startsWith(address, accountId), "New mail address %s does not start with accountId=%s", address,
+				accountId);
+		log.info("Changing mail address from {} to {}", this.address, address);
+		this.address = address;
 	}
 }

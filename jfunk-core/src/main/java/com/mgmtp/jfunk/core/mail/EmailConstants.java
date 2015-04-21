@@ -32,6 +32,7 @@ public final class EmailConstants {
 	public static final String MAIL_PASSWORD = "mail.password";
 	public static final String MAIL_ADDRESS = "mail.address";
 	public static final String MAIL_SSL_TRUST = "mail.ssl.trust";
+	public static final String MAIL_SUBADDRESSING = "mail.subaddressing";
 
 	@Deprecated
 	public static final String MAIL_ACCOUNT = "mail.account";

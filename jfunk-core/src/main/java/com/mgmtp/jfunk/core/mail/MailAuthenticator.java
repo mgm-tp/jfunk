@@ -36,4 +36,12 @@ class MailAuthenticator extends Authenticator {
 	public PasswordAuthentication getPasswordAuthentication() {
 		return new PasswordAuthentication(user, password);
 	}
+
+	String getUser() {
+		return user;
+	}
+
+	String getPassword() {
+		return password;
+	}
 }

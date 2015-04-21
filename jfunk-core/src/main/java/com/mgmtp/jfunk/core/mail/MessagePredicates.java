@@ -18,9 +18,14 @@ package com.mgmtp.jfunk.core.mail;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import javax.mail.Address;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.base.Predicate;
+import com.mgmtp.jfunk.core.exception.MailException;
 
 /**
  * Predicates for mail messages.
@@ -58,6 +63,42 @@ public class MessagePredicates {
 			@Override
 			public String toString() {
 				return String.format("headers to include header '%s=%s'", headerName, headerValue);
+			}
+		};
+	}
+
+	/**
+	 * Creates a {@link Predicate} for matching a mail recipient. This Predicate returns true if at least
+	 * one recipient matches the given value.
+	 * 
+	 * @param recipient
+	 *            the recipient to match
+	 * @return the predicate
+	 */
+	public static Predicate<Message> forRecipient(final String recipient) {
+		return new Predicate<Message>() {
+			@Override
+			public boolean apply(final Message input) {
+				Address[] addresses;
+				try {
+					addresses = input.getAllRecipients();
+					if (addresses == null) {
+						return false;
+					}
+					for (Address address : addresses) {
+						if (StringUtils.equalsIgnoreCase(address.toString(), recipient)) {
+							return true;
+						}
+					}
+				} catch (MessagingException e) {
+					throw new MailException("Error while reading recipients", e);
+				}
+				return false;
+			}
+
+			@Override
+			public String toString() {
+				return String.format("recipient to include %s", recipient);
 			}
 		};
 	}
