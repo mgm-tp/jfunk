@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>com.mgmtp.maven.poms</groupId>
 		<artifactId>mgm-oss-parent</artifactId>
-		<version>4</version>
+		<version>6-SNAPSHOT</version>
 	</parent>
 	<groupId>com.mgmtp.jfunk</groupId>
 	<artifactId>jfunk</artifactId>
@@ -109,8 +109,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.1</version><!--$NO-MVN-MAN-VER$-->
 				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
+					<source>1.8</source>
+					<target>1.8</target>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -349,22 +349,6 @@
 		</dependency>
 	</dependencies>
 
-	<profiles>
-		<profile>
-			<id>sonar</id>
-			<build>
-				<plugins>
-					<plugin>
-						<artifactId>maven-surefire-plugin</artifactId>
-						<configuration>
-							<argLine>-javaagent:${env.JACOCO_AGENT}=destfile=${sonar.jacoco.reportPath} -Dfile.encoding=UTF-8 -Xmx512m</argLine>
-						</configuration>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
-
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -373,8 +357,8 @@
 		<slf4j.version>1.7.5</slf4j.version>
 		<poi.version>3.9</poi.version>
 		<sonar.skippedModules>jfunk-samples</sonar.skippedModules>
-		<groovy.version>1.8.4</groovy.version>
-		<groovy-eclipse-compiler.version>2.7.0-01</groovy-eclipse-compiler.version>
-		<groovy-eclipse-batch.version>1.8.4-01</groovy-eclipse-batch.version>
+		<groovy.version>2.4.3</groovy.version>
+		<groovy-eclipse-compiler.version>2.9.2-01</groovy-eclipse-compiler.version>
+		<groovy-eclipse-batch.version>2.4.3-01</groovy-eclipse-batch.version>
 	</properties>
 </project>

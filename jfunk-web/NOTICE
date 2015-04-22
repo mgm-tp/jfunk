@@ -4,11 +4,9 @@
 // ------------------------------------------------------------------
 
 jFunk WebDriver Support
-Copyright 2014 mgm technology partners GmbH
+Copyright 2015 mgm technology partners GmbH
 
 From: 'an unknown organization'
-  - AntLR Parser Generator (http://www.antlr.org/) antlr:antlr:jar:2.7.7
-    License: BSD License  (http://www.antlr.org/license.html)
   - AOP alliance (http://aopalliance.sourceforge.net) aopalliance:aopalliance:jar:1.0
     License: Public Domain 
   - cglib (http://cglib.sourceforge.net/) cglib:cglib-nodep:jar:2.1_3
@@ -97,18 +95,6 @@ From: 'Mort Bay Consulting' (http://www.mortbay.com)
     License: Apache Software License - Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0)
     License: Eclipse Public License - Version 1.0  (http://www.eclipse.org/org/documents/epl-v10.php)
 
-From: 'ObjectWeb' (http://www.objectweb.org/)
-  - ASM Core (http://asm.objectweb.org/asm/) asm:asm:jar:3.2
-    License: BSD  (http://asm.objectweb.org/license.html)
-  - ASM Analysis (http://asm.objectweb.org/asm-analysis/) asm:asm-analysis:jar:3.2
-    License: BSD  (http://asm.objectweb.org/license.html)
-  - ASM Commons (http://asm.objectweb.org/asm-commons/) asm:asm-commons:jar:3.2
-    License: BSD  (http://asm.objectweb.org/license.html)
-  - ASM Tree (http://asm.objectweb.org/asm-tree/) asm:asm-tree:jar:3.2
-    License: BSD  (http://asm.objectweb.org/license.html)
-  - ASM Util (http://asm.objectweb.org/asm-util/) asm:asm-util:jar:3.2
-    License: BSD  (http://asm.objectweb.org/license.html)
-
 From: 'Oracle' (http://www.oracle.com)
   - JavaMail API (compat) (http://kenai.com/projects/javamail/mail) javax.mail:mail:jar:1.4.5
     License: CDDL  (http://www.sun.com/cddl)
@@ -153,7 +139,8 @@ From: 'The Apache Software Foundation' (http://www.apache.org/)
     License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 From: 'The Codehaus' (http://codehaus.org)
-  - Groovy (http://groovy.codehaus.org/) org.codehaus.groovy:groovy:jar:1.8.4
+  - Groovy (http://groovy.codehaus.org/) org.codehaus.groovy:groovy:jar:2.4.3
+    License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 From: 'The Netty Project' (http://netty.io/)
   - The Netty Project (http://netty.io/) io.netty:netty:bundle:3.5.5.Final
