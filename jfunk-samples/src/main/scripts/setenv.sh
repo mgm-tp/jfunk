@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Copyright (c) 2014 mgm technology partners GmbH
+# Copyright (c) 2015 mgm technology partners GmbH
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
