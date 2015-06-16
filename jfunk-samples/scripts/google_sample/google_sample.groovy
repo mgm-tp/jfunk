@@ -19,8 +19,7 @@
 import org.openqa.selenium.By
 import org.openqa.selenium.Keys
 
-import com.mgmtp.jfunk.core.reporting.CsvReporter
-import com.mgmtp.jfunk.samples.google.GoogleModule
+import com.mgmtp.jfunk.samples.google.GoogleAdvancedSearchModule
 import com.mgmtp.jfunk.web.step.CheckHtml4Pattern
 import com.mgmtp.jfunk.web.step.JFunkWebElement
 import com.mgmtp.jfunk.web.step.LoadPage
@@ -31,13 +30,11 @@ String url = 'http://www.google.com'
 set 'archiving.mode' to 'all'
 set 'archive.dir' to 'testruns/google'
 
-//registerReporter CsvReporter.forDataSet('google').create()
+prepareNextDataSet 'google'
 
-//generate 'google'
+run new GoogleAdvancedSearchModule()
 
-//run new GoogleModule()
-
-generate 'google'
+prepareNextDataSet 'google'
 
 module ('GoogleScriptModule', [dataSetKey: 'google']) {
 
