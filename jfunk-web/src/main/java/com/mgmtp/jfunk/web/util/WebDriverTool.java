@@ -63,19 +63,19 @@ public class WebDriverTool implements SearchContext {
 	protected final Logger logger = LoggerFactory.getLogger(getClass());
 
 	private static final String JS_APPEND_OPEN_WINDOW_LINK = "(function() { "
-			+ "var jFunkAnchorTag = document.createElement('a');"
-			+ "jFunkAnchorTag.appendChild(document.createTextNode('jfunk-new-window-link'));"
-			+ "jFunkAnchorTag.setAttribute('id', '%s');"
-			+ "jFunkAnchorTag.setAttribute('href', '%s');"
-			+ "jFunkAnchorTag.setAttribute('target', '_blank');"
-			+ "jFunkAnchorTag.setAttribute('style', 'display:block; z-index: 100000; position: relative;');"
-			+ "document.getElementsByTagName('body')[0].appendChild(jFunkAnchorTag);"
-			+ "}());";
+		+ "var jFunkAnchorTag = document.createElement('a');"
+		+ "jFunkAnchorTag.appendChild(document.createTextNode('jfunk-new-window-link'));"
+		+ "jFunkAnchorTag.setAttribute('id', '%s');"
+		+ "jFunkAnchorTag.setAttribute('href', '%s');"
+		+ "jFunkAnchorTag.setAttribute('target', '_blank');"
+		+ "jFunkAnchorTag.setAttribute('style', 'display:block; z-index: 100000; position: relative;');"
+		+ "document.getElementsByTagName('body')[0].appendChild(jFunkAnchorTag);"
+		+ "}());";
 
 	private static final String JS_REMOVE_OPEN_WINDOW_LINK = "(function() { "
-			+ "var jFunkAnchorTag = document.getElementById('%s');"
-			+ "jFunkAnchorTag.parentNode.removeChild(jFunkAnchorTag);"
-			+ "}());";
+		+ "var jFunkAnchorTag = document.getElementById('%s');"
+		+ "jFunkAnchorTag.parentNode.removeChild(jFunkAnchorTag);"
+		+ "}());";
 
 	private static final String JS_GET_BOUNDING_CLIENT_RECT = "return arguments[0].getBoundingClientRect();";
 
@@ -88,7 +88,7 @@ public class WebDriverTool implements SearchContext {
 
 	@Inject
 	WebDriverTool(final WebDriver webDriver, final WebElementFinder wef, final FormInputHandler fih,
-			final Map<String, DataSet> dataSets) {
+		final Map<String, DataSet> dataSets) {
 		this.webDriver = webDriver;
 		this.wef = wef;
 		this.fih = fih;
@@ -355,8 +355,8 @@ public class WebDriverTool implements SearchContext {
 	 */
 	public WebDriverWait newWebDriverWait() {
 		return wef.getSleepMillis() > 0L
-				? newWebDriverWait(wef.getTimeoutSeconds(), wef.getSleepMillis())
-						: newWebDriverWait(wef.getTimeoutSeconds());
+			? newWebDriverWait(wef.getTimeoutSeconds(), wef.getSleepMillis())
+				: newWebDriverWait(wef.getTimeoutSeconds());
 	}
 
 	/**
@@ -679,9 +679,10 @@ public class WebDriverTool implements SearchContext {
 		WebElement el = findElement(by);
 
 		@SuppressWarnings("unchecked")
-		Map<String, Long> result = (Map<String, Long>) executeScript(JS_GET_BOUNDING_CLIENT_RECT, el);
+		Map<String, Number> result = (Map<String, Number>) executeScript(JS_GET_BOUNDING_CLIENT_RECT, el);
 		Rectangle rectangle = new Rectangle(result.get("top").intValue(), result.get("left").intValue(),
-				result.get("bottom").intValue(), result.get("right").intValue());
+			result.get("bottom").intValue(), result.get("right").intValue(), result.get("width").intValue(),
+			result.get("height").intValue());
 
 		logger.info("Bounding client rect for {}: {}", by, rectangle);
 		return rectangle;

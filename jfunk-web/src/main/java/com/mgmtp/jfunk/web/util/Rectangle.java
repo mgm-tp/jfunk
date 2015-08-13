@@ -22,13 +22,15 @@ import org.apache.commons.lang3.builder.ToStringStyle;
  * @author rnaegele
  */
 public class Rectangle {
-	public int top, left, bottom, right;
+	public int top, left, bottom, right, width, height;
 
-	public Rectangle(final int top, final int left, final int bottom, final int right) {
+	public Rectangle(final int top, final int left, final int bottom, final int right, final int width, final int height) {
 		this.top = top;
 		this.left = left;
 		this.bottom = bottom;
 		this.right = right;
+		this.width = width;
+		this.height = height;
 	}
 
 	@Override
