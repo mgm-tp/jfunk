@@ -21,13 +21,13 @@ import static com.google.common.collect.Sets.difference;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.NotFoundException;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.SearchContext;
@@ -59,23 +59,8 @@ import com.mgmtp.jfunk.data.DataSet;
  * @author rnaegele
  * @since 3.1
  */
-public class WebDriverTool implements SearchContext {
-	protected final Logger logger = LoggerFactory.getLogger(getClass());
-
-	private static final String JS_APPEND_OPEN_WINDOW_LINK = "(function() { "
-		+ "var jFunkAnchorTag = document.createElement('a');"
-		+ "jFunkAnchorTag.appendChild(document.createTextNode('jfunk-new-window-link'));"
-		+ "jFunkAnchorTag.setAttribute('id', '%s');"
-		+ "jFunkAnchorTag.setAttribute('href', '%s');"
-		+ "jFunkAnchorTag.setAttribute('target', '_blank');"
-		+ "jFunkAnchorTag.setAttribute('style', 'display:block; z-index: 100000; position: relative;');"
-		+ "document.getElementsByTagName('body')[0].appendChild(jFunkAnchorTag);"
-		+ "}());";
-
-	private static final String JS_REMOVE_OPEN_WINDOW_LINK = "(function() { "
-		+ "var jFunkAnchorTag = document.getElementById('%s');"
-		+ "jFunkAnchorTag.parentNode.removeChild(jFunkAnchorTag);"
-		+ "}());";
+public final class WebDriverTool implements SearchContext {
+	private static final Logger LOGGER = LoggerFactory.getLogger(WebDriverTool.class);
 
 	private static final String JS_GET_BOUNDING_CLIENT_RECT = "return arguments[0].getBoundingClientRect();";
 
@@ -96,7 +81,7 @@ public class WebDriverTool implements SearchContext {
 	}
 
 	public void get(final String url) {
-		logger.info("GET {}", url);
+		LOGGER.info("GET {}", url);
 		webDriver.get(url);
 	}
 
@@ -392,14 +377,14 @@ public class WebDriverTool implements SearchContext {
 	 * @return {@code true} if the element was found and clicked, {@code false} otherwise
 	 */
 	public boolean tryClick(final By by) {
-		logger.info("Trying to click on {}", by);
+		LOGGER.info("Trying to click on {}", by);
 		List<WebElement> elements = wef.timeout(2L).by(by).findAll();
 		if (elements.size() > 0) {
 			elements.get(0).click();
-			logger.info("Click successful");
+			LOGGER.info("Click successful");
 			return true;
 		}
-		logger.info("Click not successful");
+		LOGGER.info("Click not successful");
 		return false;
 	}
 
@@ -455,7 +440,7 @@ public class WebDriverTool implements SearchContext {
 		Rectangle rect = getBoundingClientRect(by);
 		Point p = clickSpecs.getPoint(rect);
 
-		logger.info("Clicking on {} at offset: {}(x={}, y={})", by, clickSpecs, p.x, p.y);
+		LOGGER.info("Clicking on {} at offset: {}(x={}, y={})", by, clickSpecs, p.x, p.y);
 		new Actions(webDriver).moveToElement(element, p.x, p.y).click().perform();
 	}
 
@@ -684,7 +669,7 @@ public class WebDriverTool implements SearchContext {
 			result.get("bottom").intValue(), result.get("right").intValue(), result.get("width").intValue(),
 			result.get("height").intValue());
 
-		logger.info("Bounding client rect for {}: {}", by, rectangle);
+		LOGGER.info("Bounding client rect for {}: {}", by, rectangle);
 		return rectangle;
 	}
 
@@ -713,7 +698,7 @@ public class WebDriverTool implements SearchContext {
 	 * @return One of Boolean, Long, String, List or WebElement. Or null.
 	 */
 	public Object executeScript(final String script, final Object... args) {
-		logger.info("executeScript: {}", new ToStringBuilder(this, LoggingToStringStyle.INSTANCE).append("script", script).append("args", args));
+		LOGGER.info("executeScript: {}", new ToStringBuilder(this, LoggingToStringStyle.INSTANCE).append("script", script).append("args", args));
 		return ((JavascriptExecutor) webDriver).executeScript(script, args);
 	}
 
@@ -729,7 +714,7 @@ public class WebDriverTool implements SearchContext {
 	 * @return One of Boolean, Long, String, List or WebElement. Or null.
 	 */
 	public Object executeAsyncScript(final String script, final Object... args) {
-		logger.info("executeAsyncScript: {}", new ToStringBuilder(this, LoggingToStringStyle.INSTANCE).append("script", script).append("args", args));
+		LOGGER.info("executeAsyncScript: {}", new ToStringBuilder(this, LoggingToStringStyle.INSTANCE).append("script", script).append("args", args));
 		return ((JavascriptExecutor) webDriver).executeAsyncScript(script, args);
 	}
 
@@ -745,43 +730,33 @@ public class WebDriverTool implements SearchContext {
 	 * @return the handle of the window that opened the new window
 	 */
 	public String openNewWindow(final By openClickBy, final long timeoutSeconds) {
-		return openNewWindow(() -> click(openClickBy), timeoutSeconds);
+		return openNewWindow(() -> sendKeys(openClickBy, Keys.chord(Keys.CONTROL, Keys.RETURN)), timeoutSeconds);
 	}
 
 	/**
-	 * Opens a new window blank window ({@code about:blank}) and switches to it. The new window
-	 * is opened by inserting a new link with {@code target='_blank'} and
-	 * {@code href='about:blank'} at the end of the page, which is then clicked and removed
-	 * again afterwards.
+	 * Opens a new window blank window using {@code CONTROL + T} and switches to it.
+	 *
+	 *@param timeoutSeconds
+	 *            the timeout in seconds to wait for the new window to open
 	 *
 	 * @return the handle of the window that opened the new window
 	 */
-	public String openNewWindow() {
-		return openNewWindow("about:blank");
+	public String openNewWindow(final long timeoutSeconds) {
+		return openNewWindow(() -> sendKeys(By.cssSelector("body"), Keys.chord(Keys.CONTROL, "t")), timeoutSeconds);
 	}
 
 	/**
-	 * Opens a new window, switches to it, and loads the given URL in the new window. The new
-	 * window is opened by inserting a new link with {@code target='_blank'} and
-	 * {@code href='about:blank'} at the end of the page, which is then clicked and removed
-	 * again afterwards.
+	 * Opens a new window, switches to it, and loads the given URL in the new window.
 	 *
 	 * @param url
 	 *            the url to open
+	 * @param timeoutSeconds
+	 *            the timeout in seconds to wait for the new window to open
 	 * @return the handle of the window that opened the new window
 	 */
-	public String openNewWindow(final String url) {
-		String id = UUID.randomUUID().toString();
-		// add link
-		((JavascriptExecutor) webDriver).executeScript(String.format(JS_APPEND_OPEN_WINDOW_LINK, id, url));
-		String oldHandle = openNewWindow(By.id(id), 2L);
-		String newHandle = webDriver.getWindowHandle();
-
-		// remove link again
-		webDriver.switchTo().window(oldHandle);
-		((JavascriptExecutor) webDriver).executeScript(String.format(JS_REMOVE_OPEN_WINDOW_LINK, id));
-
-		webDriver.switchTo().window(newHandle);
+	public String openNewWindow(final String url, final long timeoutSeconds) {
+		String oldHandle = openNewWindow(timeoutSeconds);
+		get(url);
 		return oldHandle;
 	}
 
@@ -830,7 +805,7 @@ public class WebDriverTool implements SearchContext {
 	 * @return A TargetLocator which can be used to select a frame or window
 	 */
 	public TargetLocator switchTo() {
-		logger.info("Switching WebDriver...");
+		LOGGER.info("Switching WebDriver...");
 		return webDriver.switchTo();
 	}
 
@@ -838,7 +813,7 @@ public class WebDriverTool implements SearchContext {
 	 * Issues a log message before executing {@link WebDriver#close()}.
 	 */
 	public void close() {
-		logger.info("Closing window: {}", webDriver.getTitle());
+		LOGGER.info("Closing window: {}", webDriver.getTitle());
 		webDriver.close();
 	}
 }
