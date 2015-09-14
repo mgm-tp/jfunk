@@ -380,7 +380,8 @@ public final class WebDriverTool implements SearchContext {
 		LOGGER.info("Trying to click on {}", by);
 		List<WebElement> elements = wef.timeout(2L).by(by).findAll();
 		if (elements.size() > 0) {
-			elements.get(0).click();
+			WebElement element = elements.get(0);
+			new Actions(webDriver).moveToElement(element).click().perform();
 			LOGGER.info("Click successful");
 			return true;
 		}
@@ -422,7 +423,7 @@ public final class WebDriverTool implements SearchContext {
 	 */
 	public void click(final By by) {
 		WebElement element = findElement(by);
-		new Actions(webDriver).click(element).perform();
+		new Actions(webDriver).moveToElement(element).click().perform();
 	}
 
 	/**
