@@ -15,37 +15,32 @@
  */
 package com.mgmtp.jfunk.web.util;
 
-import static com.google.common.collect.Iterables.getOnlyElement;
-import static com.google.common.collect.Sets.difference;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.inject.Inject;
-
+import com.google.common.base.Function;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Sets.SetView;
+import com.mgmtp.jfunk.common.util.Configuration;
+import com.mgmtp.jfunk.common.util.JFunkUtils;
+import com.mgmtp.jfunk.data.DataSet;
+import com.mgmtp.jfunk.web.WebConstants;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.NotFoundException;
-import org.openqa.selenium.Point;
-import org.openqa.selenium.SearchContext;
-import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.*;
 import org.openqa.selenium.WebDriver.TargetLocator;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Sets.SetView;
-import com.mgmtp.jfunk.common.util.JFunkUtils;
-import com.mgmtp.jfunk.data.DataSet;
+import javax.inject.Inject;
+import javax.inject.Provider;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import static com.google.common.collect.Iterables.getOnlyElement;
+import static com.google.common.collect.Sets.difference;
+import static java.lang.String.format;
+import static org.apache.commons.lang3.StringUtils.trimToNull;
 
 /**
  * <p>
@@ -54,6 +49,28 @@ import com.mgmtp.jfunk.data.DataSet;
  * </p>
  * <p>
  * An script-scoped instance of this class can be retrieve via dependency injection.
+ * </p>
+ * <p>
+ * When using {@link WebDriver} to perform certain actions (e.g., click) on elements which are
+ * covered by some other elements, the action may succeed even if it would fail, if performed
+ * manually by the user. By enabling the flag {@link #topmostElementCheck}, the methods listed
+ * below will throw an {@link AssertionError} if the element in question is covered by some other
+ * element.
+ *     <ul>
+ *         <li>{@link #clear(By)}</li>
+ *         <li>{@link #click(By)}</li>
+ *         <li>{@link #click(By, ClickSpecs)}</li>
+ *         <li>{@link #contextClick(By)}</li>
+ *         <li>{@link #doubleClick(By)}</li>
+ *         <li>{@link #dragAndDrop(By, By)}</li>
+ *         <li>{@link #hover(By)}</li>
+ *         <li>{@link #openNewWindow(By, long)}</li>
+ *         <li>{@link #processField(By, String)}</li>
+ *         <li>{@link #processField(By, String, String)}</li>
+ *         <li>{@link #processField(By, String, String, Integer)}</li>
+ *         <li>{@link #sendKeys(By, CharSequence...)}</li>
+ *         <li>{@link #tryClick(By)}</li>
+ *     </ul>
  * </p>
  *
  * @author rnaegele
@@ -66,18 +83,29 @@ public final class WebDriverTool implements SearchContext {
 
 	private static final String JS_ELEMENT_FROM_POINT = "return document.elementFromPoint(arguments[0], arguments[1]);";
 
+	// jQuery's way of obtaining the viewport
+	private static final String JS_GET_VIEWPORT = "return {width:document.documentElement.clientWidth,height:document.documentElement.clientHeight};";
+
 	private final WebDriver webDriver;
 	private final WebElementFinder wef;
 	private final FormInputHandler fih;
 	private final Map<String, DataSet> dataSets;
 
+	private boolean topmostElementCheck;
+
 	@Inject
 	WebDriverTool(final WebDriver webDriver, final WebElementFinder wef, final FormInputHandler fih,
-		final Map<String, DataSet> dataSets) {
+		final Map<String, DataSet> dataSets, final Provider<Configuration> configProvider) {
 		this.webDriver = webDriver;
 		this.wef = wef;
 		this.fih = fih;
 		this.dataSets = dataSets;
+
+		Configuration config = configProvider.get();
+		String value = trimToNull(config.get(WebConstants.WDT_TOPMOST_ELEMENT_CHECK));
+		if (value != null) {
+			topmostElementCheck = Boolean.parseBoolean(value);
+		}
 	}
 
 	public void get(final String url) {
@@ -205,6 +233,8 @@ public final class WebDriverTool implements SearchContext {
 	 *            the {@link By} used to locate the element representing the target location
 	 */
 	public void dragAndDrop(final By sourceBy, final By targetBy) {
+		checkTopmostElement(sourceBy);
+		checkTopmostElement(targetBy);
 		WebElement source = findElement(sourceBy);
 		WebElement target = findElement(targetBy);
 		new Actions(webDriver).dragAndDrop(source, target).perform();
@@ -381,6 +411,7 @@ public final class WebDriverTool implements SearchContext {
 		List<WebElement> elements = wef.timeout(2L).by(by).findAll();
 		if (elements.size() > 0) {
 			WebElement element = elements.get(0);
+			checkTopmostElement(by);
 			new Actions(webDriver).moveToElement(element).click().perform();
 			LOGGER.info("Click successful");
 			return true;
@@ -400,6 +431,7 @@ public final class WebDriverTool implements SearchContext {
 	 *            the keys to send
 	 */
 	public void sendKeys(final By by, final CharSequence... keysToSend) {
+		checkTopmostElement(by);
 		findElement(by).sendKeys(keysToSend);
 	}
 
@@ -411,6 +443,7 @@ public final class WebDriverTool implements SearchContext {
 	 *            the {@link By} used to locate the element
 	 */
 	public void clear(final By by) {
+		checkTopmostElement(by);
 		findElement(by).clear();
 	}
 
@@ -422,6 +455,7 @@ public final class WebDriverTool implements SearchContext {
 	 *            the {@link By} used to locate the element
 	 */
 	public void click(final By by) {
+		checkTopmostElement(by);
 		WebElement element = findElement(by);
 		new Actions(webDriver).moveToElement(element).click().perform();
 	}
@@ -437,6 +471,7 @@ public final class WebDriverTool implements SearchContext {
 	 *            specifies an offset where to click within the bounds of the element
 	 */
 	public void click(final By by, final ClickSpecs clickSpecs) {
+		checkTopmostElement(by);
 		WebElement element = findElement(by);
 		Rectangle rect = getBoundingClientRect(by);
 		Point p = clickSpecs.getPoint(rect);
@@ -453,6 +488,7 @@ public final class WebDriverTool implements SearchContext {
 	 *            the {@link By} used to locate the element
 	 */
 	public void contextClick(final By by) {
+		checkTopmostElement(by);
 		WebElement element = findElement(by);
 		new Actions(webDriver).contextClick(element).perform();
 	}
@@ -465,6 +501,7 @@ public final class WebDriverTool implements SearchContext {
 	 *            the {@link By} used to locate the element
 	 */
 	public void doubleClick(final By by) {
+		checkTopmostElement(by);
 		WebElement element = findElement(by);
 		new Actions(webDriver).doubleClick(element).perform();
 	}
@@ -477,6 +514,7 @@ public final class WebDriverTool implements SearchContext {
 	 *            the {@link By} used to locate the element
 	 */
 	public void hover(final By by) {
+		checkTopmostElement(by);
 		WebElement element = findElement(by);
 		new Actions(webDriver).moveToElement(element).perform();
 	}
@@ -497,6 +535,7 @@ public final class WebDriverTool implements SearchContext {
 
 		return waitFor((ExpectedCondition<WebElement>) input -> {
 			WebElement element = finder.by(by).find();
+			checkTopmostElement(by);
 			new Actions(webDriver).moveToElement(element).perform();
 			return finder.by(byToAppear).find();
 		});
@@ -618,6 +657,7 @@ public final class WebDriverTool implements SearchContext {
 	 *            specifies data set key
 	 */
 	public void processField(final By by, final String dataSetKey, final String dataKey) {
+		checkTopmostElement(by);
 		fih.by(by).dataSet(dataSets.get(dataSetKey)).dataKey(dataKey).perform();
 	}
 
@@ -636,6 +676,7 @@ public final class WebDriverTool implements SearchContext {
 	 *            the index for looking up dat value in the data set
 	 */
 	public void processField(final By by, final String dataSetKey, final String dataKey, final Integer dataIndex) {
+		checkTopmostElement(by);
 		fih.by(by).dataSet(dataSets.get(dataSetKey)).dataKeyWithIndex(dataKey, dataIndex).perform();
 	}
 
@@ -650,6 +691,7 @@ public final class WebDriverTool implements SearchContext {
 	 *            the value to set the field to
 	 */
 	public void processField(final By by, final String value) {
+		checkTopmostElement(by);
 		fih.by(by).value(value).perform();
 	}
 
@@ -672,6 +714,22 @@ public final class WebDriverTool implements SearchContext {
 
 		LOGGER.info("Bounding client rect for {}: {}", by, rectangle);
 		return rectangle;
+	}
+
+	/**
+	 * Returns the size of the viewport excluding, if rendered, the vertical and horizontal scrollbars.
+	 * Uses JavaScript calling document.documentElement.client[Width|Height]().
+	 *
+	 * @return the rectangle
+	 */
+	public Rectangle getViewport() {
+		@SuppressWarnings("unchecked")
+		Map<String, Number> result = (Map<String, Number>) executeScript(JS_GET_VIEWPORT);
+		int width = result.get("width").intValue();
+		int height = result.get("height").intValue();
+		Rectangle viewport = new Rectangle(0, 0, height, width, width, height);
+		LOGGER.info("Viewport rectangle: {}", viewport);
+		return viewport;
 	}
 
 	/**
@@ -731,6 +789,7 @@ public final class WebDriverTool implements SearchContext {
 	 * @return the handle of the window that opened the new window
 	 */
 	public String openNewWindow(final By openClickBy, final long timeoutSeconds) {
+		checkTopmostElement(openClickBy);
 		return openNewWindow(() -> sendKeys(openClickBy, Keys.chord(Keys.CONTROL, Keys.RETURN)), timeoutSeconds);
 	}
 
@@ -816,5 +875,76 @@ public final class WebDriverTool implements SearchContext {
 	public void close() {
 		LOGGER.info("Closing window: {}", webDriver.getTitle());
 		webDriver.close();
+	}
+
+	/**
+	 * Asserts that the element is not covered by any other element.
+	 *
+	 * @param by
+	 *            the {@link By} used to locate the element.
+	 * @throws WebElementException
+	 * 				if the element cannot be located or moved into the viewport.
+	 * @throws AssertionError
+	 * 				if the element is covered by some other element.
+	 */
+	public void assertTopmostElement(By by) {
+		LOGGER.info("Checking whether the element identified by '{}' is the topmost element.", by);
+		Point elementsVisibleCenterPoint = getElementsVisibleRectangle(by).center();
+		WebElement topmostElement = elementFromPoint(elementsVisibleCenterPoint.x, elementsVisibleCenterPoint.y);
+		if (topmostElement == null) {
+			throw new WebElementException(format("The element identified by '%s' is outside the viewport.", by));
+		}
+		WebElement element = findElement(by);
+		if (!element.equals(topmostElement)) {
+			throw new AssertionError(format("The element '%s' identified by '%s' is covered by '%s'.",
+					outerHtmlPreview(element), by, outerHtmlPreview(topmostElement)));
+		}
+	}
+
+	/**
+	 * @return {@code true} if the topmost element check is enabled, otherwise {@code false}.
+	 */
+	public boolean isTopmostElementCheck() {
+		return topmostElementCheck;
+	}
+
+	/**
+	 * Sets the topmost element check flag to the specified value.
+	 *
+	 * @param topmostElementCheck
+	 * 			new value.
+	 */
+	public void setTopmostElementCheck(boolean topmostElementCheck) {
+		LOGGER.info("{}abling the topmost element check.", topmostElementCheck ? "En" : "Dis");
+		this.topmostElementCheck = topmostElementCheck;
+	}
+
+	private void checkTopmostElement(By by) {
+		if (topmostElementCheck) {
+			assertTopmostElement(by);
+		}
+	}
+
+	private Rectangle getElementsVisibleRectangle(By by) {
+		Rectangle viewport = getViewport();
+		Rectangle intersection = viewport.intersection(getBoundingClientRect(by));
+		if (intersection == null) {
+			LOGGER.info("Scrolling the element identified by '{}' into the viewport.", by);
+			new Actions(webDriver).moveToElement(findElement(by)).perform();
+			intersection = viewport.intersection(getBoundingClientRect(by));
+			if (intersection == null) {
+				throw new WebElementException(format("The element identified by '%s' is outside the viewport.", by));
+			}
+		}
+		return intersection;
+	}
+
+	private String outerHtmlPreview(WebElement webElement) {
+		String outerHtml = webElement.getAttribute("outerHTML");
+		int maxPreviewLength = 256;
+		if (outerHtml.length() > maxPreviewLength) {
+			outerHtml = outerHtml.substring(0, maxPreviewLength) + "...";
+		}
+		return outerHtml;
 	}
 }
