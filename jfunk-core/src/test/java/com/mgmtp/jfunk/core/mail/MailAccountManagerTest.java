@@ -36,6 +36,7 @@ import org.testng.annotations.Test;
 
 import com.google.common.base.Charsets;
 import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.SetMultimap;
 import com.google.common.eventbus.EventBus;
 import com.google.inject.util.Providers;
@@ -44,7 +45,7 @@ import com.mgmtp.jfunk.common.util.Configuration;
 
 /**
  * Unit test for the DefaultMailHandler.
- * 
+ *
  * @author rnaegele
  * @since 3.1.0
  */
@@ -255,5 +256,13 @@ public class MailAccountManagerTest {
 		} finally {
 			eventBus.unregister(purger);
 		}
+	}
+
+	@Test
+	public void reservedAccountWithDefaultReservationKeyShouldBeAvailable() {
+		init(1);
+		MailAccount actual = manager.reserveMailAccount();
+		MailAccount expected = Iterables.getOnlyElement(manager.getReservedMailAccountsForCurrentThread());
+		assertThat(actual).isSameAs(expected);
 	}
 }
