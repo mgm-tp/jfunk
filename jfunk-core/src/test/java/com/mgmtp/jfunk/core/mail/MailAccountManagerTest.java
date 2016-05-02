@@ -61,8 +61,8 @@ public class MailAccountManagerTest {
 	@DataProvider(name = "poolSizes")
 	public Object[][] createPoolSizes() {
 		return new Object[][] {
-				new Object[] { new Integer(1) },
-				new Object[] { new Integer(2) }
+			new Object[] { new Integer(1) },
+			new Object[] { new Integer(2) }
 		};
 	}
 
@@ -111,7 +111,7 @@ public class MailAccountManagerTest {
 		assertThat(foundConfiguredEMail).describedAs("Configured account not found in pool: " + pool).isTrue();
 		assertThat(account).describedAs("A different account was returned for the same thread").isSameAs(account2);
 
-		final AtomicReference<MailAccount> accountRef = new AtomicReference<MailAccount>();
+		final AtomicReference<MailAccount> accountRef = new AtomicReference<>();
 		Thread th = new Thread() {
 			@Override
 			public void run() {
@@ -155,8 +155,8 @@ public class MailAccountManagerTest {
 					@Override
 					public void run() {
 						MailAccount account = manager.reserveMailAccount(
-								String.format("key_%d_%d", poolIndex, accountIndex),
-								String.format("pool_%d", poolIndex));
+							String.format("key_%d_%d", poolIndex, accountIndex),
+							String.format("pool_%d", poolIndex));
 						accounts.add(account);
 					}
 				};
@@ -251,8 +251,8 @@ public class MailAccountManagerTest {
 		try {
 			MailAccount mailAccount = manager.reserveMailAccount();
 			verify(purger)
-					.purgeMailbox(
-							new MailAccountReservationEvent(MailAccountManager.DEFAULT_ACCOUNT_RESERVATION_KEY, mailAccount));
+			.purgeMailbox(
+				new MailAccountReservationEvent(MailAccountManager.DEFAULT_ACCOUNT_RESERVATION_KEY, mailAccount));
 		} finally {
 			eventBus.unregister(purger);
 		}
