@@ -186,17 +186,17 @@
 			<dependency>
 				<groupId>commons-io</groupId>
 				<artifactId>commons-io</artifactId>
-				<version>2.4</version>
+				<version>2.5</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.commons</groupId>
 				<artifactId>commons-lang3</artifactId>
-				<version>3.1</version>
+				<version>3.4</version>
 			</dependency>
 			<dependency>
 				<groupId>javax.mail</groupId>
 				<artifactId>mail</artifactId>
-				<version>1.4.5</version>
+				<version>1.5.0-b01</version>
 				<exclusions>
 					<exclusion>
 						<groupId>javax.activation</groupId>
@@ -217,7 +217,7 @@
 			<dependency>
 				<groupId>com.google.code.findbugs</groupId>
 				<artifactId>jsr305</artifactId>
-				<version>2.0.2</version>
+				<version>3.0.1</version>
 			</dependency>
 			<dependency>
 				<groupId>org.codehaus.groovy</groupId>
@@ -257,7 +257,7 @@
 			<dependency>
 				<groupId>xmlunit</groupId>
 				<artifactId>xmlunit</artifactId>
-				<version>1.5</version>
+				<version>1.6</version>
 				<scope>test</scope>
 			</dependency>
 			<dependency>
@@ -297,7 +297,7 @@
 			<dependency>
 				<groupId>org.testng</groupId>
 				<artifactId>testng</artifactId>
-				<version>6.8.7</version>
+				<version>6.9.11</version>
 				<exclusions>
 					<exclusion>
 						<artifactId>junit</artifactId>
@@ -328,7 +328,7 @@
 			<dependency>
 				<groupId>ch.qos.logback</groupId>
 				<artifactId>logback-classic</artifactId>
-				<version>1.0.13</version>
+				<version>1.1.7</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.poi</groupId>
@@ -349,7 +349,7 @@
 			<dependency>
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
-				<version>4.7</version>
+				<version>4.12</version>
 			</dependency>
 			<dependency>
 				<groupId>org.mockito</groupId>
@@ -364,7 +364,7 @@
 			<dependency>
 				<groupId>com.ibm.icu</groupId>
 				<artifactId>icu4j</artifactId>
-				<version>52.1</version>
+				<version>57.1</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
@@ -387,10 +387,10 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<guice.version>4.0</guice.version>
 		<jersey.version>1.17.1</jersey.version>
-		<slf4j.version>1.7.5</slf4j.version>
+		<slf4j.version>1.7.21</slf4j.version>
 		<poi.version>3.9</poi.version>
 		<sonar.skippedModules>jfunk-samples</sonar.skippedModules>
-		<groovy.version>2.4.3</groovy.version>
+		<groovy.version>2.4.6</groovy.version>
 		<groovy-eclipse-compiler.version>2.9.2-01</groovy-eclipse-compiler.version>
 		<groovy-eclipse-batch.version>2.4.3-01</groovy-eclipse-batch.version>
 		<argLine>-Dfile.encoding=UTF-8 -Xmx512m</argLine>

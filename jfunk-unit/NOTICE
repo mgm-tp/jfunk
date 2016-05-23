@@ -4,28 +4,37 @@
 // ------------------------------------------------------------------
 
 jFunk Unit Test Integration
-Copyright 2015 mgm technology partners GmbH
+Copyright 2016 mgm technology partners GmbH
 
 From: 'an unknown organization'
   - AOP alliance (http://aopalliance.sourceforge.net) aopalliance:aopalliance:jar:1.0
     License: Public Domain 
-  - JCommander (http://beust.com/jcommander) com.beust:jcommander:jar:1.27
+  - JCommander (http://beust.com/jcommander) com.beust:jcommander:jar:1.48
     License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
-  - FindBugs-jsr305 (http://findbugs.sourceforge.net/) com.google.code.findbugs:jsr305:jar:2.0.2
+  - FindBugs-jsr305 (http://findbugs.sourceforge.net/) com.google.code.findbugs:jsr305:jar:3.0.1
     License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
   - Guava: Google Core Libraries for Java (http://code.google.com/p/guava-libraries/guava) com.google.guava:guava:bundle:15.0
     License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
   - javax.inject (http://code.google.com/p/atinject/) javax.inject:javax.inject:jar:1
     License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+  - Hamcrest Core (https://github.com/hamcrest/JavaHamcrest/hamcrest-core) org.hamcrest:hamcrest-core:jar:1.3
+    License: New BSD License  (http://www.opensource.org/licenses/bsd-license.php)
   - JDOM (http://www.jdom.org/) org.jdom:jdom:jar:1.1
   - Mockito (http://www.mockito.org) org.mockito:mockito-core:jar:1.9.5
     License: The MIT License  (http://code.google.com/p/mockito/wiki/License)
   - Objenesis (http://objenesis.googlecode.com/svn/docs/index.html) org.objenesis:objenesis:jar:1.0
     License: MIT License  (http://objenesis.googlecode.com/svn/docs/license.html)
-  - TestNG (http://testng.org) org.testng:testng:jar:6.8.7
-    License: Apache License, Version 2.0  (http://apache.org/licenses/LICENSE-2.0)
-  - SnakeYAML (http://www.snakeyaml.org) org.yaml:snakeyaml:bundle:1.12
-    License: Apache License Version 2.0  (LICENSE.txt)
+  - testng  org.testng:testng:jar:6.9.11
+
+From: 'Apache Software Foundation' (http://groovy-lang.org)
+  - Apache Groovy (http://groovy-lang.org) org.codehaus.groovy:groovy:jar:2.4.6
+    License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+  - Apache Groovy (http://groovy-lang.org) org.codehaus.groovy:groovy-jsr223:jar:2.4.6
+    License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+From: 'Apache Software Foundation'
+  - org.apache.tools.ant (http://ant.apache.org/ant/) org.apache.ant:ant:jar:1.7.0
+  - ant-launcher (http://ant.apache.org/ant-launcher/) org.apache.ant:ant-launcher:jar:1.7.0
 
 From: 'Codehaus' (http://www.codehaus.org/)
   - Plexus Common Utilities (http://plexus.codehaus.org/plexus-utils) org.codehaus.plexus:plexus-utils:jar:3.0.15
@@ -39,50 +48,40 @@ From: 'Google, Inc.' (http://www.google.com)
   - Google Guice - Extensions - MultiBindings (https://github.com/google/guice/extensions-parent/guice-multibindings) com.google.inject.extensions:guice-multibindings:jar:4.0
     License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-From: 'Hamcrest' (http://code.google.com/p/hamcrest)
-  - Hamcrest Core  org.hamcrest:hamcrest-core:jar:1.1
-    License: BSD style  (http://www.opensource.org/licenses/bsd-license.php)
-
 From: 'http://www.beanshell.org/'
   - BeanShell  org.beanshell:bsh:jar:2.0b4
     License: GNU LESSER GENERAL PUBLIC LICENSE  (http://www.gnu.org/licenses/lgpl.txt)
 
 From: 'JUnit' (http://www.junit.org)
-  - JUnit (http://junit.org) junit:junit:jar:4.7
-    License: Common Public License Version 1.0  (http://www.opensource.org/licenses/cpl1.0.txt)
+  - JUnit (http://junit.org) junit:junit:jar:4.12
+    License: Eclipse Public License 1.0  (http://www.eclipse.org/legal/epl-v10.html)
 
 
 From: 'Oracle' (http://www.oracle.com)
-  - JavaMail API (compat) (http://kenai.com/projects/javamail/mail) javax.mail:mail:jar:1.4.5
+  - JavaMail API (compat) (http://kenai.com/projects/javamail/mail) javax.mail:mail:jar:1.5.0-b01
     License: CDDL  (http://www.sun.com/cddl)
-    License: GPLv2+CE  (https://glassfish.dev.java.net/public/CDDL+GPL.html)
+    License: GPLv2+CE  (https://glassfish.java.net/public/CDDL+GPL_1_1.html)
 
 From: 'QOS.ch' (http://www.qos.ch)
-  - Logback Classic Module (http://logback.qos.ch) ch.qos.logback:logback-classic:jar:1.0.13
+  - Logback Classic Module (http://logback.qos.ch/logback-classic) ch.qos.logback:logback-classic:jar:1.1.7
     License: Eclipse Public License - v 1.0  (http://www.eclipse.org/legal/epl-v10.html)
     License: GNU Lesser General Public License  (http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html)
-  - Logback Core Module (http://logback.qos.ch) ch.qos.logback:logback-core:jar:1.0.13
+  - Logback Core Module (http://logback.qos.ch/logback-core) ch.qos.logback:logback-core:jar:1.1.7
     License: Eclipse Public License - v 1.0  (http://www.eclipse.org/legal/epl-v10.html)
     License: GNU Lesser General Public License  (http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html)
-  - JCL 1.1.1 implemented over SLF4J (http://www.slf4j.org) org.slf4j:jcl-over-slf4j:jar:1.7.5
+  - JCL 1.1.1 implemented over SLF4J (http://www.slf4j.org) org.slf4j:jcl-over-slf4j:jar:1.7.21
     License: MIT License  (http://www.opensource.org/licenses/mit-license.php)
-  - JUL to SLF4J bridge (http://www.slf4j.org) org.slf4j:jul-to-slf4j:jar:1.7.5
+  - JUL to SLF4J bridge (http://www.slf4j.org) org.slf4j:jul-to-slf4j:jar:1.7.21
     License: MIT License  (http://www.opensource.org/licenses/mit-license.php)
-  - Log4j Implemented Over SLF4J (http://www.slf4j.org) org.slf4j:log4j-over-slf4j:jar:1.7.5
+  - Log4j Implemented Over SLF4J (http://www.slf4j.org) org.slf4j:log4j-over-slf4j:jar:1.7.21
     License: Apache Software Licenses  (http://www.apache.org/licenses/LICENSE-2.0.txt)
-  - SLF4J API Module (http://www.slf4j.org) org.slf4j:slf4j-api:jar:1.7.5
+  - SLF4J API Module (http://www.slf4j.org) org.slf4j:slf4j-api:jar:1.7.21
     License: MIT License  (http://www.opensource.org/licenses/mit-license.php)
 
 From: 'The Apache Software Foundation' (http://www.apache.org/)
-  - Commons IO (http://commons.apache.org/io/) commons-io:commons-io:jar:2.4
-    License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
-  - Commons Lang (http://commons.apache.org/lang/) org.apache.commons:commons-lang3:jar:3.1
-    License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
-
-From: 'The Codehaus' (http://codehaus.org)
-  - Groovy (http://groovy.codehaus.org/) org.codehaus.groovy:groovy:jar:2.4.3
-    License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
-  - Groovy (http://groovy.codehaus.org/) org.codehaus.groovy:groovy-jsr223:jar:2.4.3
-    License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+  - Apache Commons IO (http://commons.apache.org/proper/commons-io/) commons-io:commons-io:jar:2.5
+    License: Apache License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+  - Apache Commons Lang (http://commons.apache.org/proper/commons-lang/) org.apache.commons:commons-lang3:jar:3.4
+    License: Apache License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 
