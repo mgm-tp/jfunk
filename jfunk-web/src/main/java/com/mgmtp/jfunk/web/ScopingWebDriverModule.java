@@ -50,15 +50,15 @@ import com.mgmtp.jfunk.web.util.WebElementFinder;
 /**
  * Base Guice module using the scope annotation passed in the constructor in order to correctly
  * scope {@link WebDriver}-related bindings.
- * 
+ *
  * @author rnaegele
  * @since 3.1
  */
 abstract class ScopingWebDriverModule extends BaseWebDriverModule {
 
 	private static final Pattern HOST_EXTRACTION_PATTERN =
-			Pattern.compile("(?<=\\Q" + WebConstants.HTMLUNIT_CREDENTIALS_PREFIX + ".\\E).*(?=\\Q." + JFunkConstants.PASSWORD
-					+ "\\E)");
+		Pattern.compile("(?<=\\Q" + WebConstants.HTMLUNIT_CREDENTIALS_PREFIX + ".\\E).*(?=\\Q." + JFunkConstants.PASSWORD
+			+ "\\E)");
 
 	private final Class<? extends Annotation> scopeAnnotationClass;
 
@@ -72,10 +72,10 @@ abstract class ScopingWebDriverModule extends BaseWebDriverModule {
 		// The Multibinder for the event listener will then link to this binding so it may be overridden.
 		// This is necessary because multibindings themselves cannot be overridden.
 		bind(WebDriverEventListener.class).annotatedWith(DefaultWebDriverEventListener.class).to(
-				JFunkWebDriverEventListener.class);
+			JFunkWebDriverEventListener.class);
 		bindWebDriverEventListener().to(Key.get(WebDriverEventListener.class, DefaultWebDriverEventListener.class));
 
-		bind(BrowserVersion.class).toInstance(BrowserVersion.INTERNET_EXPLORER_8);
+		bind(BrowserVersion.class).toInstance(BrowserVersion.BEST_SUPPORTED);
 		bind(AjaxController.class).to(NicelyResynchronizingAjaxController.class);
 		bind(DumpFileCreator.class);
 
@@ -127,8 +127,8 @@ abstract class ScopingWebDriverModule extends BaseWebDriverModule {
 		log.info(WebConstants.HTMLUNIT_LOG_INCORRECT_CODE + "=" + logIncorrectCode);
 
 		return new HtmlUnitWebDriverParams(connectionTimeout, refuseCookies, redirect, javascriptEnabled, cssEnabled,
-				validateJavascript,
-				ignoreResponseCode, autoRefresh, logIncorrectCode);
+			validateJavascript,
+			ignoreResponseCode, autoRefresh, logIncorrectCode);
 	}
 
 	@Provides
@@ -159,12 +159,7 @@ abstract class ScopingWebDriverModule extends BaseWebDriverModule {
 		Map<String, CredentialsProvider> result = newHashMapWithExpectedSize(1);
 
 		// extract sorted credential keys
-		Set<String> credentialKeys = newTreeSet(Maps.filterKeys(config, new Predicate<String>() {
-			@Override
-			public boolean apply(final String input) {
-				return input.startsWith(WebConstants.HTMLUNIT_CREDENTIALS_PREFIX);
-			}
-		}).keySet());
+		Set<String> credentialKeys = newTreeSet(Maps.filterKeys(config, (Predicate<String>) input -> input.startsWith(WebConstants.HTMLUNIT_CREDENTIALS_PREFIX)).keySet());
 
 		for (Iterator<String> it = credentialKeys.iterator(); it.hasNext();) {
 			String key = it.next();

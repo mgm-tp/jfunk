@@ -63,8 +63,8 @@ public class JFunkWebDriverEventListener implements WebDriverEventListener {
 
 	@Inject
 	public JFunkWebDriverEventListener(final Configuration config,
-			@ModuleArchiveDir final Provider<File> moduleArchiveDirProvider,
-			final Provider<DumpFileCreator> dumpFileCreatorProvider) {
+		@ModuleArchiveDir final Provider<File> moduleArchiveDirProvider,
+		final Provider<DumpFileCreator> dumpFileCreatorProvider) {
 		this.config = config;
 		this.moduleArchiveDirProvider = moduleArchiveDirProvider;
 		this.dumpFileCreatorProvider = dumpFileCreatorProvider;
@@ -72,7 +72,7 @@ public class JFunkWebDriverEventListener implements WebDriverEventListener {
 		for (SaveOutput saveOutput : SaveOutput.values()) {
 			// active flag for every output type
 			saveOutputMap.put(saveOutput, config.getBoolean(JFunkConstants.ARCHIVE_INCLUDE + saveOutput.getIdentifier(),
-					saveOutput.isActiveByDefault()));
+				saveOutput.isActiveByDefault()));
 		}
 	}
 
@@ -94,7 +94,7 @@ public class JFunkWebDriverEventListener implements WebDriverEventListener {
 
 				DumpFileCreator dumpFileCreator = dumpFileCreatorProvider.get();
 				File htmlFile = dumpFileCreator.createDumpFile(new File(moduleArchiveDirProvider.get(), "htmldump"), "html",
-						urlString, null);
+					urlString, null);
 				try {
 					if (htmlFile.exists()) {
 						htmlFile.delete();
@@ -124,6 +124,16 @@ public class JFunkWebDriverEventListener implements WebDriverEventListener {
 
 	@Override
 	public void afterNavigateForward(final WebDriver driver) {
+		// unused
+	}
+
+	@Override
+	public void beforeNavigateRefresh(final WebDriver driver) {
+		// unused
+	}
+
+	@Override
+	public void afterNavigateRefresh(final WebDriver driver) {
 		// unused
 	}
 
@@ -178,7 +188,7 @@ public class JFunkWebDriverEventListener implements WebDriverEventListener {
 	 * collected inside the same subdirectory. The subdirectory uses
 	 * {@link SaveOutput#getIdentifier()} for its name. If an alert is present, saving is not
 	 * supported and thus skipped.
-	 * 
+	 *
 	 * @param action
 	 *            the event which triggered to save the page. Will be included in the filename.
 	 * @param triggeredBy
@@ -226,7 +236,7 @@ public class JFunkWebDriverEventListener implements WebDriverEventListener {
 			File f = null;
 			try {
 				f = dumpFileCreatorProvider.get().createDumpFile(new File(moduleArchiveDir, saveOutput.getIdentifier()),
-						saveOutput.getExtension(), driver.getCurrentUrl(), action);
+					saveOutput.getExtension(), driver.getCurrentUrl(), action);
 
 				if (f == null) {
 					return;
@@ -243,7 +253,7 @@ public class JFunkWebDriverEventListener implements WebDriverEventListener {
 						writeStringToFile(f, html.toString(), "UTF-8");
 						copyFile(f, new File(moduleArchiveDir, JFunkConstants.LASTPAGE_HTML));
 						log.trace("Saving page: filename={}, action={}, trigger={}, response={}",
-								f.getName(), action, triggeredBy, driver.getCurrentUrl());
+							f.getName(), action, triggeredBy, driver.getCurrentUrl());
 						break;
 					case PNG:
 						if (driver instanceof TakesScreenshot) {
@@ -251,7 +261,7 @@ public class JFunkWebDriverEventListener implements WebDriverEventListener {
 							if (tmpFile != null) {
 								copyFile(tmpFile, f);
 								log.trace("Saving page: filename={}, action={}, trigger={}, response={}",
-										f.getName(), action, triggeredBy, driver.getCurrentUrl());
+									f.getName(), action, triggeredBy, driver.getCurrentUrl());
 								deleteQuietly(tmpFile);
 							}
 						}
@@ -265,8 +275,8 @@ public class JFunkWebDriverEventListener implements WebDriverEventListener {
 						 */
 						if (WebDriverUtils.isHtmlUnitDriver(driver)) {
 							String content = ((HtmlPage) WebDriverUtils.getHtmlUnitDriverWebClient(driver).getCurrentWindow()
-									.getEnclosedPage())
-									.getWebResponse().getContentAsString();
+								.getEnclosedPage())
+								.getWebResponse().getContentAsString();
 							writeStringToFile(f, content, "UTF-8");
 							HtmlValidatorUtil.validateHtml(f.getParentFile(), config, f);
 						}
