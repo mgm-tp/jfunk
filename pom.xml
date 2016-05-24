@@ -115,6 +115,17 @@
 					<artifactId>build-helper-maven-plugin</artifactId>
 					<version>1.7</version>
 				</plugin>
+				<plugin>
+					<groupId>org.jfrog.buildinfo</groupId>
+					<artifactId>artifactory-maven-plugin</artifactId>
+					<configuration>
+						<deployProperties>
+							<bintray.repo>mgm-tp/mgm-oss-maven-repo</bintray.repo>
+							<bintray.package>jFunk</bintray.package>
+							<bintray.version>${project.version}</bintray.version>
+						</deployProperties>
+					</configuration>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 		<plugins>
@@ -394,8 +405,5 @@
 		<groovy-eclipse-compiler.version>2.9.2-01</groovy-eclipse-compiler.version>
 		<groovy-eclipse-batch.version>2.4.3-01</groovy-eclipse-batch.version>
 		<argLine>-Dfile.encoding=UTF-8 -Xmx512m</argLine>
-		<bintray.repo>mgm-tp/mgm-oss-maven-repo</bintray.repo>
-		<bintray.package>jFunk</bintray.package>
-		<bintray.version>${project.version}</bintray.version>
 	</properties>
 </project>
