@@ -17,6 +17,7 @@ package com.mgmtp.jfunk.web.util;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.openqa.selenium.Point;
 
 /**
  * @author rnaegele
@@ -31,6 +32,36 @@ public class Rectangle {
 		this.right = right;
 		this.width = width;
 		this.height = height;
+	}
+
+	/**
+	 * Returns the point that specifies the center of the rectangle.
+	 *
+	 * @return center of the rectangle.
+	 */
+	public Point center() {
+		return new Point(left + width / 2, top + height / 2);
+	}
+
+	/**
+	 * Returns the intersection with the other rectangle or null if the two rectangles do not intersect.
+	 *
+	 * @param other the other rectangle.
+	 *
+	 * @return intersection rectangle or null.
+	 */
+	public Rectangle intersection(Rectangle other) {
+		int left = Math.max(this.left, other.left);
+		int top = Math.max(this.top, other.top);
+		int right = Math.min(this.right, other.right);
+		int bottom = Math.min(this.bottom, other.bottom);
+		if (right >= left && bottom >= top) {
+			int height = bottom - top;
+			int width = right - left;
+			return new Rectangle(top, left, bottom, right, width, height);
+		} else {
+			return null;
+		}
 	}
 
 	@Override
