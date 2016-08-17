@@ -1,3 +1,4 @@
+#!/bin/sh
 #
 # Copyright (c) 2015 mgm technology partners GmbH
 #
@@ -14,11 +15,13 @@
 # limitations under the License.
 #
 
-# $Id$
 
-# Guice modules to load in addition to JFunkModule which is always loaded
-# by default. The order in which the modules are listed is irrelevant.
-module.1=com.mgmtp.jfunk.data.generator.config.GeneratorModule
-module.2=com.mgmtp.jfunk.web.WebDriverModule
-module.3=com.mgmtp.jfunk.core.event.EventLoggingModule
-module.4=com.mgmtp.jfunk.samples.config.SamplesGeneratorModule
+# Do not edit! Automagically processed by Maven.
+JFUNK_VERSION=3.2.0-SNAPSHOT
+
+# Environment Variable Prequisites
+# JAVA_HOME   (Optional) Points at your Java Development Kit installation
+# JAVA_OPTS   (Optional) Java runtime options
+# APP_OPTS    (Optional) Application runtime options
+JAVA_OPTS="$JAVA_OPTS "-Xmx1g" "-XX:MaxPermSize=128m
+APP_OPTS="$APP_OPTS "-Dfile.encoding=UTF-8

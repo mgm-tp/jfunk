@@ -57,9 +57,9 @@
 			<email>daniela.stoemmer@mgm-tp.com</email>
 		</developer>
 		<developer>
-			<id>rnaegele</id>
-			<name>Reinhard Nägele</name>
-			<email>reinhard.naegele@mgm-tp.com</email>
+			<id>sstrohmaier</id>
+			<name>Stephan Strohmaier</name>
+			<email>stephan.strohmaier@mgm-tp.com</email>
 		</developer>
 		<developer>
 			<id>mvarendo</id>
@@ -73,6 +73,7 @@
 		<module>jfunk-data</module>
 		<module>jfunk-data-generator</module>
 		<module>jfunk-data-excel</module>
+		<module>jfunk-integrationtest</module>
 		<module>jfunk-samples</module>
 		<module>jfunk-unit</module>
 		<module>jfunk-web</module>
@@ -408,6 +409,7 @@
 		<slf4j.version>1.7.21</slf4j.version>
 		<poi.version>3.9</poi.version>
 		<sonar.skippedModules>jfunk-samples</sonar.skippedModules>
+		<sonar.skippedModules>jfunk-integrationtest</sonar.skippedModules>
 		<groovy.version>2.4.6</groovy.version>
 		<groovy-eclipse-compiler.version>2.9.2-01</groovy-eclipse-compiler.version>
 		<groovy-eclipse-batch.version>2.4.3-01</groovy-eclipse-batch.version>

@@ -68,6 +68,11 @@ public final class WebConstants {
 	public static final String WEBDRIVER_DONT_QUIT = "webdriver.dont.quit";
 
 	/*
+	 * Properties for WebDriverTools
+	 */
+	public static final String WDT_TOPMOST_ELEMENT_CHECK = "wdt.topmostElementCheck";
+
+	/*
 	 * Properties for the default WebElementFinder
 	 */
 	public static final String WEF_ENABLED = "wef.enabled";

@@ -60,6 +60,9 @@ public abstract class BaseWebDriverProvider implements Provider<WebDriver> {
 
 		DesiredCapabilities capabilities = capabilitiesMap.get(webDriverKey);
 
+		// we must disable WebDriver's overlapping check to be able to use our own topMostElementCheck flag
+		capabilities.setCapability("overlappingCheckDisabled", true);
+
 		// post event so users can customize capabilities
 		eventBus.post(new BeforeWebDriverCreationEvent(webDriverKey, capabilities));
 
