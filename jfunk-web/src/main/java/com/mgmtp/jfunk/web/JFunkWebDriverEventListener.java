@@ -157,13 +157,31 @@ public class JFunkWebDriverEventListener implements WebDriverEventListener {
 		savePage(driver, "afterClick", element.toString());
 	}
 
-	@Override
+	/**
+	 * @deprecated As of Selenium Release 3.0.0, replaced by {@link #beforeChangeValueOf(final
+	 *             WebElement element, final WebDriver driver, CharSequence[] keysToSend)}
+	 */
+	@Deprecated
 	public void beforeChangeValueOf(final WebElement element, final WebDriver driver) {
-		// unused
+		beforeChangeValueOf(element, driver, null);
 	}
 
 	@Override
+	public void beforeChangeValueOf(final WebElement element, final WebDriver driver, CharSequence[] keysToSend) {
+		// unused
+	}
+
+	/**
+	 * @deprecated As of Selenium Release 3.0.0, replaced by {@link #afterChangeValueOf(final
+	 *             WebElement element, final WebDriver driver, CharSequence[] keysToSend)}
+	 */
+	@Deprecated
 	public void afterChangeValueOf(final WebElement element, final WebDriver driver) {
+		afterChangeValueOf(element, driver, null);
+	}
+
+	@Override
+	public void afterChangeValueOf(final WebElement element, final WebDriver driver,  CharSequence[] keysToSend) {
 		savePage(driver, "afterChangeValueOf", element.toString());
 	}
 

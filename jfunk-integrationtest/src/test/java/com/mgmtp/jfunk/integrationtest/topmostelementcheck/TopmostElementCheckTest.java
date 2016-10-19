@@ -155,17 +155,15 @@ public class TopmostElementCheckTest {
 		testTopmostElementCheck(WebConstants.WEBDRIVER_CHROME, JFunkConstants.FALSE, false, Subtest.OPEN_NEW_WINDOW_ACTION);
 	}
 
-	// TODO: this test will fail, as Firefox does not create a new WindowsHandle when opening a new window.
-	// Running the test results in a TimeoutException ("Timed out after X seconds waiting for new window to open.")
-	// which is caused by a NotFoundException ("No new window found.").
+	// TODO this test will fail with FirefoxDriver in legacy mode and requires the Marionette mode which is not yet fully
+	// available. Once the respective GeckoDriver executable has been updated, the test should pass.
 	@Test
 	public void testFirefoxTopmostElementCheckTrueOpenNewWindowAction() {
 		testTopmostElementCheck(WebConstants.WEBDRIVER_FIREFOX, JFunkConstants.TRUE, true, Subtest.OPEN_NEW_WINDOW_ACTION);
 	}
 
-	// TODO: this test will fail, as Firefox does not create a new WindowsHandle when opening a new window.
-	// Running the test results in a TimeoutException ("Timed out after X seconds waiting for new window to open.")
-	// which is caused by a NotFoundException ("No new window found.").
+	// TODO this test will fail with FirefoxDriver in legacy mode and requires the Marionette mode which is not yet fully
+	// available. Once the respective GeckoDriver executable has been updated, the test should pass.
 	@Test
 	public void testFirefoxTopmostElementCheckFalseOpenNewWindowAction() {
 		testTopmostElementCheck(WebConstants.WEBDRIVER_FIREFOX, JFunkConstants.FALSE, false, Subtest.OPEN_NEW_WINDOW_ACTION);

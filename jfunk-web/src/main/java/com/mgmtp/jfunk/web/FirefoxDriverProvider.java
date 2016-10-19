@@ -27,11 +27,15 @@ import org.openqa.selenium.support.events.WebDriverEventListener;
 
 import com.google.common.eventbus.EventBus;
 import com.mgmtp.jfunk.common.util.Configuration;
+import com.mgmtp.jfunk.core.config.InjectConfig;
 
 /**
  * @author rnaegele
  */
 public class FirefoxDriverProvider extends BaseWebDriverProvider {
+
+	@InjectConfig(name = FirefoxDriver.SystemProperty.DRIVER_USE_MARIONETTE, defaultValue="false")
+	private static String driverUseMarionetteScriptProperty;
 
 	@Inject
 	protected FirefoxDriverProvider(final Configuration config, final Set<WebDriverEventListener> eventListeners,
@@ -41,6 +45,9 @@ public class FirefoxDriverProvider extends BaseWebDriverProvider {
 
 	@Override
 	protected WebDriver createWebDriver(final DesiredCapabilities capabilities) {
+		//TODO this flag tells FirefoxDriver whether to run in legacy mode or in Marionette mode
+		// => remove it, once the W3C actions API is correctly implemented in GeckoDriver
+		System.setProperty(FirefoxDriver.SystemProperty.DRIVER_USE_MARIONETTE, driverUseMarionetteScriptProperty);
 		return new FirefoxDriver(capabilities);
 	}
 }

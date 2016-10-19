@@ -38,8 +38,9 @@ public class TopmostElementCheckOpenNewWindowActionStep extends AbstractTopmostE
 		wdt.assertTopmostElement(By.id(topMostLink));
 		assertNotTopMostElement(coveredLink);
 
-		// TODO: this does not work with Firefox, as there is no new WindowsHandle created for the
-		// newly opened tab
+		// TODO this WDT action does not work properly with FirefoxDriver in legacy mode and requires the
+		// Marionette mode which is not yet fully available. Once the respective GeckoDriver executable
+		// has been updated, this WDT action should function properly.
 		checkWdtActionOnTopmostAndCoveredElement(WdtAction.openNewWindow, topMostLink, null, coveredLink, null, null);
 
 	}
