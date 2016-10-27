@@ -16,7 +16,6 @@
 package com.mgmtp.jfunk.integrationtest.topmostelementcheck.step;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
 
 /**
  * @author sstrohmaier
@@ -141,14 +140,9 @@ public class TopmostElementCheckCornerCasesStep extends AbstractTopmostElementCh
 		// with topmostElementCheck=true, the action is successful but a warning is logged:
 		wdt.click(By.id(linkWithOneButton));
 
-
-		// test case: WDT actions with the 'body' element
+		// check the topmost status of the 'body' element
 
 		verifyIsTopmostElement("body1", null);
-
-		// with topmostElementCheck=true, the action is successful but a warning is logged:
-		wdt.sendKeys(By.cssSelector("body"), Keys.chord(Keys.CONTROL, "t"));
-
 	}
 
 }

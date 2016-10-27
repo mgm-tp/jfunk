@@ -29,6 +29,8 @@ public class TopmostElementCheckOpenNewWindowActionStep extends AbstractTopmostE
 	@Override
 	protected void executeInnerSteps() {
 
+		// opening a new window by clicking a link
+
 		String topMostLink = "link1";
 		String coveredLink = "link2";
 
@@ -42,6 +44,14 @@ public class TopmostElementCheckOpenNewWindowActionStep extends AbstractTopmostE
 		// Marionette mode which is not yet fully available. Once the respective GeckoDriver executable
 		// has been updated, this WDT action should function properly.
 		checkWdtActionOnTopmostAndCoveredElement(WdtAction.openNewWindow, topMostLink, null, coveredLink, null, null);
+
+		// opening a new blank window
+
+		wdt.openNewWindow(3);
+
+		// opening a new window with a specific URL
+
+		wdt.openNewWindow("http://www.mgm-tp.com", 3);
 
 	}
 

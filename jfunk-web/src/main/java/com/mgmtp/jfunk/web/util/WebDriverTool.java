@@ -22,6 +22,7 @@ import com.mgmtp.jfunk.common.util.Configuration;
 import com.mgmtp.jfunk.common.util.JFunkUtils;
 import com.mgmtp.jfunk.data.DataSet;
 import com.mgmtp.jfunk.web.WebConstants;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.openqa.selenium.*;
 import org.openqa.selenium.WebDriver.TargetLocator;
@@ -33,6 +34,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -77,6 +79,7 @@ import static org.apache.commons.lang3.StringUtils.trimToNull;
  * @since 3.1
  */
 public final class WebDriverTool implements SearchContext {
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(WebDriverTool.class);
 
 	// we must return the JS function result TextRectangle object as a map here,
@@ -99,6 +102,8 @@ public final class WebDriverTool implements SearchContext {
 
 	private static final String JS_ELEMENT_HAS_CHILDREN =
 			"return arguments[0].childElementCount > 0";
+
+	private static final String JS_OPEN_NEW_WINDOW_BLANK = "window.open('about:blank','_blank');";
 
 	private final WebDriver webDriver;
 	private final WebElementFinder wef;
@@ -816,7 +821,7 @@ public final class WebDriverTool implements SearchContext {
 	 * @return the handle of the window that opened the new window
 	 */
 	public String openNewWindow(final long timeoutSeconds) {
-		return openNewWindow(() -> findElement(By.cssSelector("body")).sendKeys(Keys.chord(Keys.CONTROL, "t")), timeoutSeconds);
+		return openNewWindow(() -> executeScript(JS_OPEN_NEW_WINDOW_BLANK), timeoutSeconds);
 	}
 
 	/**
