@@ -24,6 +24,8 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Provider;
 
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxDriver.SystemProperty;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
 import org.openqa.selenium.support.events.WebDriverEventListener;
@@ -62,6 +64,11 @@ public abstract class BaseWebDriverProvider implements Provider<WebDriver> {
 
 		// we must disable WebDriver's overlapping check to be able to use our own topMostElementCheck flag
 		capabilities.setCapability("overlappingCheckDisabled", true);
+
+		//TODO this flag tells FirefoxDriver whether to run in legacy mode or in Marionette mode
+		// => remove it, once the W3C actions API is correctly implemented in GeckoDriver
+		Boolean isWebdriverFirefoxMarionette = config.getBoolean(FirefoxDriver.SystemProperty.DRIVER_USE_MARIONETTE);
+		capabilities.setCapability(FirefoxDriver.MARIONETTE, isWebdriverFirefoxMarionette);
 
 		// post event so users can customize capabilities
 		eventBus.post(new BeforeWebDriverCreationEvent(webDriverKey, capabilities));
