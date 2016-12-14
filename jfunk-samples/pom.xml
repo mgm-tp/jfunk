@@ -44,6 +44,19 @@
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifest>
+							<useUniqueVersions>false</useUniqueVersions>
+							<addClasspath>true</addClasspath>
+							<mainClass>com.mgmtp.jfunk.core.JFunk</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>		
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-clean-plugin</artifactId>
 				<executions>
 					<execution>
@@ -79,6 +92,25 @@
 						</goals>
 						<configuration>
 							<outputDirectory>${basedir}/lib</outputDirectory>
+						</configuration>
+					</execution>
+					<execution>
+						<id>copy-artifact</id>
+						<phase>install</phase>
+						<goals>
+							<goal>copy</goal>
+						</goals>
+						<configuration>
+							<artifactItems>
+								<artifactItem>
+									<groupId>${project.groupId}</groupId>
+									<artifactId>${project.artifactId}</artifactId>
+									<version>${project.version}</version>
+									<type>jar</type>
+									<overWrite>true</overWrite>
+									<outputDirectory>${project.basedir}/lib</outputDirectory>
+								</artifactItem>
+							</artifactItems>
 						</configuration>
 					</execution>
 				</executions>

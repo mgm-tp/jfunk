@@ -30,22 +30,7 @@ String url = 'http://www.google.com'
 set 'archiving.mode' to 'all'
 set 'archive.dir' to 'testruns/google'
 
-prepareNextDataSet 'google'
-
-run new GoogleAdvancedSearchModule()
-
-prepareNextDataSet 'google'
-
-module ('GoogleScriptModule', [dataSetKey: 'google']) {
-
-	step new LoadPage(url)
-
-	// Enter form value (form name=f, form field=q)
-	searchTerm = get('${google searchTerm}')
-
-	step new JFunkWebElement(By.name('q'), searchTerm)
-	step new SendKeysStep(By.name('q'), Keys.ENTER)
-
-	// Search for text on page
-	step new CheckHtml4Pattern("(?s).*$searchTerm.*")
+2.times {
+	prepareNextDataSet 'google'
+	run new GoogleAdvancedSearchModule()
 }
