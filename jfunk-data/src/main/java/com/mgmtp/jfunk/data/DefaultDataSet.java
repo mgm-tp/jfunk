@@ -31,12 +31,12 @@ import com.mgmtp.jfunk.common.JFunkConstants;
 /**
  * Default {@link DataSet} implementation including functionality for storing fixed values.
  * Null-values are trimmed to the empty {@link String}.
- * 
+ *
  */
 public class DefaultDataSet implements DataSet {
 
-	private Map<String, String> data;
-	private final Map<String, String> fixedValues = Maps.newHashMap();
+	protected Map<String, String> data;
+	protected final Map<String, String> fixedValues = Maps.newHashMap();
 	public static final Logger LOG = Logger.getLogger(DefaultDataSet.class);
 
 	public DefaultDataSet() {
