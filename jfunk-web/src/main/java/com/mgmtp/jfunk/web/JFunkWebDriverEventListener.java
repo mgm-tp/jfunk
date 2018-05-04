@@ -157,27 +157,9 @@ public class JFunkWebDriverEventListener implements WebDriverEventListener {
 		savePage(driver, "afterClick", element.toString());
 	}
 
-	/**
-	 * @deprecated As of Selenium Release 3.0.0, replaced by {@link #beforeChangeValueOf(final
-	 *             WebElement element, final WebDriver driver, CharSequence[] keysToSend)}
-	 */
-	@Deprecated
-	public void beforeChangeValueOf(final WebElement element, final WebDriver driver) {
-		beforeChangeValueOf(element, driver, null);
-	}
-
 	@Override
 	public void beforeChangeValueOf(final WebElement element, final WebDriver driver, CharSequence[] keysToSend) {
 		// unused
-	}
-
-	/**
-	 * @deprecated As of Selenium Release 3.0.0, replaced by {@link #afterChangeValueOf(final
-	 *             WebElement element, final WebDriver driver, CharSequence[] keysToSend)}
-	 */
-	@Deprecated
-	public void afterChangeValueOf(final WebElement element, final WebDriver driver) {
-		afterChangeValueOf(element, driver, null);
 	}
 
 	@Override
@@ -192,6 +174,36 @@ public class JFunkWebDriverEventListener implements WebDriverEventListener {
 
 	@Override
 	public void afterScript(final String script, final WebDriver driver) {
+		// unused
+	}
+
+	@Override
+	public void beforeAlertAccept(WebDriver driver) {
+		// unused
+	}
+
+	@Override
+	public void afterAlertAccept(WebDriver driver) {
+		// unused
+	}
+
+	@Override
+	public void beforeAlertDismiss(WebDriver driver) {
+		// unused
+	}
+
+	@Override
+	public void afterAlertDismiss(WebDriver driver) {
+		// unused
+	}
+
+	@Override
+	public void beforeSwitchToWindow(String windowName, WebDriver driver) {
+		// unused
+	}
+
+	@Override
+	public void afterSwitchToWindow(String windowName, WebDriver driver) {
 		// unused
 	}
 

@@ -16,6 +16,7 @@
 package com.mgmtp.jfunk.web.util;
 
 import java.util.List;
+import java.util.function.Function;
 
 import org.openqa.selenium.NotFoundException;
 import org.openqa.selenium.StaleElementReferenceException;
@@ -24,13 +25,11 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
 
 /**
- * {@link WebDriverWait} decendant that writes a log message before {@link #until(Function)} or
- * {@link #until(Predicate)} is called.
+ * {@link WebDriverWait} decendant that writes a log message before {@link #until(Function)} is
+ * called.
  * 
  * @author rnaegele
  */

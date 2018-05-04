@@ -344,9 +344,11 @@ public final class WebDriverTool implements SearchContext {
 	 *            the predicate to wait on
 	 * @throws TimeoutException
 	 *             if the timeout expires.
+	 * @deprecated since Selenium 3.1.0 and jFunk 3.2.0; use {@link #waitFor(Function)} instead
 	 */
+	@Deprecated
 	public void waitFor(final Predicate<WebDriver> predicate) {
-		newWebDriverWait().until(predicate);
+		newWebDriverWait().until(predicate::apply);
 	}
 
 	/**
@@ -359,9 +361,12 @@ public final class WebDriverTool implements SearchContext {
 	 *            the timeout in seconds
 	 * @throws TimeoutException
 	 *             if the timeout expires.
+	 * @deprecated since Selenium 3.1.0 and jFunk 3.2.0; use {@link #waitFor(Function, long)}
+	 *             instead
 	 */
+	@Deprecated
 	public void waitFor(final Predicate<WebDriver> predicate, final long timeoutSeconds) {
-		newWebDriverWait(timeoutSeconds).until(predicate);
+		newWebDriverWait(timeoutSeconds).until(predicate::apply);
 	}
 
 	/**
@@ -376,9 +381,12 @@ public final class WebDriverTool implements SearchContext {
 	 *            the time in milliseconds to sleep between polls
 	 * @throws TimeoutException
 	 *             if the timeout expires.
+	 * @deprecated since Selenium 3.1.0 and jFunk 3.2.0; use {@link #waitFor(Function, long, long)}
+	 *             instead
 	 */
+	@Deprecated
 	public void waitFor(final Predicate<WebDriver> predicate, final long timeoutSeconds, final long sleepMillis) {
-		newWebDriverWait(timeoutSeconds, sleepMillis).until(predicate);
+		newWebDriverWait(timeoutSeconds, sleepMillis).until(predicate::apply);
 	}
 
 	/**

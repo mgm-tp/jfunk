@@ -44,8 +44,8 @@ public class CapabilitiesProviderTest {
 		Configuration config = new Configuration(Charsets.UTF_8);
 		Reader reader = null;
 		try {
-			reader = Resources.newReaderSupplier(Resources.getResource("test_capabilities.properties"), Charsets.UTF_8)
-					.getInput();
+			reader = Resources.asCharSource(Resources.getResource("test_capabilities.properties"), Charsets.UTF_8)
+					.openStream();
 			config.load(reader);
 
 			CapabilitiesProvider provider = new CapabilitiesProvider(Providers.of(config));

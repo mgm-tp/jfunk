@@ -36,7 +36,7 @@ import javax.mail.Store;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.collect.FluentIterable;
@@ -248,7 +248,7 @@ class StoreManager {
 
 		@Override
 		public String toString() {
-			return Objects.toStringHelper(this).add("file", file.getName()).toString();
+			return MoreObjects.toStringHelper(this).add("file", file.getName()).toString();
 		}
 	}
 }

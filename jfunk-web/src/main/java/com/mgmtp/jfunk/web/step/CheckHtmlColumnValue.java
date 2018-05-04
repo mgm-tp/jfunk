@@ -18,6 +18,7 @@ package com.mgmtp.jfunk.web.step;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.util.List;
+import java.util.function.Function;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -26,7 +27,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import com.google.common.base.Predicate;
 import com.mgmtp.jfunk.core.exception.ValidationException;
 import com.mgmtp.jfunk.data.DataSet;
 import com.mgmtp.jfunk.web.WebConstants;
@@ -87,10 +87,10 @@ public class CheckHtmlColumnValue extends WebDriverStep {
 	public void execute() {
 		// wait for rendering the table
 		final WebDriverWait tableWait = new WebDriverWait(getWebDriver(), WebConstants.DEFAULT_TIMEOUT);
-		tableWait.until(new Predicate<WebDriver>() {
+		tableWait.until(new Function<WebDriver, Boolean>() {
 
 			@Override
-			public boolean apply(final WebDriver input) {
+			public Boolean apply(final WebDriver input) {
 				final WebElement el = input.findElement(tableBy);
 				if (el != null && el.isDisplayed() && el.isEnabled()) {
 					if (el.getText().contains(value) && isPresent) {
