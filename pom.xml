@@ -28,7 +28,7 @@
 	<artifactId>jfunk</artifactId>
 	<packaging>pom</packaging>
 	<name>jFunk Parent POM</name>
-	<version>3.2.1-SNAPSHOT</version>
+	<version>3.2.1</version>
 	<description>Java Functional Testing Framework Parent POM</description>
 
 	<url>https://github.com/mgm-tp/jfunk</url>
