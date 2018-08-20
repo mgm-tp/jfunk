@@ -337,59 +337,6 @@ public final class WebDriverTool implements SearchContext {
 	}
 
 	/**
-	 * Repeatedly applies the current {@link WebDriver} instance to the specified predicate
-	 * until the timeout expires or the predicate evaluates to true.
-	 *
-	 * @param predicate
-	 *            the predicate to wait on
-	 * @throws TimeoutException
-	 *             if the timeout expires.
-	 * @deprecated since Selenium 3.1.0 and jFunk 3.2.0; use {@link #waitFor(Function)} instead
-	 */
-	@Deprecated
-	public void waitFor(final Predicate<WebDriver> predicate) {
-		newWebDriverWait().until(predicate::apply);
-	}
-
-	/**
-	 * Repeatedly applies the current {@link WebDriver} instance to the specified predicate
-	 * until the timeout expires or the predicate evaluates to true.
-	 *
-	 * @param predicate
-	 *            the predicate to wait on
-	 * @param timeoutSeconds
-	 *            the timeout in seconds
-	 * @throws TimeoutException
-	 *             if the timeout expires.
-	 * @deprecated since Selenium 3.1.0 and jFunk 3.2.0; use {@link #waitFor(Function, long)}
-	 *             instead
-	 */
-	@Deprecated
-	public void waitFor(final Predicate<WebDriver> predicate, final long timeoutSeconds) {
-		newWebDriverWait(timeoutSeconds).until(predicate::apply);
-	}
-
-	/**
-	 * Repeatedly applies the current {@link WebDriver} instance to the specified predicate
-	 * until the timeout expires or the predicate evaluates to true.
-	 *
-	 * @param predicate
-	 *            the predicate to wait on
-	 * @param timeoutSeconds
-	 *            the timeout in seconds
-	 * @param sleepMillis
-	 *            the time in milliseconds to sleep between polls
-	 * @throws TimeoutException
-	 *             if the timeout expires.
-	 * @deprecated since Selenium 3.1.0 and jFunk 3.2.0; use {@link #waitFor(Function, long, long)}
-	 *             instead
-	 */
-	@Deprecated
-	public void waitFor(final Predicate<WebDriver> predicate, final long timeoutSeconds, final long sleepMillis) {
-		newWebDriverWait(timeoutSeconds, sleepMillis).until(predicate::apply);
-	}
-
-	/**
 	 * Creates a new {@link WebDriverWait} with the same timeout and milliseconds to sleep
 	 * between polls as the internally used default {@link WebElementFinder} instance.
 	 *
