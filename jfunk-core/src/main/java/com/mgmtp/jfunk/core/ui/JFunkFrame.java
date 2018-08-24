@@ -38,6 +38,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.imageio.ImageIO;
@@ -62,6 +63,7 @@ import javax.swing.tree.TreePath;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.log4j.Logger;
 
 /**
@@ -121,6 +123,7 @@ public final class JFunkFrame extends JFrame {
 		} else {
 			roots.add(new File("scripts"));
 		}
+		Collections.sort(roots);
 		JFunkFrame.createAndShow(roots);
 	}
 
@@ -392,11 +395,21 @@ public final class JFunkFrame extends JFrame {
 			int threads = (Integer) threadCountComboBox.getSelectedItem();
 
 			List<String> commandsList = new ArrayList<String>(paths.length + 5);
-			commandsList.add("cmd.exe");
-			commandsList.add("/X");
-			commandsList.add("/C");
-			commandsList.add("start");
-			commandsList.add("run_testskript.bat");
+			if (SystemUtils.IS_OS_WINDOWS) {
+				commandsList.add("cmd.exe");
+				commandsList.add("/X");
+				commandsList.add("/C");
+				commandsList.add("start");
+				commandsList.add("run_testskript.bat");
+			} else if (SystemUtils.IS_OS_LINUX) {
+				commandsList.add("/usr/bin/xterm");
+				commandsList.add("-e");
+				commandsList.add("./run_testskript.sh");
+			} else {
+				JOptionPane.showMessageDialog(JFunkFrame.this, "Routines for running test scripts are only defined for Windows and Linux systems",
+						"Error", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
 			//Threadcount wird als argument weiter gereicht.
 			commandsList.add("-threadcount=" + threads);
 			//Flag parallel wird als Parameter weiter gereicht.

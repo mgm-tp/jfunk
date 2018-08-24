@@ -18,6 +18,7 @@ package com.mgmtp.jfunk.core.ui;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.event.TreeModelListener;
@@ -79,6 +80,9 @@ public class ScriptsTreeModel implements Serializable, TreeModel {
 				return file.isDirectory() && !".svn".equals(file.getName()) || "script".equals(ext) || "groovy".equals(ext);
 			}
 		});
+		if (files != null) {
+			Arrays.sort(files);
+		}
 		return files;
 	}
 
