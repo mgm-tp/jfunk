@@ -35,7 +35,8 @@ import com.google.inject.Provider;
  * @author rnaegele
  */
 public class StackedScope extends BaseScope {
-	private final ThreadLocal<Deque<Map<Key<?>, Object>>> scopeStackCache = new ThreadLocal<Deque<Map<Key<?>, Object>>>() {
+	private final ThreadLocal<Deque<Map<Key<?>, Object>>> scopeStackCache =
+			new InheritableThreadLocal<Deque<Map<Key<?>, Object>>>() {
 		@Override
 		protected Deque<Map<Key<?>, Object>> initialValue() {
 			return new ArrayDeque<Map<Key<?>, Object>>();

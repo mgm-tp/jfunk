@@ -74,7 +74,9 @@ public final class JFunkBaseModule extends BaseJFunkGuiceModule {
 	@Override
 	protected void doConfigure() {
 		ThreadScope scope = new ThreadScope();
-		scope.enterScope(); // need to enter it right away for the main thread
+		// need to enter it right away for the main thread
+		// must not be inheritable, otherwise all threads would share the same scope
+		scope.enterScopeNonInheritable();
 
 		bindScope(ThreadScope.class, scope, ScriptScoped.class);
 		bindScope(StackedScope.class, new StackedScope(), ModuleScoped.class);
