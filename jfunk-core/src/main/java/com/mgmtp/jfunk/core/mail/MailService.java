@@ -238,7 +238,7 @@ public class MailService {
 	 */
 	public List<MailMessage> findMessages(final String accountReservationKey, final Predicate<MailMessage> condition,
 			final int expectedCount) {
-		return findMessages(accountReservationKey, condition, defaultTimeoutSeconds);
+		return findMessages(accountReservationKey, condition, defaultTimeoutSeconds, expectedCount);
 	}
 
 	/**
