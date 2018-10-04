@@ -30,6 +30,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.lang.reflect.Constructor;
 import java.nio.charset.Charset;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -172,6 +173,15 @@ public class ScriptContext {
 		injector.injectMembers(reporter);
 		reporters.add(reporter);
 		return reporter;
+	}
+	
+	/**
+	 * Returns all errors caught in {@link #optional(Closure)} blocks during script execution.
+	 * 
+	 * @return the immutable list of all errors caught during script execution
+	 */
+	public List<Throwable> getErrors() {
+		return Collections.unmodifiableList(errors);
 	}
 
 	/**
