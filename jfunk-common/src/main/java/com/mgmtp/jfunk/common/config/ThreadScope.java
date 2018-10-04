@@ -32,14 +32,15 @@ import com.google.inject.Provider;
  */
 public class ThreadScope extends BaseScope {
 
-	final ThreadLocal<Map<Key<?>, Object>> scopeCache = new ThreadLocal<Map<Key<?>, Object>>();
+	final ThreadLocal<Map<Key<?>, Object>> nonInheritableScopeCache = new ThreadLocal<Map<Key<?>, Object>>();
+	final ThreadLocal<Map<Key<?>, Object>> inheritableScopeCache = new InheritableThreadLocal<Map<Key<?>, Object>>();
 
 	@Override
 	public <T> Provider<T> scope(final Key<T> key, final Provider<T> unscoped) {
 		return new Provider<T>() {
 			@Override
 			public T get() {
-				Map<Key<?>, Object> map = scopeCache.get();
+				Map<Key<?>, Object> map = getScopeMapForCurrentThread();
 				checkState(map != null, "No scope map found for the current thread. Forgot to call enterScope()?");
 				return getScopedObject(key, unscoped, map);
 			}
@@ -52,18 +53,32 @@ public class ThreadScope extends BaseScope {
 	}
 
 	/**
-	 * Enters a new scope context for the current thread setting a scope map to the internal
-	 * {@link ThreadLocal}.
+	 * Enters a new scope context for the current thread and its subthreads setting a scope map to
+	 * the internal {@link ThreadLocal}.
 	 * 
 	 * @throws IllegalStateException
 	 *             if there is already a scope context for the current thread
 	 */
 	@Override
 	public void enterScope() {
-		checkState(scopeCache.get() == null, "Scope has already been entered. Forgot to call exitScope()?");
+		checkState(inheritableScopeCache.get() == null, "Scope has already been entered. Forgot to call exitScope()?");
 		Map<Key<?>, Object> scopeMap = newHashMap();
-		scopeCache.set(scopeMap);
-		log.debug("Entered scope.");
+		inheritableScopeCache.set(scopeMap);
+		log.debug("Entered inheritable scope.");
+	}
+	
+	/**
+	 * Enters a new scope context for the current thread (without subthreads) setting a scope map
+	 * to the internal {@link ThreadLocal}.
+	 * 
+	 * @throws IllegalStateException
+	 *             if there is already a scope context for the current thread
+	 */
+	public void enterScopeNonInheritable() {
+		checkState(nonInheritableScopeCache.get() == null, "Scope has already been entered. Forgot to call exitScope()?");
+		Map<Key<?>, Object> scopeMap = newHashMap();
+		nonInheritableScopeCache.set(scopeMap);
+		log.debug("Entered non-inheritable scope.");
 	}
 
 	/**
@@ -73,7 +88,7 @@ public class ThreadScope extends BaseScope {
 	 * @return {@code true} if the scope has been entered by the current thread.
 	 */
 	public boolean isScopeEntered() {
-		return scopeCache.get() != null;
+		return getScopeMapForCurrentThread() != null;
 	}
 
 	/**
@@ -85,10 +100,16 @@ public class ThreadScope extends BaseScope {
 	 */
 	@Override
 	public void exitScope() {
-		Map<Key<?>, Object> scopeMap = checkNotNull(scopeCache.get(),
+		Map<Key<?>, Object> scopeMap = checkNotNull(getScopeMapForCurrentThread(),
 				"No scope map found for the current thread. Forgot to call enterScope()?");
 		performDisposal(scopeMap);
-		scopeCache.remove();
+		nonInheritableScopeCache.remove();
+		inheritableScopeCache.remove();
 		log.debug("Exited scope.");
+	}
+	
+	private Map<Key<?>, Object> getScopeMapForCurrentThread() {
+		Map<Key<?>, Object> scopeMapForThreadItself = nonInheritableScopeCache.get();
+		return scopeMapForThreadItself == null ? inheritableScopeCache.get() : scopeMapForThreadItself;
 	}
 }
