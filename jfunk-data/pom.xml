@@ -21,7 +21,7 @@
 	<parent>
 		<groupId>com.mgmtp.jfunk</groupId>
 		<artifactId>jfunk</artifactId>
-		<version>3.3.0-SNAPSHOT</version>
+		<version>3.3.0</version>
 	</parent>
 	<artifactId>jfunk-data</artifactId>
 	<packaging>jar</packaging>
