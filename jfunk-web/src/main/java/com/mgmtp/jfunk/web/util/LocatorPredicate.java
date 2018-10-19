@@ -22,7 +22,9 @@ import com.google.common.base.Predicate;
 
 /**
  * @author rnaegele
+ * @deprecated as of 3.3.1, use {@link LocatorFunction} instead
  */
+@Deprecated
 public abstract class LocatorPredicate implements Predicate<WebDriver> {
 
 	protected final By locator;

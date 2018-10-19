@@ -16,12 +16,16 @@
 package com.mgmtp.jfunk.web.util;
 
 import static com.google.common.collect.Lists.newArrayListWithCapacity;
+import static org.apache.commons.lang3.StringUtils.containsIgnoreCase;
 import static org.apache.commons.lang3.StringUtils.normalizeSpace;
 
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.slf4j.Logger;
@@ -41,6 +45,22 @@ public class WebDriverFunctions {
 	private WebDriverFunctions() {
 		// don't allow instantiation
 	}
+	
+	public static Function<WebDriver, Boolean> urlMatchesPattern(final Pattern pattern) {
+		return new UrlMatchesPatternFunction(pattern);
+	}
+
+	public static Function<WebDriver, Boolean> urlMatchesPattern(final String regex) {
+		return new UrlMatchesPatternFunction(regex);
+	}
+
+	public static Function<WebDriver, Boolean> pageSourceContainsString(final String searchString) {
+		return new PageSourceContainsStringFunction(searchString, false);
+	}
+
+	public static Function<WebDriver, Boolean> pageSourceContainsString(final String searchString, final boolean caseSensitive) {
+		return new PageSourceContainsStringFunction(searchString, caseSensitive);
+	}
 
 	public static Function<WebDriver, List<String>> pageSourceMatchesPattern(final String pattern) {
 		return new PageSourceMatchesPatternFunction(Pattern.compile(pattern));
@@ -50,8 +70,229 @@ public class WebDriverFunctions {
 		return new PageSourceMatchesPatternFunction(pattern);
 	}
 
+	public static Function<WebDriver, Boolean> textEquals(final By locator, final String value) {
+		return new TextEqualsFunction(locator, value, true);
+	}
+
+	public static Function<WebDriver, Boolean> textEquals(final By locator, final String value, final boolean normalizeSpace) {
+		return new TextEqualsFunction(locator, value, normalizeSpace);
+	}
+
+	public static Function<WebDriver, Boolean> textContains(final By locator, final String value) {
+		return new TextContainsFunction(locator, value, true);
+	}
+
+	public static Function<WebDriver, Boolean> textContains(final By locator, final String value, final boolean normalizeSpace) {
+		return new TextContainsFunction(locator, value, normalizeSpace);
+	}
+
+	public static Function<WebDriver, Boolean> textMatchesPattern(final By locator, final Pattern pattern) {
+		return new TextMatchesPatternFunction(locator, pattern);
+	}
+
+	public static Function<WebDriver, Boolean> textMatchesPattern(final By locator, final String regex) {
+		return new TextMatchesPatternFunction(locator, regex);
+	}
+
+	public static Function<WebDriver, Boolean> attributeValueMatchesPattern(final By locator, final Pattern pattern,
+			final String attribute) {
+		return new AttributeValueMatchesPatternFunction(locator, pattern, attribute);
+	}
+
+	public static Function<WebDriver, Boolean> attributeValueMatchesPattern(final By locator, final String regex, final String attribute) {
+		return new AttributeValueMatchesPatternFunction(locator, regex, attribute);
+	}
+
+	public static Function<WebDriver, Boolean> pageToBeLoaded() {
+		return new PageToBeLoadedFunction();
+	}
+
 	public static <V> Function<WebDriver, V> refreshOnFalseNullOrException(final Function<WebDriver, V> delegate) {
-		return new RefreshOnFalseNullOrExceptionWrapperFunction<V>(delegate);
+		return new RefreshOnFalseNullOrExceptionWrapperFunction<>(delegate);
+	}
+
+	public static Function<WebDriver, Boolean> alertIsPresent() {
+		return new AlertIsPresentFunction();
+	}
+
+	public static Function<WebDriver, Boolean> alertTextEquals(final String text) {
+		return new AlertTextEqualsFunction(text);
+	}
+
+	public static Function<WebDriver, Boolean> alertTextMatchesPattern(final Pattern pattern) {
+		return new AlertTextMatchesPatternFunction(pattern);
+	}
+
+	public static Function<WebDriver, Boolean> alertTextMatchesPattern(final String pattern) {
+		return new AlertTextMatchesPatternFunction(Pattern.compile(pattern));
+	}
+
+	private static class TextEqualsFunction extends LocatorFunction<Boolean> {
+		private final String text;
+		private final boolean normalizeSpace;
+		private String currentText;
+
+		public TextEqualsFunction(final By locator, final String text, final boolean normalizeSpace) {
+			super(locator);
+			this.text = text;
+			this.normalizeSpace = normalizeSpace;
+		}
+
+		@Override
+		public Boolean apply(final WebDriver input) {
+			currentText = input.findElement(locator).getText();
+			if (normalizeSpace) {
+				currentText = normalizeSpace(currentText);
+			}
+			return currentText.equals(text);
+		}
+
+		@Override
+		public String toString() {
+			return String.format("%stext of element located by '%s' to be equal to '%s'. Current text: '%s'",
+					normalizeSpace ? "normalized " : "", locator, text, currentText);
+		}
+	}
+
+	private static class TextContainsFunction extends LocatorFunction<Boolean> {
+		private final String text;
+		private final boolean normalizeSpace;
+		private String currentText;
+
+		public TextContainsFunction(final By locator, final String text, final boolean normalizeSpace) {
+			super(locator);
+			this.text = text;
+			this.normalizeSpace = normalizeSpace;
+		}
+
+		@Override
+		public Boolean apply(final WebDriver input) {
+			currentText = input.findElement(locator).getText();
+			if (normalizeSpace) {
+				currentText = normalizeSpace(text);
+			}
+			return currentText.contains(text);
+		}
+
+		@Override
+		public String toString() {
+			return String.format("%stext of element located by '%s' to contain '%s'. Current text: '%s'",
+					normalizeSpace ? "normalized " : "", locator, text, currentText);
+		}
+	}
+
+	private static class TextMatchesPatternFunction extends LocatorFunction<Boolean> {
+		private final Pattern pattern;
+		private String currentText;
+
+		public TextMatchesPatternFunction(final By locator, final Pattern pattern) {
+			super(locator);
+			this.pattern = pattern;
+		}
+
+		public TextMatchesPatternFunction(final By locator, final String regex) {
+			this(locator, Pattern.compile(regex));
+		}
+
+		@Override
+		public Boolean apply(final WebDriver input) {
+			currentText = input.findElement(locator).getText();
+			return pattern.matcher(currentText).matches();
+		}
+
+		@Override
+		public String toString() {
+			return String.format("text of element located by '%s' to match pattern '%s'. Current text: '%s'",
+					pattern, locator, currentText);
+		}
+	}
+
+	private static class AttributeValueMatchesPatternFunction extends LocatorFunction<Boolean> {
+		private final Pattern pattern;
+		private final String attribute;
+		private String currentAttributeValue;
+
+		public AttributeValueMatchesPatternFunction(final By locator, final Pattern pattern, final String attribute) {
+			super(locator);
+			this.pattern = pattern;
+			this.attribute = attribute;
+		}
+
+		public AttributeValueMatchesPatternFunction(final By locator, final String regex, final String attribute) {
+			this(locator, Pattern.compile(regex), attribute);
+		}
+
+		@Override
+		public Boolean apply(final WebDriver input) {
+			currentAttributeValue = input.findElement(locator).getAttribute(attribute);
+			return pattern.matcher(currentAttributeValue).matches();
+		}
+
+		@Override
+		public String toString() {
+			return String.format("attribute '%s' of element located by '%s' to match pattern '%s'. Current value: '%s'",
+					attribute, locator, pattern, currentAttributeValue);
+		}
+	}
+
+	private static class UrlMatchesPatternFunction implements Function<WebDriver, Boolean> {
+
+		private final Pattern pattern;
+		private String currentUrl;
+
+		public UrlMatchesPatternFunction(final Pattern pattern) {
+			this.pattern = pattern;
+		}
+
+		public UrlMatchesPatternFunction(final String regex) {
+			this.pattern = Pattern.compile(regex);
+		}
+
+		@Override
+		public Boolean apply(final WebDriver input) {
+			currentUrl = input.getCurrentUrl();
+			return pattern.matcher(currentUrl).matches();
+		}
+
+		@Override
+		public String toString() {
+			return String.format("current url (%s) to match pattern '%s'", currentUrl, pattern);
+		}
+	}
+
+	private static class PageToBeLoadedFunction implements Function<WebDriver, Boolean> {
+
+		@Override
+		public Boolean apply(final WebDriver input) {
+			return ((JavascriptExecutor) input).executeScript("return document.readyState").equals("complete");
+		}
+
+		@Override
+		public String toString() {
+			return "page to be loaded";
+		}
+	}
+
+	private static class PageSourceContainsStringFunction implements Function<WebDriver, Boolean> {
+
+		private final String searchString;
+		private final boolean caseSensitive;
+
+		public PageSourceContainsStringFunction(final String searchString, final boolean caseSensitive) {
+			this.searchString = searchString;
+			this.caseSensitive = caseSensitive;
+		}
+
+		@Override
+		public Boolean apply(final WebDriver input) {
+			String pageSource = normalizeSpace(input.getPageSource());
+			return caseSensitive ? pageSource.contains(searchString) : containsIgnoreCase(pageSource, searchString);
+		}
+
+		@Override
+		public String toString() {
+			return String.format("page source to contain '%s' (%scase-sensitive)", searchString, caseSensitive ? "" : "not ");
+		}
 	}
 
 	private static class PageSourceMatchesPatternFunction implements Function<WebDriver, List<String>> {
@@ -122,6 +363,71 @@ public class WebDriverFunctions {
 		@Override
 		public String toString() {
 			return delegate.toString();
+		}
+	}
+
+	private static class AlertIsPresentFunction implements Function<WebDriver, Boolean> {
+		@Override
+		public Boolean apply(final WebDriver input) {
+			try {
+				input.switchTo().alert();
+				return true;
+			} catch (NoAlertPresentException nape) {
+				return false;
+			}
+		}
+
+		@Override
+		public String toString() {
+			return "alert to be present";
+		}
+	}
+
+	private static class AlertTextEqualsFunction implements Function<WebDriver, Boolean> {
+		private final String text;
+		private String alertText;
+
+		public AlertTextEqualsFunction(final String text) {
+			this.text = text;
+		}
+
+		@Override
+		public Boolean apply(final WebDriver input) {
+			try {
+				alertText = input.switchTo().alert().getText();
+				return alertText.equals(text);
+			} catch (NoAlertPresentException nape) {
+				return false;
+			}
+		}
+
+		@Override
+		public String toString() {
+			return String.format("alert text to equal '%s'. Current text: '%s'", text, alertText);
+		}
+	}
+
+	private static class AlertTextMatchesPatternFunction implements Function<WebDriver, Boolean> {
+		private final Pattern pattern;
+		private String alertText;
+
+		public AlertTextMatchesPatternFunction(final Pattern pattern) {
+			this.pattern = pattern;
+		}
+
+		@Override
+		public Boolean apply(final WebDriver input) {
+			try {
+				alertText = input.switchTo().alert().getText();
+				return pattern.matcher(alertText).matches();
+			} catch (NoAlertPresentException nape) {
+				return false;
+			}
+		}
+
+		@Override
+		public String toString() {
+			return String.format("alert text to match pattern '%s'. Current text: '%s'", pattern, alertText);
 		}
 	}
 

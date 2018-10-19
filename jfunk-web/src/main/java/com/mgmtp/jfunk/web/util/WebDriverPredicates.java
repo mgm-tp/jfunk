@@ -31,12 +31,13 @@ import com.google.common.base.Functions;
 import com.google.common.base.Predicate;
 
 /**
- * {@link Predicate}s that may be used e. g. in {@link WebDriverTool#waitFor(Predicate)} similarly
- * to {@link ExpectedConditions}.
+ * {@link Predicate}s that may be used similarly to {@link ExpectedConditions}.
  * 
  * @author rnaegele
  * @author eneumann
+ * @deprecated as of 3.3.1, use {@link WebDriverFunctions} instead
  */
+@Deprecated
 public class WebDriverPredicates {
 
 	private WebDriverPredicates() {
