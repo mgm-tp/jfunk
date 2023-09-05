@@ -4,9 +4,10 @@
 
 ---
 
-Sources have been made available now as a first preview. Documentation and a first public release will follow.
+**This project was archived on Sep 5th 2023.**
 
 ---
+
 
 Copyright (c) 2013 mgm technology partners GmbH
 
